@@ -157,7 +157,7 @@
 <body>
 
 <div class="container">
-    <h1>⚽ Футбольные команды</h1>
+    <h1>⚽ Жеребьевка команд</h1>
 
     <div class="card">
         <div class="controls">
@@ -189,8 +189,7 @@
 </div>
 
 <script>
-    // 1. Твоя база игроков (теперь 20 человек)
-    // Рейтинг от 1 (слабый) до 10 (сильный)
+    // Твоя база игроков
     const players = [
         { id: 1, name: "Айбол ағай", rating: 0 },
         { id: 2, name: "Абдулуахид ағай", rating: 5 },
@@ -205,16 +204,16 @@
         { id: 11, name: "Нағашбек ағай", rating: 7 },
         { id: 12, name: "Нұрдаулет ағай", rating: 0 },
         { id: 13, name: "Нұрхан ағай", rating: 6 },
-        { id: 14, name: "Рамазан ағай", rating: 0 },
+        { id: 14, name: "Рамазан ағай", rating: 4 },
         { id: 15, name: "Аян ағай", rating: 4 },
         { id: 16, name: "Алихан ағай", rating: 3 },
         { id: 17, name: "Тынышбек ағай", rating: 0 },
         { id: 18, name: "Сержан ағай", rating: 7 },
         { id: 19, name: "Мұрат ағай", rating: 0 },
         { id: 20, name: "Қанат ағай", rating: 6 }
+        { id: 21, name: "Ерген ағай", rating: 0 }
     ];
 
-    // Отрисовка списка игроков при загрузке
     function renderPlayers() {
         const list = document.getElementById('playerList');
         list.innerHTML = '';
@@ -234,15 +233,13 @@
         updateSelectedCount();
     }
 
-    // Подсчет выбранных игроков
     function updateSelectedCount() {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
         document.getElementById('selectedCount').innerText = checkboxes.length;
     }
 
-    // Главная функция разделения на команды
+    // Алгоритм с балансировкой равного количества игроков
     function generateAndDisplayTeams() {
-        // Получаем ID всех отмеченных игроков
         const selectedIds = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => parseInt(cb.value));
         
         if (selectedIds.length === 0) {
@@ -250,52 +247,48 @@
             return;
         }
 
-        // Фильтруем исходный массив
         let activePlayers = players.filter(p => selectedIds.includes(p.id));
-        
         const numberOfTeams = parseInt(document.getElementById('numTeams').value);
         
         // Сортируем игроков от сильных к слабым
         activePlayers.sort((a, b) => b.rating - a.rating);
 
-        // Создаем пустые команды
         let teams = Array.from({ length: numberOfTeams }, (_, i) => ({ 
             id: i + 1,
-            name: `Команда ${String.fromCharCode(65 + i)}`, // Команда A, Команда B...
+            name: `Команда ${String.fromCharCode(65 + i)}`, 
             members: [], 
             totalScore: 0 
         }));
 
-        // Жадный алгоритм распределения
         for (let player of activePlayers) {
-            // Сортируем команды по текущему баллу (от самой слабой к сильной)
-            teams.sort((a, b) => a.totalScore - b.totalScore);
+            // Сначала балансируем по количеству человек, затем по рейтингу
+            teams.sort((a, b) => {
+                if (a.members.length !== b.members.length) {
+                    return a.members.length - b.members.length; // Приоритет размеру команды
+                }
+                return a.totalScore - b.totalScore; // Затем балансируем по силе
+            });
             
-            // Добавляем игрока в самую слабую команду
             teams[0].members.push(player);
             teams[0].totalScore += player.rating;
         }
 
-        // Сортируем команды обратно по алфавиту для красивого вывода
+        // Сортируем команды обратно по алфавиту (A, B, C) для красивого вывода
         teams.sort((a, b) => a.id - b.id);
-
-        // Отрисовка результатов
         renderTeams(teams);
     }
 
-    // Вывод команд на экран
     function renderTeams(teams) {
         const container = document.getElementById('teamsContainer');
         container.innerHTML = '';
 
         teams.forEach(team => {
-            // Вычисляем средний рейтинг команды
-            const avgRating = (team.totalScore / team.members.length).toFixed(1);
+            const avgRating = team.members.length > 0 ? (team.totalScore / team.members.length).toFixed(1) : 0;
 
             let html = `
                 <div class="team-card">
                     <div class="team-header">
-                        <span>${team.name}</span>
+                        <span>${team.name} <span style="color:#7f8c8d; font-size:14px; font-weight:normal;">(${team.members.length} чел.)</span></span>
                         <span class="team-stats">Сумма: ${team.totalScore} (Средн: ${avgRating})</span>
                     </div>
                     <ul class="team-members">
@@ -310,11 +303,9 @@
         });
 
         document.getElementById('results').style.display = 'block';
-        // Плавный скролл к результатам
         document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Запускаем отрисовку при загрузке страницы
     window.onload = renderPlayers;
 </script>
 
