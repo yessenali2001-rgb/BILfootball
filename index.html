@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ақтөбе БИЛ - Жеребьевка и Динамический Рейтинг</title>
+    <title>Футбольная Лига - Жеребьевка и Онлайн Рейтинг</title>
     <style>
         :root {
             --primary: #27ae60;
@@ -24,15 +24,8 @@
             padding: 20px;
         }
 
-        .container {
-            max-width: 650px;
-            margin: 0 auto;
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: var(--text-dark);
-        }
+        .container { max-width: 650px; margin: 0 auto; }
+        h1, h2 { text-align: center; color: var(--text-dark); }
 
         .card {
             background: var(--card-bg);
@@ -49,35 +42,13 @@
             padding: 10px 0;
             border-bottom: 1px solid #eee;
         }
+        .player-item:last-child { border-bottom: none; }
 
-        .player-item:last-child {
-            border-bottom: none;
-        }
+        .player-info { display: flex; align-items: center; gap: 10px; }
+        .player-info input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+        .player-name { font-size: 16px; font-weight: 500; }
 
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .player-info input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-
-        .player-name {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .player-rating-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .player-rating-container { display: flex; align-items: center; gap: 8px; }
         .player-rating {
             background: #e8f8f5;
             color: var(--primary);
@@ -87,26 +58,13 @@
             font-weight: bold;
         }
 
-        .rating-change {
-            font-size: 12px;
-            font-weight: bold;
-        }
+        .rating-change { font-size: 12px; font-weight: bold; }
         .rating-up { color: var(--up-color); }
         .rating-down { color: var(--down-color); }
 
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 
-        select, input[type="number"], input[type="password"] {
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            font-size: 14px;
-        }
+        select, input[type="number"] { padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 14px; }
 
         button {
             background-color: var(--primary);
@@ -121,10 +79,7 @@
             transition: background 0.2s;
             margin-top: 10px;
         }
-
-        button:hover {
-            background-color: var(--primary-hover);
-        }
+        button:hover { background-color: var(--primary-hover); }
 
         .btn-update { background-color: #3498db; }
         .btn-update:hover { background-color: #2980b9; }
@@ -132,12 +87,7 @@
         .btn-reset { background-color: #e74c3c; margin-top: 15px; }
         .btn-reset:hover { background-color: #c0392b; }
 
-        .btn-admin {
-            background-color: #7f8c8d;
-            font-size: 13px;
-            padding: 8px;
-            margin-bottom: 10px;
-        }
+        .btn-admin { background-color: #7f8c8d; font-size: 13px; padding: 8px; margin-bottom: 10px; }
 
         .match-row {
             display: grid;
@@ -148,11 +98,6 @@
             background: #fafafa;
             border-radius: 6px;
             margin-bottom: 6px;
-        }
-
-        .match-row span {
-            font-size: 14px;
-            font-weight: 500;
         }
 
         #results { display: none; }
@@ -166,33 +111,13 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .team-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 17px;
-        }
-
+        .team-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 17px; }
         .team-stats { color: var(--text-light); font-size: 14px; }
-
-        .team-members {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .team-members li {
-            padding: 5px 0;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px dashed #eee;
-        }
-        .team-members li:last-child { border-bottom: none; }
+        .team-members { list-style: none; padding: 0; margin: 0; }
+        .team-members li { padding: 5px 0; font-size: 14px; display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; }
 
         #adminSection { display: none; }
+        #loading { text-align: center; color: var(--text-light); padding: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -200,9 +125,9 @@
 <div class="container">
     <h1>⚽ Жеребьевка и Динамический Рейтинг</h1>
 
-    <!-- РЕЙТИНГ И ЖЕРЕБЬЕВКА -->
     <div class="card">
         <h2>📊 Текущий рейтинг игроков</h2>
+        <div id="loading">📡 Загрузка актуальных данных из облака...</div>
         
         <div class="controls">
             <label for="numTeams">Количество команд:</label>
@@ -222,13 +147,11 @@
         <button onclick="generateAndDisplayTeams()">🎲 Сгенерировать команды</button>
     </div>
 
-    <!-- РЕЗУЛЬТАТ ЖЕРЕБЬЕВКИ -->
     <div id="results" class="card">
         <h2>Результат жеребьевки</h2>
         <div id="teamsContainer"></div>
     </div>
 
-    <!-- АДМИН ПАНЕЛЬ -->
     <div class="card">
         <button onclick="toggleAdminLogin()" class="btn-admin">🔒 Режим администратора (Вход)</button>
 
@@ -245,9 +168,11 @@
 </div>
 
 <script>
-    const ADMIN_PASSWORD = "1236"; // 🔑 Админ паролі
+    // 🔑 Барлық баптаулар орнатылды
+    const ADMIN_PASSWORD = "1236"; 
+    const JSONBIN_SECRET_KEY = "$2a$10$0FGDX7dsWl2FASw5di3t6uUpkYvs3FOd7L8Z5yge4J/WqwhkE2H1u"; 
+    const JSONBIN_BIN_ID = "6a857c74f5f4af5e2927f651";
 
-    // Бастапқы фундаментальды база
     const defaultPlayers = [
         { id: 1, name: "Рустем ағай", rating: 8.0, lastDiff: 0 },
         { id: 2, name: "Нағашбек ағай", rating: 7.0, lastDiff: 0 },
@@ -274,19 +199,46 @@
 
     let players = [];
 
-    // localStorage-дан жүктеу немесе дефолттық базаны алу
-    function loadPlayersData() {
-        const savedData = localStorage.getItem('football_league_players');
-        if (savedData) {
-            players = JSON.parse(savedData);
-        } else {
+    async function loadPlayersData() {
+        document.getElementById('loading').style.display = 'block';
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                headers: { "X-Master-Key": JSONBIN_SECRET_KEY }
+            });
+            const data = await res.json();
+            if (data.record && Array.isArray(data.record) && data.record.length > 0) {
+                players = data.record;
+            } else {
+                players = JSON.parse(JSON.stringify(defaultPlayers));
+            }
+        } catch (e) {
+            console.error("Ошибка загрузки данных:", e);
             players = JSON.parse(JSON.stringify(defaultPlayers));
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+            renderPlayers();
         }
     }
 
-    // localStorage-қа сақтау
-    function savePlayersData() {
-        localStorage.setItem('football_league_players', JSON.stringify(players));
+    async function savePlayersData() {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('loading').innerText = "💾 Сохранение данных в облако...";
+        try {
+            await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Master-Key": JSONBIN_SECRET_KEY
+                },
+                body: JSON.stringify(players)
+            });
+            alert("Рейтинг успешно обновлен и доступен всем!");
+        } catch (e) {
+            alert("Ошибка при сохранении в облако!");
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+            renderPlayers();
+        }
     }
 
     function renderPlayers() {
@@ -364,7 +316,7 @@
         });
     }
 
-    function submitMatchResults() {
+    async function submitMatchResults() {
         let updatedCount = 0;
 
         players.forEach(p => {
@@ -380,7 +332,7 @@
             updatedCount++;
             let diff = 0;
 
-            diff += 0.05; // Келгені үшін бонус
+            diff += 0.05;
             if (result === "win") diff += 0.15;
             if (result === "loss") diff -= 0.15;
 
@@ -396,19 +348,15 @@
             return;
         }
 
-        savePlayersData(); // Жаңа рейтингті localStorage-қа сақтау
-        renderPlayers();
+        await savePlayersData();
         renderMatchForm();
-        alert("Рейтинг успешно обновлен и сохранен!");
     }
 
-    function resetRatingsToDefault() {
+    async function resetRatingsToDefault() {
         if (confirm("Вы уверены, что хотите сбросить все рейтинги до исходного состояния?")) {
             players = JSON.parse(JSON.stringify(defaultPlayers));
-            savePlayersData();
-            renderPlayers();
+            await savePlayersData();
             renderMatchForm();
-            alert("Рейтинг сброшен!");
         }
     }
 
@@ -491,10 +439,7 @@
         document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 
-    window.onload = () => {
-        loadPlayersData();
-        renderPlayers();
-    };
+    window.onload = loadPlayersData;
 </script>
 
 </body>
