@@ -168,8 +168,9 @@
 </div>
 
 <script>
-    const ADMIN_PASSWORD = "1236"; 
-    const JSONBIN_SECRET_KEY = "$2a$10$0FGDX7dsWl2FASw5di3t6uUpkYvs3FOd7L8Z5yge4J/WqwhkE2H1u"; 
+    const ADMIN_PASSWORD = "1238"; 
+    const JSONBIN_MASTER_KEY = "$2a$10$0FGDX7dsWl2FASw5di3t6uUpkYvs3FOd7L8Z5yge4J/WqwhkE2H1u"; 
+    const JSONBIN_ACCESS_KEY = "$2a$10$sJwyhPW8bWVBNcC8tvxPEObB7Dif4OBq8W1fJzGZLbZt45Wk9I9tm";
     const JSONBIN_BIN_ID = "6a857c74f5f4af5e2927f651";
 
     const defaultPlayers = [
@@ -183,7 +184,7 @@
         { id: 8, name: "Есенали ағай", rating: 6.0, lastDiff: 0 },
         { id: 9, name: "Қанат ағай", rating: 6.0, lastDiff: 0 },
         { id: 10, name: "Абдулуахид ағай", rating: 5.0, lastDiff: 0 },
-        { id: 11, name: "Аян ағай", rating: 4.0, lastDiff: 0 },
+        { id: 11, name: "Аян ағай", rating: 4.5, lastDiff: 0 },
         { id: 12, name: "Рамазан ағай", rating: 4.0, lastDiff: 0 },
         { id: 13, name: "Алихан ағай", rating: 3.0, lastDiff: 0 },
         { id: 14, name: "Тынышбек ағай", rating: 4.0, lastDiff: 0 },
@@ -202,7 +203,10 @@
         document.getElementById('loading').style.display = 'block';
         try {
             const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                headers: { "X-Master-Key": JSONBIN_SECRET_KEY }
+                headers: { 
+                    "X-Master-Key": JSONBIN_MASTER_KEY,
+                    "X-Access-Key": JSONBIN_ACCESS_KEY
+                }
             });
             const data = await res.json();
             if (data.record && Array.isArray(data.record) && data.record.length > 0) {
@@ -223,17 +227,23 @@
         document.getElementById('loading').style.display = 'block';
         document.getElementById('loading').innerText = "💾 Сохранение данных в облако...";
         try {
-            await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-Master-Key": JSONBIN_SECRET_KEY
+                    "X-Master-Key": JSONBIN_MASTER_KEY,
+                    "X-Access-Key": JSONBIN_ACCESS_KEY,
+                    "X-Bin-Versioning": "false"
                 },
                 body: JSON.stringify(players)
             });
-            alert("Рейтинг успешно обновлен и доступен всем!");
+            if (res.ok) {
+                alert("Рейтинг успешно обновлен и сохранен в облаке!");
+            } else {
+                alert("Ошибка сохранения! Проверьте ключи.");
+            }
         } catch (e) {
-            alert("Ошибка при сохранении в облако!");
+            alert("Ошибка сети при сохранении в облако!");
         } finally {
             document.getElementById('loading').style.display = 'none';
             renderPlayers();
@@ -331,14 +341,11 @@
             updatedCount++;
             let diff = 0;
 
-            // 1. Келгені үшін бонус (+0.05)
             diff += 0.05;
 
-            // 2. Командалық нәтиже (+0.1 / -0.1)
             if (result === "win") diff += 0.1;
             if (result === "loss") diff -= 0.1;
 
-            // 3. Жеке нәтиже (Гол: +0.01, Пас: +0.005)
             diff += (goals * 0.01);
             diff += (assists * 0.005);
 
