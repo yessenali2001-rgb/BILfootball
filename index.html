@@ -158,7 +158,7 @@
         <div id="adminSection">
             <h2>📝 Внести результаты матча</h2>
             <p style="font-size: 13px; color: #7f8c8d; margin-bottom: 15px;">
-                Участие (+0.05), Победа (+0.15), Поражение (-0.15), Ничья (0.00). Гол (+0.10), Пас (+0.05).
+                Участие (+0.05), Победа (+0.1), Поражение (-0.1), Ничья (0.00). Гол (+0.01), Пас (+0.005).
             </p>
             <div id="matchForm"></div>
             <button onclick="submitMatchResults()" class="btn-update">🔄 Обновить рейтинг по итогам матча</button>
@@ -168,7 +168,6 @@
 </div>
 
 <script>
-    // 🔑 Барлық баптаулар орнатылды
     const ADMIN_PASSWORD = "1236"; 
     const JSONBIN_SECRET_KEY = "$2a$10$0FGDX7dsWl2FASw5di3t6uUpkYvs3FOd7L8Z5yge4J/WqwhkE2H1u"; 
     const JSONBIN_BIN_ID = "6a857c74f5f4af5e2927f651";
@@ -253,9 +252,9 @@
             
             let diffHtml = '';
             if (player.lastDiff > 0) {
-                diffHtml = `<span class="rating-change rating-up">(+${player.lastDiff.toFixed(2)} ⬆️)</span>`;
+                diffHtml = `<span class="rating-change rating-up">(+${player.lastDiff.toFixed(3)} ⬆️)</span>`;
             } else if (player.lastDiff < 0) {
-                diffHtml = `<span class="rating-change rating-down">(${player.lastDiff.toFixed(2)} 🔻)</span>`;
+                diffHtml = `<span class="rating-change rating-down">(${player.lastDiff.toFixed(3)} 🔻)</span>`;
             }
 
             div.innerHTML = `
@@ -265,7 +264,7 @@
                 </div>
                 <div class="player-rating-container">
                     ${diffHtml}
-                    <div class="player-rating">⭐ ${player.rating.toFixed(2)}</div>
+                    <div class="player-rating">⭐ ${player.rating.toFixed(3)}</div>
                 </div>
             `;
             list.appendChild(div);
@@ -305,9 +304,9 @@
                 <span>${p.name}</span>
                 <select id="result_${p.id}">
                     <option value="none">Не играл</option>
-                    <option value="win">Победа (+0.15)</option>
+                    <option value="win">Победа (+0.10)</option>
                     <option value="draw">Ничья (0.00)</option>
-                    <option value="loss">Поражение (-0.15)</option>
+                    <option value="loss">Поражение (-0.10)</option>
                 </select>
                 <input type="number" id="goals_${p.id}" placeholder="Голы" min="0" value="0">
                 <input type="number" id="assists_${p.id}" placeholder="Пасы" min="0" value="0">
@@ -332,12 +331,16 @@
             updatedCount++;
             let diff = 0;
 
+            // 1. Келгені үшін бонус (+0.05)
             diff += 0.05;
-            if (result === "win") diff += 0.15;
-            if (result === "loss") diff -= 0.15;
 
-            diff += (goals * 0.10);
-            diff += (assists * 0.05);
+            // 2. Командалық нәтиже (+0.1 / -0.1)
+            if (result === "win") diff += 0.1;
+            if (result === "loss") diff -= 0.1;
+
+            // 3. Жеке нәтиже (Гол: +0.01, Пас: +0.005)
+            diff += (goals * 0.01);
+            diff += (assists * 0.005);
 
             p.lastDiff = diff;
             p.rating = Math.min(10, Math.max(0, p.rating + diff));
@@ -416,19 +419,19 @@
         container.innerHTML = '';
 
         teams.forEach(team => {
-            const avgRating = team.members.length > 0 ? (team.totalScore / team.members.length).toFixed(2) : 0;
+            const avgRating = team.members.length > 0 ? (team.totalScore / team.members.length).toFixed(3) : 0;
 
             let html = `
                 <div class="team-card">
                     <div class="team-header">
                         <span>${team.name} <span style="color:#7f8c8d; font-size:14px; font-weight:normal;">(${team.members.length} чел.)</span></span>
-                        <span class="team-stats">Сумма: ${team.totalScore.toFixed(2)} (Средн: ${avgRating})</span>
+                        <span class="team-stats">Сумма: ${team.totalScore.toFixed(3)} (Средн: ${avgRating})</span>
                     </div>
                     <ul class="team-members">
             `;
             
             team.members.forEach(member => {
-                html += `<li><span>${member.name}</span> <span>⭐ ${member.rating.toFixed(2)}</span></li>`;
+                html += `<li><span>${member.name}</span> <span>⭐ ${member.rating.toFixed(3)}</span></li>`;
             });
 
             html += `</ul></div>`;
