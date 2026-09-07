@@ -711,7 +711,11 @@
         let bestTeams = null;
         let bestScoreDiff = Infinity;
 
-        for (let iter = 0; iter < 200; iter++) {
+        // Рейтинг (мастерство) - главный критерий баланса, скорость лишь уточняет
+        // выбор между вариантами с одинаково хорошим балансом по рейтингу.
+        const RATING_WEIGHT = 5;
+
+        for (let iter = 0; iter < 500; iter++) {
             let shuffled = [...activePlayers].sort(() => Math.random() - 0.5);
 
             let tempTeams = Array.from({ length: numberOfTeams }, (_, i) => ({
@@ -727,7 +731,7 @@
                     if (a.members.length !== b.members.length) {
                         return a.members.length - b.members.length;
                     }
-                    return (a.totalScore + a.totalSpeed) - (b.totalScore + b.totalSpeed);
+                    return a.totalScore - b.totalScore;
                 });
 
                 tempTeams[0].members.push(player);
@@ -739,7 +743,7 @@
             let speedAverages = tempTeams.map(t => t.totalSpeed / (t.members.length || 1));
             let ratingDiff = Math.max(...ratingAverages) - Math.min(...ratingAverages);
             let speedDiff = Math.max(...speedAverages) - Math.min(...speedAverages);
-            let diff = ratingDiff + speedDiff;
+            let diff = ratingDiff * RATING_WEIGHT + speedDiff;
 
             if (diff < bestScoreDiff) {
                 bestScoreDiff = diff;
