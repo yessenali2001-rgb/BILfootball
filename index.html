@@ -223,7 +223,7 @@
         .manage-row-header { display: flex; align-items: center; gap: 8px; }
         .manage-row-header input[type="text"] { flex: 1; min-width: 0; }
 
-        .manage-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .manage-fields { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
         .manage-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
         .manage-field label {
             font-size: 10px;
@@ -360,7 +360,7 @@
             <hr class="section-divider">
             <h2>👥 Управление списком игроков</h2>
             <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">
-                Скорость рассчитывается автоматически по весу и росту игрока.
+                Скорость рассчитывается автоматически по весу, росту и возрасту игрока.
             </p>
             <div id="manageList"></div>
             <div class="add-player-card">
@@ -369,6 +369,7 @@
                     <div class="manage-field"><label>⭐ Рейтинг</label><input type="number" id="newPlayerRating" min="0" max="10" step="0.1" value="5"></div>
                     <div class="manage-field"><label>⚖️ Вес, кг</label><input type="number" id="newPlayerWeight" min="20" max="200" step="1" value="75"></div>
                     <div class="manage-field"><label>📏 Рост, см</label><input type="number" id="newPlayerHeight" min="100" max="230" step="1" value="175"></div>
+                    <div class="manage-field"><label>🎂 Возраст</label><input type="number" id="newPlayerAge" min="10" max="70" step="1" value="25"></div>
                 </div>
                 <button onclick="addNewPlayer()" class="btn-add-player">➕ Добавить игрока</button>
             </div>
@@ -382,37 +383,44 @@
     const NPOINT_BIN_ID = "7be4626304af0c7cf44b"; 
 
     const defaultPlayers = [
-        { id: 1, name: "Рустем ағай", rating: 8.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 2, name: "Нағашбек ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 3, name: "Сержан ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 4, name: "Аймырза ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 5, name: "Абылайхан ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 6, name: "Нұрхан ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 7, name: "Ерасыл ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 8, name: "Есенали ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 9, name: "Қанат ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 10, name: "Абдулуахид ағай", rating: 5.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 11, name: "Аян ағай", rating: 4.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 12, name: "Рамазан ағай", rating: 4.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 13, name: "Алихан ағай", rating: 3.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 14, name: "Тынышбек ағай", rating: 4.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 15, name: "Ерген ағай", rating: 5.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 16, name: "Айбол ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 17, name: "Абылай ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 18, name: "Ануарбек ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 19, name: "Еркебұлан ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 20, name: "Нұрдаулет ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175 },
-        { id: 21, name: "Мұрат ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175 }
+        { id: 1, name: "Рустем ағай", rating: 8.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 2, name: "Нағашбек ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 3, name: "Сержан ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 4, name: "Аймырза ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 5, name: "Абылайхан ағай", rating: 7.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 6, name: "Нұрхан ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 7, name: "Ерасыл ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 8, name: "Есенали ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 9, name: "Қанат ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 10, name: "Абдулуахид ағай", rating: 5.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 11, name: "Аян ағай", rating: 4.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 12, name: "Рамазан ағай", rating: 4.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 13, name: "Алихан ағай", rating: 3.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 14, name: "Тынышбек ағай", rating: 4.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 15, name: "Ерген ағай", rating: 5.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 16, name: "Айбол ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 17, name: "Абылай ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 18, name: "Ануарбек ағай", rating: 6.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 19, name: "Еркебұлан ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 20, name: "Нұрдаулет ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175, age: 25 },
+        { id: 21, name: "Мұрат ағай", rating: 0.0, lastDiff: 0, weight: 75, height: 175, age: 25 }
     ];
 
     let players = [];
 
-    function calculateSpeed(weight, height) {
+    function calculateSpeed(weight, height, age) {
         if (!weight || !height) return 5;
         const heightM = height / 100;
         const bmi = weight / (heightM * heightM);
         const idealBmi = 22;
-        const speed = 10 - Math.abs(bmi - idealBmi) * 0.6;
+        let speed = 10 - Math.abs(bmi - idealBmi) * 0.6;
+
+        // После ~25 лет (физический пик) скорость постепенно снижается с возрастом
+        const peakAge = 25;
+        if (age && age > peakAge) {
+            speed -= (age - peakAge) * 0.05;
+        }
+
         return Math.min(10, Math.max(1, speed));
     }
 
@@ -452,6 +460,7 @@
             players.forEach(p => {
                 if (typeof p.weight !== 'number' || isNaN(p.weight)) p.weight = 75;
                 if (typeof p.height !== 'number' || isNaN(p.height)) p.height = 175;
+                if (typeof p.age !== 'number' || isNaN(p.age)) p.age = 25;
             });
             document.getElementById('loading').style.display = 'none';
             renderPlayers();
@@ -506,7 +515,7 @@
                 </div>
                 <div class="player-rating-container">
                     ${diffHtml}
-                    <div class="player-speed" style="${speedBadgeStyle(calculateSpeed(player.weight, player.height))}">⚡ ${calculateSpeed(player.weight, player.height).toFixed(1)}</div>
+                    <div class="player-speed" style="${speedBadgeStyle(calculateSpeed(player.weight, player.height, player.age))}">⚡ ${calculateSpeed(player.weight, player.height, player.age).toFixed(1)}</div>
                     <div class="player-rating">⭐ ${player.rating.toFixed(3)}</div>
                 </div>
             `;
@@ -557,8 +566,9 @@
                     <div class="manage-field"><label>⭐ Рейтинг</label><input type="number" id="rating_${p.id}" value="${p.rating}" min="0" max="10" step="0.1"></div>
                     <div class="manage-field"><label>⚖️ Вес, кг</label><input type="number" id="weight_${p.id}" value="${p.weight}" min="20" max="200" step="1" oninput="updateManageSpeedHint(${p.id})"></div>
                     <div class="manage-field"><label>📏 Рост, см</label><input type="number" id="height_${p.id}" value="${p.height}" min="100" max="230" step="1" oninput="updateManageSpeedHint(${p.id})"></div>
+                    <div class="manage-field"><label>🎂 Возраст</label><input type="number" id="age_${p.id}" value="${p.age}" min="10" max="70" step="1" oninput="updateManageSpeedHint(${p.id})"></div>
                 </div>
-                <div class="manage-speed-hint">Расчётная скорость: <span id="speedHint_${p.id}" style="${speedTextStyle(calculateSpeed(p.weight, p.height))}">⚡ ${calculateSpeed(p.weight, p.height).toFixed(1)}</span></div>
+                <div class="manage-speed-hint">Расчётная скорость: <span id="speedHint_${p.id}" style="${speedTextStyle(calculateSpeed(p.weight, p.height, p.age))}">⚡ ${calculateSpeed(p.weight, p.height, p.age).toFixed(1)}</span></div>
             `;
             container.appendChild(div);
         });
@@ -567,9 +577,10 @@
     function updateManageSpeedHint(id) {
         const weightEl = document.getElementById(`weight_${id}`);
         const heightEl = document.getElementById(`height_${id}`);
+        const ageEl = document.getElementById(`age_${id}`);
         const hintEl = document.getElementById(`speedHint_${id}`);
-        if (!weightEl || !heightEl || !hintEl) return;
-        const speed = calculateSpeed(parseFloat(weightEl.value), parseFloat(heightEl.value));
+        if (!weightEl || !heightEl || !ageEl || !hintEl) return;
+        const speed = calculateSpeed(parseFloat(weightEl.value), parseFloat(heightEl.value), parseFloat(ageEl.value));
         hintEl.textContent = `⚡ ${speed.toFixed(1)}`;
         hintEl.setAttribute('style', speedTextStyle(speed));
     }
@@ -579,10 +590,12 @@
         const ratingInput = document.getElementById('newPlayerRating');
         const weightInput = document.getElementById('newPlayerWeight');
         const heightInput = document.getElementById('newPlayerHeight');
+        const ageInput = document.getElementById('newPlayerAge');
         const name = nameInput.value.trim();
         const rating = parseFloat(ratingInput.value);
         const weight = parseFloat(weightInput.value);
         const height = parseFloat(heightInput.value);
+        const age = parseFloat(ageInput.value);
 
         if (!name) {
             alert("Введите имя игрока!");
@@ -600,14 +613,19 @@
             alert("Введите корректный рост (от 100 до 230 см)!");
             return;
         }
+        if (isNaN(age) || age < 10 || age > 70) {
+            alert("Введите корректный возраст (от 10 до 70 лет)!");
+            return;
+        }
 
         const maxId = players.reduce((max, p) => Math.max(max, p.id), 0);
-        players.push({ id: maxId + 1, name, rating, lastDiff: 0, weight, height });
+        players.push({ id: maxId + 1, name, rating, lastDiff: 0, weight, height, age });
 
         nameInput.value = '';
         ratingInput.value = '5';
         weightInput.value = '75';
         heightInput.value = '175';
+        ageInput.value = '25';
         renderManageList();
     }
 
@@ -626,6 +644,7 @@
             const ratingEl = document.getElementById(`rating_${p.id}`);
             const weightEl = document.getElementById(`weight_${p.id}`);
             const heightEl = document.getElementById(`height_${p.id}`);
+            const ageEl = document.getElementById(`age_${p.id}`);
             if (nameEl) {
                 const newName = nameEl.value.trim();
                 if (newName) p.name = newName;
@@ -641,6 +660,10 @@
             if (heightEl) {
                 const newHeight = parseFloat(heightEl.value);
                 if (!isNaN(newHeight)) p.height = Math.min(230, Math.max(100, newHeight));
+            }
+            if (ageEl) {
+                const newAge = parseFloat(ageEl.value);
+                if (!isNaN(newAge)) p.age = Math.min(70, Math.max(10, newAge));
             }
         });
 
@@ -725,7 +748,7 @@
         }
 
         let activePlayers = players.filter(p => selectedIds.includes(p.id))
-            .map(p => ({ ...p, calcSpeed: calculateSpeed(p.weight, p.height) }));
+            .map(p => ({ ...p, calcSpeed: calculateSpeed(p.weight, p.height, p.age) }));
         const numberOfTeams = parseInt(document.getElementById('numTeams').value);
 
         let bestTeams = null;
