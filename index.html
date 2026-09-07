@@ -416,6 +416,25 @@
         return Math.min(10, Math.max(1, speed));
     }
 
+    function speedHue(speed) {
+        const clamped = Math.max(1, Math.min(10, speed));
+        return Math.round(((clamped - 1) / 9) * 120); // 1 -> красный (0°), 10 -> зелёный (120°)
+    }
+
+    function speedBadgeStyle(speed) {
+        const hue = speedHue(speed);
+        const isDark = document.body.classList.contains('theme-dark');
+        const bgLightness = isDark ? 22 : 90;
+        const textLightness = isDark ? 68 : 34;
+        return `background: hsl(${hue}, 65%, ${bgLightness}%); color: hsl(${hue}, 75%, ${textLightness}%); box-shadow: inset 0 0 0 1px hsla(${hue}, 70%, 45%, 0.25);`;
+    }
+
+    function speedTextStyle(speed) {
+        const hue = speedHue(speed);
+        const isDark = document.body.classList.contains('theme-dark');
+        return `color: hsl(${hue}, 70%, ${isDark ? 62 : 40}%);`;
+    }
+
     async function loadPlayersData() {
         document.getElementById('loading').style.display = 'block';
         try {
@@ -487,7 +506,7 @@
                 </div>
                 <div class="player-rating-container">
                     ${diffHtml}
-                    <div class="player-speed">⚡ ${calculateSpeed(player.weight, player.height).toFixed(1)}</div>
+                    <div class="player-speed" style="${speedBadgeStyle(calculateSpeed(player.weight, player.height))}">⚡ ${calculateSpeed(player.weight, player.height).toFixed(1)}</div>
                     <div class="player-rating">⭐ ${player.rating.toFixed(3)}</div>
                 </div>
             `;
@@ -539,7 +558,7 @@
                     <div class="manage-field"><label>⚖️ Вес, кг</label><input type="number" id="weight_${p.id}" value="${p.weight}" min="20" max="200" step="1" oninput="updateManageSpeedHint(${p.id})"></div>
                     <div class="manage-field"><label>📏 Рост, см</label><input type="number" id="height_${p.id}" value="${p.height}" min="100" max="230" step="1" oninput="updateManageSpeedHint(${p.id})"></div>
                 </div>
-                <div class="manage-speed-hint">Расчётная скорость: <span id="speedHint_${p.id}">⚡ ${calculateSpeed(p.weight, p.height).toFixed(1)}</span></div>
+                <div class="manage-speed-hint">Расчётная скорость: <span id="speedHint_${p.id}" style="${speedTextStyle(calculateSpeed(p.weight, p.height))}">⚡ ${calculateSpeed(p.weight, p.height).toFixed(1)}</span></div>
             `;
             container.appendChild(div);
         });
@@ -552,6 +571,7 @@
         if (!weightEl || !heightEl || !hintEl) return;
         const speed = calculateSpeed(parseFloat(weightEl.value), parseFloat(heightEl.value));
         hintEl.textContent = `⚡ ${speed.toFixed(1)}`;
+        hintEl.setAttribute('style', speedTextStyle(speed));
     }
 
     function addNewPlayer() {
@@ -794,6 +814,11 @@
         const newTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
         try { localStorage.setItem('theme', newTheme); } catch (e) {}
         applyTheme(newTheme);
+
+        // Бейджи скорости считают цвет по текущей теме в момент рендера,
+        // поэтому после переключения темы их нужно перерисовать.
+        if (players.length > 0) renderPlayers();
+        if (document.getElementById('adminSection').style.display === 'block') renderManageList();
     }
 
     window.onload = function() {
