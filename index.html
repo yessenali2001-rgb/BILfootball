@@ -751,14 +751,12 @@
             .map(p => ({ ...p, calcSpeed: calculateSpeed(p.weight, p.height, p.age) }));
         const numberOfTeams = parseInt(document.getElementById('numTeams').value);
 
-        let bestTeams = null;
-        let bestScoreDiff = Infinity;
+        // Рейтинг (мастерство) - главный критерий баланса. Сначала ищем среди
+        // случайных вариантов те, что дают практически лучший баланс по рейтингу,
+        // а затем среди них выбираем тот, где ровнее скорость.
+        let attempts = [];
 
-        // Рейтинг (мастерство) - главный критерий баланса, скорость лишь уточняет
-        // выбор между вариантами с одинаково хорошим балансом по рейтингу.
-        const RATING_WEIGHT = 5;
-
-        for (let iter = 0; iter < 500; iter++) {
+        for (let iter = 0; iter < 5000; iter++) {
             let shuffled = [...activePlayers].sort(() => Math.random() - 0.5);
 
             let tempTeams = Array.from({ length: numberOfTeams }, (_, i) => ({
@@ -786,14 +784,16 @@
             let speedAverages = tempTeams.map(t => t.totalSpeed / (t.members.length || 1));
             let ratingDiff = Math.max(...ratingAverages) - Math.min(...ratingAverages);
             let speedDiff = Math.max(...speedAverages) - Math.min(...speedAverages);
-            let diff = ratingDiff * RATING_WEIGHT + speedDiff;
 
-            if (diff < bestScoreDiff) {
-                bestScoreDiff = diff;
-                bestTeams = tempTeams;
-            }
+            attempts.push({ tempTeams, ratingDiff, speedDiff });
         }
 
+        const bestRatingDiff = Math.min(...attempts.map(a => a.ratingDiff));
+        const RATING_TOLERANCE = 0.15;
+        const goodRatingAttempts = attempts.filter(a => a.ratingDiff <= bestRatingDiff + RATING_TOLERANCE);
+        goodRatingAttempts.sort((a, b) => a.speedDiff - b.speedDiff);
+
+        let bestTeams = goodRatingAttempts[0].tempTeams;
         bestTeams.sort((a, b) => a.id - b.id);
         renderTeams(bestTeams);
     }
