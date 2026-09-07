@@ -89,6 +89,37 @@
 
         .btn-admin { background-color: #7f8c8d; font-size: 13px; padding: 8px; margin-bottom: 10px; }
 
+        .section-divider { margin: 20px 0; border: none; border-top: 1px solid #eee; }
+
+        .manage-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 8px;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .add-player-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 8px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .btn-remove-player, .btn-add-player {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+        }
+        .btn-add-player { background: var(--primary); }
+
         .match-row {
             display: grid;
             grid-template-columns: 2fr 1.5fr 1fr 1fr;
@@ -163,6 +194,16 @@
             <div id="matchForm"></div>
             <button onclick="submitMatchResults()" class="btn-update">🔄 Обновить рейтинг по итогам матча</button>
             <button onclick="resetRatingsToDefault()" class="btn-reset">⚠️ Сбросить рейтинг до исходного</button>
+
+            <hr class="section-divider">
+            <h2>👥 Управление списком игроков</h2>
+            <div id="manageList"></div>
+            <div class="add-player-row">
+                <input type="text" id="newPlayerName" placeholder="Имя нового игрока">
+                <input type="number" id="newPlayerRating" placeholder="Рейтинг" min="0" max="10" step="0.1" value="5">
+                <button onclick="addNewPlayer()" class="btn-add-player">➕</button>
+            </div>
+            <button onclick="savePlayerList()" class="btn-update">💾 Сохранить список игроков</button>
         </div>
     </div>
 </div>
@@ -288,9 +329,81 @@
         if (pass === ADMIN_PASSWORD) {
             adminSection.style.display = "block";
             renderMatchForm();
+            renderManageList();
         } else if (pass !== null) {
             alert("Неверный пароль!");
         }
+    }
+
+    function escapeHtml(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderManageList() {
+        const container = document.getElementById('manageList');
+        container.innerHTML = '';
+
+        players.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'manage-row';
+            div.innerHTML = `
+                <input type="text" id="name_${p.id}" value="${escapeHtml(p.name)}">
+                <input type="number" id="rating_${p.id}" value="${p.rating}" min="0" max="10" step="0.1">
+                <button onclick="removePlayer(${p.id})" class="btn-remove-player">🗑</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function addNewPlayer() {
+        const nameInput = document.getElementById('newPlayerName');
+        const ratingInput = document.getElementById('newPlayerRating');
+        const name = nameInput.value.trim();
+        const rating = parseFloat(ratingInput.value);
+
+        if (!name) {
+            alert("Введите имя игрока!");
+            return;
+        }
+        if (isNaN(rating) || rating < 0 || rating > 10) {
+            alert("Введите корректный рейтинг (от 0 до 10)!");
+            return;
+        }
+
+        const maxId = players.reduce((max, p) => Math.max(max, p.id), 0);
+        players.push({ id: maxId + 1, name, rating, lastDiff: 0 });
+
+        nameInput.value = '';
+        ratingInput.value = '5';
+        renderManageList();
+    }
+
+    function removePlayer(id) {
+        const player = players.find(p => p.id === id);
+        if (!player) return;
+        if (!confirm(`Удалить игрока "${player.name}" из списка?`)) return;
+
+        players = players.filter(p => p.id !== id);
+        renderManageList();
+    }
+
+    async function savePlayerList() {
+        players.forEach(p => {
+            const nameEl = document.getElementById(`name_${p.id}`);
+            const ratingEl = document.getElementById(`rating_${p.id}`);
+            if (nameEl) {
+                const newName = nameEl.value.trim();
+                if (newName) p.name = newName;
+            }
+            if (ratingEl) {
+                const newRating = parseFloat(ratingEl.value);
+                if (!isNaN(newRating)) p.rating = Math.min(10, Math.max(0, newRating));
+            }
+        });
+
+        await savePlayersData();
+        renderMatchForm();
+        renderManageList();
     }
 
     function renderMatchForm() {
