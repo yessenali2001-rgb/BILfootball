@@ -413,7 +413,7 @@
         const bmi = weight / (heightM * heightM);
         const idealBmi = 22;
         const speed = 10 - Math.abs(bmi - idealBmi) * 0.6;
-        return Math.min(10, Math.max(0, speed));
+        return Math.min(10, Math.max(1, speed));
     }
 
     async function loadPlayersData() {
