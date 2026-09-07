@@ -20,6 +20,39 @@
             --gold: #ffd54a;
             --silver: #d7dde3;
             --bronze: #e3a06b;
+            --border-color: #eef1f0;
+            --input-bg: #fbfdfc;
+            --input-border: #dfe6e2;
+            --row-bg: #f7faf8;
+            --hover-bg: #f6fbf8;
+            --rating-badge-start: #e6f9f0;
+            --rating-badge-end: #d3f2e3;
+            --rating-badge-text: var(--primary);
+            --speed-badge-start: #e6f0fb;
+            --speed-badge-end: #d3e6f7;
+            --speed-badge-text: #1e88e5;
+        }
+
+        body.theme-dark {
+            --bg-color: #0b1220;
+            --card-bg: #131b2c;
+            --text-dark: #e5e7eb;
+            --text-light: #94a3b8;
+            --border-color: #23304a;
+            --input-bg: #0f1830;
+            --input-border: #2a3652;
+            --row-bg: #182238;
+            --hover-bg: #17233a;
+            --rating-badge-start: #123524;
+            --rating-badge-end: #16432c;
+            --rating-badge-text: #4ade80;
+            --speed-badge-start: #12233a;
+            --speed-badge-end: #16304a;
+            --speed-badge-text: #60a5fa;
+        }
+
+        body.theme-dark {
+            background-image: repeating-linear-gradient(90deg, rgba(15,169,104,0.08) 0, rgba(15,169,104,0.08) 40px, transparent 40px, transparent 80px);
         }
 
         * { box-sizing: border-box; }
@@ -32,11 +65,13 @@
             color: var(--text-dark);
             margin: 0;
             padding: 0 16px 30px;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         .container { max-width: 650px; margin: 0 auto; }
 
         .hero {
+            position: relative;
             background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
             margin: 0 -16px 24px;
             padding: 32px 16px 26px;
@@ -44,6 +79,22 @@
             box-shadow: 0 10px 25px rgba(11,31,58,0.25);
             text-align: center;
         }
+
+        .theme-toggle {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            margin: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            box-shadow: none;
+            font-size: 18px;
+            line-height: 1;
+        }
+        .theme-toggle:hover { transform: none; background: rgba(255,255,255,0.22); box-shadow: none; }
         .hero h1 {
             color: #ffffff;
             font-size: 26px;
@@ -76,26 +127,38 @@
             align-items: center;
             justify-content: space-between;
             padding: 10px 6px;
-            border-bottom: 1px solid #eef1f0;
+            border-bottom: 1px solid var(--border-color);
             border-radius: 8px;
             transition: background 0.15s;
         }
-        .player-item:hover { background: #f6fbf8; }
+        .player-item:hover { background: var(--hover-bg); }
         .player-item:last-child { border-bottom: none; }
 
         .player-info { display: flex; align-items: center; gap: 10px; }
         .player-info input[type="checkbox"] { width: 19px; height: 19px; cursor: pointer; accent-color: var(--primary); }
         .player-name { font-size: 16px; font-weight: 500; }
 
-        .player-rating-container { display: flex; align-items: center; gap: 8px; }
+        .player-rating-container { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
         .player-rating {
-            background: linear-gradient(135deg, #e6f9f0, #d3f2e3);
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--rating-badge-start), var(--rating-badge-end));
+            color: var(--rating-badge-text);
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: bold;
             box-shadow: inset 0 0 0 1px rgba(15,169,104,0.15);
+            white-space: nowrap;
+        }
+
+        .player-speed {
+            background: linear-gradient(135deg, var(--speed-badge-start), var(--speed-badge-end));
+            color: var(--speed-badge-text);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: inset 0 0 0 1px rgba(30,136,229,0.15);
+            white-space: nowrap;
         }
 
         .player-item:nth-child(1) .player-rating { background: linear-gradient(135deg, var(--gold), #fff4cf); color: #7a5b00; box-shadow: inset 0 0 0 1px rgba(122,91,0,0.2); }
@@ -111,9 +174,10 @@
         select, input[type="number"], input[type="text"] {
             padding: 9px 10px;
             border-radius: 8px;
-            border: 1.5px solid #dfe6e2;
+            border: 1.5px solid var(--input-border);
             font-size: 14px;
-            background: #fbfdfc;
+            background: var(--input-bg);
+            color: var(--text-dark);
         }
         select:focus, input:focus { outline: none; border-color: var(--primary); }
 
@@ -144,21 +208,31 @@
         .btn-admin { background: #556274; font-size: 13px; padding: 10px; margin-bottom: 10px; box-shadow: none; }
         .btn-admin:hover { transform: none; box-shadow: none; background: #3f4a58; }
 
-        .section-divider { margin: 22px 0; border: none; border-top: 2px dashed #e2e8e4; }
+        .section-divider { margin: 22px 0; border: none; border-top: 2px dashed var(--border-color); }
 
         .manage-row {
             display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 8px;
+            grid-template-columns: 1.6fr 0.8fr 0.8fr auto;
+            gap: 6px;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px dashed #eef1f0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .manage-header {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: none;
+            padding-bottom: 4px;
         }
 
         .add-player-row {
             display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 8px;
+            grid-template-columns: 1.6fr 0.8fr 0.8fr auto;
+            gap: 6px;
             align-items: center;
             margin-top: 10px;
         }
@@ -182,7 +256,7 @@
             gap: 8px;
             align-items: center;
             padding: 10px;
-            background: #f7faf8;
+            background: var(--row-bg);
             border-radius: 10px;
             margin-bottom: 6px;
             border-left: 3px solid var(--primary);
@@ -205,10 +279,11 @@
         .team-card.team-color-2 { border-left-color: var(--accent); }
         .team-card.team-color-3 { border-left-color: #8e44ad; }
 
-        .team-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 17px; }
-        .team-stats { color: var(--text-light); font-size: 14px; }
+        .team-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; font-weight: bold; font-size: 17px; gap: 10px; }
+        .team-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; color: var(--text-light); font-size: 13px; font-weight: normal; white-space: nowrap; }
         .team-members { list-style: none; padding: 0; margin: 0; }
-        .team-members li { padding: 6px 0; font-size: 14px; display: flex; justify-content: space-between; border-bottom: 1px dashed #eef1f0; }
+        .team-members li { padding: 6px 0; font-size: 14px; display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed var(--border-color); }
+        .team-members li .member-stats { color: var(--text-light); white-space: nowrap; }
         .team-members li:last-child { border-bottom: none; }
 
         #adminSection { display: none; }
@@ -216,9 +291,15 @@
     </style>
 </head>
 <body>
+<script>
+    try {
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('theme-dark');
+    } catch (e) {}
+</script>
 
 <div class="container">
     <div class="hero">
+        <button id="themeToggleBtn" class="theme-toggle" onclick="toggleTheme()">🌙</button>
         <h1>⚽ Жеребьевка и Динамический Рейтинг</h1>
         <div class="subtitle">Футбольная Лига</div>
     </div>
@@ -238,7 +319,7 @@
 
         <div id="playerList"></div>
 
-        <div style="margin-top: 15px; text-align: right; font-size: 14px; color: #7f8c8d;">
+        <div style="margin-top: 15px; text-align: right; font-size: 14px; color: var(--text-light);">
             Выбрано для жеребьевки: <span id="selectedCount">0</span>
         </div>
 
@@ -255,7 +336,7 @@
 
         <div id="adminSection">
             <h2>📝 Внести результаты матча</h2>
-            <p style="font-size: 13px; color: #7f8c8d; margin-bottom: 15px;">
+            <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">
                 Участие (+0.05), Победа (+0.1), Поражение (-0.1), Ничья (0.00). Гол (+0.01), Пас (+0.005).
             </p>
             <div id="matchForm"></div>
@@ -264,10 +345,14 @@
 
             <hr class="section-divider">
             <h2>👥 Управление списком игроков</h2>
+            <div class="manage-row manage-header">
+                <span>Имя</span><span>⭐ Рейтинг</span><span>⚡ Скорость</span><span></span>
+            </div>
             <div id="manageList"></div>
             <div class="add-player-row">
                 <input type="text" id="newPlayerName" placeholder="Имя нового игрока">
                 <input type="number" id="newPlayerRating" placeholder="Рейтинг" min="0" max="10" step="0.1" value="5">
+                <input type="number" id="newPlayerSpeed" placeholder="Скорость" min="0" max="10" step="0.1" value="5">
                 <button onclick="addNewPlayer()" class="btn-add-player">➕</button>
             </div>
             <button onclick="savePlayerList()" class="btn-update">💾 Сохранить список игроков</button>
@@ -280,27 +365,27 @@
     const NPOINT_BIN_ID = "7be4626304af0c7cf44b"; 
 
     const defaultPlayers = [
-        { id: 1, name: "Рустем ағай", rating: 8.0, lastDiff: 0 },
-        { id: 2, name: "Нағашбек ағай", rating: 7.0, lastDiff: 0 },
-        { id: 3, name: "Сержан ағай", rating: 7.0, lastDiff: 0 },
-        { id: 4, name: "Аймырза ағай", rating: 7.0, lastDiff: 0 },
-        { id: 5, name: "Абылайхан ағай", rating: 7.0, lastDiff: 0 },
-        { id: 6, name: "Нұрхан ағай", rating: 6.0, lastDiff: 0 },
-        { id: 7, name: "Ерасыл ағай", rating: 6.0, lastDiff: 0 },
-        { id: 8, name: "Есенали ағай", rating: 6.0, lastDiff: 0 },
-        { id: 9, name: "Қанат ағай", rating: 6.0, lastDiff: 0 },
-        { id: 10, name: "Абдулуахид ағай", rating: 5.0, lastDiff: 0 },
-        { id: 11, name: "Аян ағай", rating: 4.0, lastDiff: 0 },
-        { id: 12, name: "Рамазан ағай", rating: 4.0, lastDiff: 0 },
-        { id: 13, name: "Алихан ағай", rating: 3.0, lastDiff: 0 },
-        { id: 14, name: "Тынышбек ағай", rating: 4.0, lastDiff: 0 },
-        { id: 15, name: "Ерген ағай", rating: 5.0, lastDiff: 0 },
-        { id: 16, name: "Айбол ағай", rating: 0.0, lastDiff: 0 },
-        { id: 17, name: "Абылай ағай", rating: 0.0, lastDiff: 0 },
-        { id: 18, name: "Ануарбек ағай", rating: 6.0, lastDiff: 0 },
-        { id: 19, name: "Еркебұлан ағай", rating: 0.0, lastDiff: 0 },
-        { id: 20, name: "Нұрдаулет ағай", rating: 0.0, lastDiff: 0 },
-        { id: 21, name: "Мұрат ағай", rating: 0.0, lastDiff: 0 }
+        { id: 1, name: "Рустем ағай", rating: 8.0, lastDiff: 0, speed: 5.0 },
+        { id: 2, name: "Нағашбек ағай", rating: 7.0, lastDiff: 0, speed: 5.0 },
+        { id: 3, name: "Сержан ағай", rating: 7.0, lastDiff: 0, speed: 5.0 },
+        { id: 4, name: "Аймырза ағай", rating: 7.0, lastDiff: 0, speed: 5.0 },
+        { id: 5, name: "Абылайхан ағай", rating: 7.0, lastDiff: 0, speed: 5.0 },
+        { id: 6, name: "Нұрхан ағай", rating: 6.0, lastDiff: 0, speed: 5.0 },
+        { id: 7, name: "Ерасыл ағай", rating: 6.0, lastDiff: 0, speed: 5.0 },
+        { id: 8, name: "Есенали ағай", rating: 6.0, lastDiff: 0, speed: 5.0 },
+        { id: 9, name: "Қанат ағай", rating: 6.0, lastDiff: 0, speed: 5.0 },
+        { id: 10, name: "Абдулуахид ағай", rating: 5.0, lastDiff: 0, speed: 5.0 },
+        { id: 11, name: "Аян ағай", rating: 4.0, lastDiff: 0, speed: 5.0 },
+        { id: 12, name: "Рамазан ағай", rating: 4.0, lastDiff: 0, speed: 5.0 },
+        { id: 13, name: "Алихан ағай", rating: 3.0, lastDiff: 0, speed: 5.0 },
+        { id: 14, name: "Тынышбек ағай", rating: 4.0, lastDiff: 0, speed: 5.0 },
+        { id: 15, name: "Ерген ағай", rating: 5.0, lastDiff: 0, speed: 5.0 },
+        { id: 16, name: "Айбол ағай", rating: 0.0, lastDiff: 0, speed: 5.0 },
+        { id: 17, name: "Абылай ағай", rating: 0.0, lastDiff: 0, speed: 5.0 },
+        { id: 18, name: "Ануарбек ағай", rating: 6.0, lastDiff: 0, speed: 5.0 },
+        { id: 19, name: "Еркебұлан ағай", rating: 0.0, lastDiff: 0, speed: 5.0 },
+        { id: 20, name: "Нұрдаулет ағай", rating: 0.0, lastDiff: 0, speed: 5.0 },
+        { id: 21, name: "Мұрат ағай", rating: 0.0, lastDiff: 0, speed: 5.0 }
     ];
 
     let players = [];
@@ -319,6 +404,9 @@
             console.error("Ошибка загрузки данных:", e);
             players = JSON.parse(JSON.stringify(defaultPlayers));
         } finally {
+            players.forEach(p => {
+                if (typeof p.speed !== 'number' || isNaN(p.speed)) p.speed = 5.0;
+            });
             document.getElementById('loading').style.display = 'none';
             renderPlayers();
         }
@@ -372,6 +460,7 @@
                 </div>
                 <div class="player-rating-container">
                     ${diffHtml}
+                    <div class="player-speed">⚡ ${player.speed.toFixed(1)}</div>
                     <div class="player-rating">⭐ ${player.rating.toFixed(3)}</div>
                 </div>
             `;
@@ -416,6 +505,7 @@
             div.innerHTML = `
                 <input type="text" id="name_${p.id}" value="${escapeHtml(p.name)}">
                 <input type="number" id="rating_${p.id}" value="${p.rating}" min="0" max="10" step="0.1">
+                <input type="number" id="speed_${p.id}" value="${p.speed}" min="0" max="10" step="0.1">
                 <button onclick="removePlayer(${p.id})" class="btn-remove-player">🗑</button>
             `;
             container.appendChild(div);
@@ -425,8 +515,10 @@
     function addNewPlayer() {
         const nameInput = document.getElementById('newPlayerName');
         const ratingInput = document.getElementById('newPlayerRating');
+        const speedInput = document.getElementById('newPlayerSpeed');
         const name = nameInput.value.trim();
         const rating = parseFloat(ratingInput.value);
+        const speed = parseFloat(speedInput.value);
 
         if (!name) {
             alert("Введите имя игрока!");
@@ -436,12 +528,17 @@
             alert("Введите корректный рейтинг (от 0 до 10)!");
             return;
         }
+        if (isNaN(speed) || speed < 0 || speed > 10) {
+            alert("Введите корректную скорость (от 0 до 10)!");
+            return;
+        }
 
         const maxId = players.reduce((max, p) => Math.max(max, p.id), 0);
-        players.push({ id: maxId + 1, name, rating, lastDiff: 0 });
+        players.push({ id: maxId + 1, name, rating, lastDiff: 0, speed });
 
         nameInput.value = '';
         ratingInput.value = '5';
+        speedInput.value = '5';
         renderManageList();
     }
 
@@ -458,6 +555,7 @@
         players.forEach(p => {
             const nameEl = document.getElementById(`name_${p.id}`);
             const ratingEl = document.getElementById(`rating_${p.id}`);
+            const speedEl = document.getElementById(`speed_${p.id}`);
             if (nameEl) {
                 const newName = nameEl.value.trim();
                 if (newName) p.name = newName;
@@ -465,6 +563,10 @@
             if (ratingEl) {
                 const newRating = parseFloat(ratingEl.value);
                 if (!isNaN(newRating)) p.rating = Math.min(10, Math.max(0, newRating));
+            }
+            if (speedEl) {
+                const newSpeed = parseFloat(speedEl.value);
+                if (!isNaN(newSpeed)) p.speed = Math.min(10, Math.max(0, newSpeed));
             }
         });
 
@@ -561,7 +663,8 @@
                 id: i + 1,
                 name: `Команда ${String.fromCharCode(65 + i)}`,
                 members: [],
-                totalScore: 0
+                totalScore: 0,
+                totalSpeed: 0
             }));
 
             for (let player of shuffled) {
@@ -569,17 +672,19 @@
                     if (a.members.length !== b.members.length) {
                         return a.members.length - b.members.length;
                     }
-                    return a.totalScore - b.totalScore;
+                    return (a.totalScore + a.totalSpeed) - (b.totalScore + b.totalSpeed);
                 });
-                
+
                 tempTeams[0].members.push(player);
                 tempTeams[0].totalScore += player.rating;
+                tempTeams[0].totalSpeed += player.speed;
             }
 
-            let averages = tempTeams.map(t => t.totalScore / (t.members.length || 1));
-            let maxAvg = Math.max(...averages);
-            let minAvg = Math.min(...averages);
-            let diff = maxAvg - minAvg;
+            let ratingAverages = tempTeams.map(t => t.totalScore / (t.members.length || 1));
+            let speedAverages = tempTeams.map(t => t.totalSpeed / (t.members.length || 1));
+            let ratingDiff = Math.max(...ratingAverages) - Math.min(...ratingAverages);
+            let speedDiff = Math.max(...speedAverages) - Math.min(...speedAverages);
+            let diff = ratingDiff + speedDiff;
 
             if (diff < bestScoreDiff) {
                 bestScoreDiff = diff;
@@ -597,18 +702,19 @@
 
         teams.forEach((team, index) => {
             const avgRating = team.members.length > 0 ? (team.totalScore / team.members.length).toFixed(3) : 0;
+            const avgSpeed = team.members.length > 0 ? (team.totalSpeed / team.members.length).toFixed(1) : 0;
 
             let html = `
                 <div class="team-card team-color-${index % 4}">
                     <div class="team-header">
-                        <span>${team.name} <span style="color:#7f8c8d; font-size:14px; font-weight:normal;">(${team.members.length} чел.)</span></span>
-                        <span class="team-stats">Сумма: ${team.totalScore.toFixed(3)} (Средн: ${avgRating})</span>
+                        <span>${team.name} <span style="color:var(--text-light); font-size:14px; font-weight:normal;">(${team.members.length} чел.)</span></span>
+                        <span class="team-stats"><span>⭐ Средн: ${avgRating}</span><span>⚡ Средн: ${avgSpeed}</span></span>
                     </div>
                     <ul class="team-members">
             `;
-            
+
             team.members.forEach(member => {
-                html += `<li><span>${member.name}</span> <span>⭐ ${member.rating.toFixed(3)}</span></li>`;
+                html += `<li><span>${member.name}</span> <span class="member-stats">⭐ ${member.rating.toFixed(3)} &nbsp; ⚡ ${member.speed.toFixed(1)}</span></li>`;
             });
 
             html += `</ul></div>`;
@@ -619,7 +725,22 @@
         document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 
-    window.onload = loadPlayersData;
+    function applyTheme(theme) {
+        document.body.classList.toggle('theme-dark', theme === 'dark');
+        const btn = document.getElementById('themeToggleBtn');
+        if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+    function toggleTheme() {
+        const newTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
+        try { localStorage.setItem('theme', newTheme); } catch (e) {}
+        applyTheme(newTheme);
+    }
+
+    window.onload = function() {
+        applyTheme(document.body.classList.contains('theme-dark') ? 'dark' : 'light');
+        loadPlayersData();
+    };
 </script>
 
 </body>
