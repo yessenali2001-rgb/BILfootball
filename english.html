@@ -63,6 +63,7 @@ header.top { display: flex; align-items: center; justify-content: space-between;
 .sets { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
 .set { flex: 0 0 auto; border: 1px solid transparent; background: var(--chip); border-radius: 999px; padding: 6px 12px 6px 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; }
 .set[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.set small { opacity: .6; font-variant-numeric: tabular-nums; }
 .set .meter { width: 34px; height: 4px; border-radius: 2px; background: color-mix(in srgb, currentColor 22%, transparent); overflow: hidden; }
 .set .meter i { display: block; height: 100%; background: var(--mark); }
 
@@ -191,12 +192,1419 @@ footer { font-size: 12px; color: var(--ink-soft); text-align: center; }
 
   <main id="main"></main>
 
-  <footer>Интервальное повторение: слово, которое вы помните, вернётся через 1, 2, 4, 8, 16 дней. Прогресс хранится в этом браузере.</footer>
+  <footer>Уровни A1–B2: около 1400 слов с транскрипцией. Интервальное повторение: слово, которое вы помните, вернётся через 1, 2, 4, 8, 16 дней. Прогресс хранится в этом браузере.</footer>
 </div>
 
 <script>
 (() => {
+const LEVEL_DATA = {
+  a1: { name: "A1 Elementary", words: `
+be|tə biː|Быть||verb
+do|du|Делать||verb
+feel|fiːl|Чувствовать||verb
+see|siː|Видеть||verb
+hear|hɪər|Слышать||verb
+run|rʌn|Бежать||verb
+get|ɡet|Получать||verb
+make|meɪk|Сделать||verb
+cook|kʊk|Готовить||verb
+sing|sɪŋ|Петь||verb
+speak|spiːk|Разговаривать||verb
+say|seɪ|Говорить||verb
+tell|tel|Рассказывать||verb
+take|teɪk|Брать||verb
+sit|sɪt|Садиться||verb
+stand|stænd|Стоять||verb
+laugh|lɑːf|Смеяться||verb
+smile|smaɪl|Улыбаться||verb
+open|ˈəʊpən|Открывать||verb
+close|kləʊz|Закрывать||verb
+love|lʌv|Любить||verb
+like|laɪk|Нравиться||verb
+give|ɡɪv|Давать||verb
+bring|brɪŋ|Приносить||verb
+breath|breθ|Дышать||verb
+buy|baɪ|Покупать||verb
+sell|sel|Продавать||verb
+forget|fəˈɡet|Забывать||verb
+believe|bɪˈliːv|Верить||verb
+have|həv|Иметь||verb
+go|ɡəʊ|Идти||verb
+know|nəʊ|Знать||verb
+think|θɪŋk|Думать||verb
+come|kʌm|Приходить||verb
+want|wɒnt|Хотеть||verb
+use|juːz|Использовать||verb
+find|faɪnd|Находить||verb
+work|wɜːk|Работать||verb
+eat|iːt|Есть||verb
+drink|drɪŋk|Пить||verb
+write|raɪt|Писать||verb
+read|riːd|Читать||verb
+call|kɔːl|Звонить||verb
+try|traɪ|Пытаться||verb
+need|niːd|Нуждаться||verb
+become|bɪˈkʌm|Становиться||verb
+put|pʊt|Класть||verb
+leave|liːv|Оставлять||verb
+pay|peɪ|Платить||verb
+play|pleɪ|Играть||verb
+pray|preɪ|Молиться||verb
+stay|steɪ|Оставаться||verb
+mean|miːn|Означать||verb
+keep|kiːp|Держать, хранить||verb
+let|let|Оставлять||verb
+begin|bɪˈɡɪn|Начинать||verb
+start|stɑːt|Стартовать||verb
+finish|ˈfɪnɪʃ|Заканчивать||verb
+help|help|Помогать||verb
+show|ʃəʊ|Показывать||verb
+cry|kraɪ|Плакать||verb
+move|muːv|Двигаться||verb
+jump|dʒʌmp|Прыгать||verb
+live|lɪv|Жить||verb
+die|daɪ|Умирать||verb
+happen|ˈhæpən|Случаться||verb
+lose|luːz|Проигрывать||verb
+hate|heɪt|Ненавидеть||verb
+include|ɪnˈkluːd|Включать в себя||verb
+turn on|tɜːn ɒn|Включать (о приборе)||verb
+turn off|tɜːn ɒf|Выключать||verb
+continue|kənˈtɪnjuː|Продолжать||verb
+change|tʃeɪndʒ|Менять||verb
+wash|wɒʃ|Мыть||verb
+clean|kliːn|Убирать, очищать||verb
+lead|liːd|Вести||verb
+understand|ˌʌndəˈstænd|Понимать||verb
+watch|wɒtʃ|Смотреть||verb
+discover|dɪˈskʌvə(r)|Исследовать||verb
+imagine|ɪˈmædʒɪn|Представлять||verb
+introduce|ˌɪntrəˈdjuːs|Представить||verb
+follow|ˈfɒləʊ|Следовать||verb
+create|kriˈeɪt|Создавать||verb
+grow|ɡrəʊ|Расти||verb
+spend|spend|Тратить||verb
+win|wɪn|Выигрывать||verb
+offer|ˈɒfə(r)|Предлагать||verb
+learn|lɜːn|Изучать||verb
+appear|əˈpɪə(r)|Появляться||verb
+disappear|ˌdɪsəˈpɪə(r)|Исчезать||verb
+build|bɪld|Строить||verb
+break|breɪk|Ломать||verb
+send|send|Посылать||verb
+fall|fɔːl|Падать||verb
+cut|kʌt|Резать||verb
+achieve|əˈtʃiːv|Достигать||verb
+communicate|kəˈmjuːnɪkeɪt|Общаться||verb
+kill|kɪl|Убивать||verb
+pass|pɑːs|Проходить||verb
+fly|flaɪ|Летать||verb
+swim|swɪm|Плавать||verb
+decide|dɪˈsaɪd|Решать||verb
+return|rɪˈtɜːn|Возвращаться||verb
+hope|həʊp|Надеяться||verb
+explain|ɪkˈspleɪn|Объяснять||verb
+propose|prəˈpəʊz|Предлагать||verb
+develop|dɪˈveləp|Развивать||verb
+support|səˈpɔːt|Поддерживать||verb
+dance|dɑːns|Танцевать||verb
+draw|drɔː|Рисовать||verb
+book|bʊk|Бронировать||verb
+be afraid|bi əˈfreɪd|Бояться||verb
+agree|əˈɡriː|Соглашаться||verb
+check up|tʃek ʌp|Проверять||verb
+delete|dɪˈliːt|Удалять||verb
+choose|tʃuːz|Выбирать||verb
+catch|kætʃ|Ловить||verb
+ask|ɑːsk|Спрашивать||verb
+answer|ˈɑːnsə(r)|Отвечать||verb
+hesitate|ˈhezɪteɪt|Сомневаться||verb
+air|ən eə(r)|Воздух||noun
+wind|wɪnd|Ветер||noun
+water|ˈwɔːtə(r)|Вода||noun
+west|west|Запад||noun
+east|iːst|Восток||noun
+north|nɔːθ|Север||noun
+south|saʊθ|Юг||noun
+tree|triː|Дерево||noun
+sea|siː|Море||noun
+ocean|ˈəʊʃn|Океан||noun
+rock|rɒk|Скала||noun
+plant|plɑːnt|Растение||noun
+flower|ˈflaʊə(r)|Цветок||noun
+forest|ˈfɒrɪst|Лес||noun
+person|ˈpɜːsn|Личность||noun
+night|naɪt|Ночь||noun
+morning|ˈmɔːnɪŋ|Утро||noun
+day|deɪ|День||noun
+evening|ˈiːvnɪŋ|Вечер||noun
+life|laɪf|Жизнь||noun
+mountain|ˈmaʊntən|Гора||noun
+land|lænd|Земля||noun
+house|haʊs|Дом||noun
+fire|ˈfaɪə(r)|Огонь||noun
+country|ˈkʌntri|Страна||noun
+animal|ˈænɪml|Животное||noun
+bird|bɜːd|Птица||noun
+fish|fɪʃ|Рыба||noun
+insect|ˈɪnsekt|Насекомое||noun
+city|ˈsɪti|Город||noun
+world|wɜːld|Мир||noun
+boy|Мальчик|[bɔɪ]||noun
+girl|Девочка|[ɡɜːl]||noun
+mother|Мама|[ˈmʌðə(r)]||noun
+father|Отец|[ˈfɑːðə(r)]||noun
+son|Сын|[sʌn]||noun
+daughter|Дочь|[ˈdɔːtə(r)]||noun
+baby|Малыш|[ˈbeɪbi]||noun
+family|Семья|[ˈfæməli]||noun
+grand mother|Бабушка|[ɡrænd ˈməT͟Hər]||noun
+grand father|Дедушка|[ɡrænd ˈfɑːðə(r)]||noun
+children|Дети|[ˈtʃɪl.drən]||noun
+home|Дом|[həʊm]||noun
+apartment|Квартира|[əˈpɑːtmənt]||noun
+joy|Радость|[dʒɔɪ]||noun
+nephew|Племянник|[ˈnefjuː]||noun
+aunt|Тетя|[ɑːnt]||noun
+uncle|Дядя|[ˈʌŋkl]||noun
+cousin|Двоюродная сестра или брат|[ˈkʌzn]||noun
+man|Мужчина|[mæn]||noun
+woman|Женщина|[ˈwʊmən]||noun
+child|Ребенок|[tʃaɪld]||noun
+sister|Сестра|[ˈsɪstə(r)]||noun
+brother|Брат|[ˈbrʌðə(r)]||noun
+relatives|Родственники|[ˈrel.ə.tɪv]||noun
+friend|Друг|[frend]||noun
+wife|Жена|[waɪf]||noun
+husband|Муж|[ˈhʌzbənd]||noun
+address|Адрес|[əˈdres]||noun
+happiness|Счастье|[ˈhæp.i.nəs]||noun
+people|Люди|[ˈpiːpl]||noun
+phone|fəʊn|Телефон||noun
+question|ˈkwestʃən|Вопрос||noun
+place|pleɪs|Место||noun
+market|ˈmɑːkɪt|Рынок||noun
+order|ˈɔːdə(r)|Заказ||noun
+food|fuːd|Еда||noun
+communication|kəˌmjuːnɪˈkeɪʃn|Общение||noun
+story|ˈstɔːri|История||noun
+relax|rɪˈlæks|Отдых||noun
+time|taɪm|Время||noun
+word|wɜːd|Слово||noun
+dialogue|ˈdaɪ.ə.lɒɡ|Диалог||noun
+meeting|ˈmiːtɪŋ|Встреча||noun
+week|wiːk|Неделя||noun
+distance|ˈdɪstəns|Дистанция||noun
+club|klʌb|Клуб||noun
+theatre|ˈθɪətə(r)|Театр||noun
+cinema|ˈsɪnəmə|Кинотеатр||noun
+coffee shop|ˈkɒfi ʃɒp|Кофейня||noun
+friendship|ˈfrendʃɪp|Дружба||noun
+behavior|bɪˈheɪ.vjər|Поведение||noun
+attitude|ˈætɪtjuːd|Отношение||noun
+student|ˈstjuːdnt|Студент||noun
+university|ˌjuːnɪˈvɜːsəti|Университет||noun
+union|ˈjuːniən|Объединение||noun
+party|ˈpɑːti|Вечеринка||noun
+date|deɪt|Свидание||noun
+sweetheart|ˈswiːt.hɑːt|Возлюбленный||noun
+leisure time|ˈleʒ.ər taɪm|Досуг||noun
+road|rəʊd|Дорога||noun
+ticket|ˈtɪkɪt|Билет||noun
+map|mæp|Карта||noun
+motel|məʊˈtel|Мотель||noun
+highway|ˈhaɪweɪ|Шоссе||noun
+reception|rɪˈsepʃn|Ресепшн||noun
+wallet|ˈwɒlɪt|Бумажник||noun
+bank|bæŋk|Банк||noun
+subway|ˈsʌb.weɪ|Метро||noun
+cab|kæb|Такси||noun
+parking|ˈpɑː.kɪŋ|Парковка||noun
+food order|fuːd ˈɔːdə(r)|Заказ еды||noun
+cash|kæʃ|Наличные||noun
+passport|ˈpɑːspɔːt|Паспорт||noun
+permission|pəˈmɪʃn|Разрешение||noun
+lawyer|ˈlɔːjə(r)|Адвокат||noun
+problem|ˈprɒbləm|Проблема||noun
+waiting room|weɪtin: ruːm|Зал ожидания||noun
+transfer|trænsˈfɜː(r)|Пересадка||noun
+bag|bæɡ|Сумка||noun
+suitcase|ˈsuːtkeɪs|Чемодан||noun
+property|ˈprɒpəti|Имущество||noun
+law|lɔː|Право, закон||noun
+police station|pəˈliːs ˈsteɪʃn|Полицейский участок||noun
+price|praɪs|Стоимость, цена||noun
+price list|praɪs lɪst|Ценник||noun
+courier|ˈkʊr.i.ər|Курьер||noun
+delivery|dɪˈlɪvəri|Доставка||noun
+location|ləʊˈkeɪʃn|Местоположение||noun
+route|ruːt|Маршрут||noun
+agreement|əˈɡriːmənt|Договор||noun
+hospital|ˈhɒspɪtl|Больница||noun
+ambulance|ˈæmbjələns|Скорая помощь||noun
+I||Я||noun
+you||Ты||noun
+we||Мы||noun
+they||Они||noun
+he||Он||noun
+she||Она||noun
+it||Оно||noun
+afraid|əˈfreɪd|Напуганный||adj
+angry|ˈæŋɡri|Сердитый||adj
+asleep|əˈsliːp|Спящий||adj
+attentive|əˈten.tɪv|Внимательный||adj
+available|əˈveɪləbl|Доступный||adj
+basic|ˈbeɪsɪk|Базовый||adj
+beautiful|ˈbjuːtɪfl|Красивый||adj
+big|bɪɡ|Большой||adj
+brave|breɪv|Смелый||adj
+busy|ˈbɪzi|Занятой||adj
+calm|kɑːm|Спокойный||adj
+careful|ˈkeəfl|Внимательный||adj
+cheap|tʃiːp|Дешевый||adj
+clever|ˈklevə(r)|Умный||adj
+cold|kəʊld|Холодный||adj
+comfortable|ˈkʌmftəbl|Комфортный||adj
+confident|ˈkɒnfɪdənt|Уверенный||adj
+constant|ˈkɒnstənt|Постоянный||adj
+curious|ˈkjʊəriəs|Любопытный||adj
+dangerous|ˈdeɪndʒərəs|Опасный||adj
+dark|dɑːk|Темный||adj
+deep|diːp|Глубокий||adj
+different|ˈdɪfrənt|Разный||adj
+difficult|ˈdɪfɪkəlt|Трудный||adj
+dirty|ˈdɜːti|Грязный||adj
+easy|ˈiːzi|Легкий||adj
+every|ˈevri|Каждый||adj
+expensive|ɪkˈspensɪv|Дорогой||adj
+exact|ɪɡˈzækt|Точный||adj
+fast|fɑːst|Быстрый||adj
+fair|feə(r)|Честный, светлый||adj
+fine|faɪn|Замечательный||adj
+foreign|ˈfɒrən|Иностранный||adj
+free|friː|Свободный||adj
+fresh|freʃ|Свежий||adj
+full|fʊl|Полный||adj
+funny|ˈfʌni|Забавный||adj
+guilty|ˈɡɪlti|Виновный||adj
+healthy|ˈhelθi|Здоровый||adj
+hard|hɑːd|Тяжелый||adj
+helpful|ˈhelpfl|Полезный||adj
+honest|ˈɒnɪst|Честный||adj
+hot|hɒt|Горячий||adj
+hungry|ˈhʌŋɡri|Голодный||adj
+important|ɪmˈpɔːtnt|Важный||adj
+illegal|ɪˈliːɡl|Нелегальный, незаконный||adj
+impossible|ɪmˈpɒsəbl|Невозможный||adj
+independent|ˌɪndɪˈpendənt|Независимый||adj
+interesting|ˈɪntrəstɪŋ|Интересный||adj
+kind|kaɪnd|Добрый||adj
+legal|ˈliːɡl|Законный||adj
+little|ˈlɪtl|Маленький||adj
+lucky|ˈlʌki|Удачливый||adj
+necessary|ˈnesəsəri|Необходимый||adj
+normal|ˈnɔːml|Нормальный||adj
+old|əʊld|Старый||adj
+opposite|ˈɒpəzɪt|Противоположный||adj
+perfect|pəˈfekt|Идеальный||adj
+poor|pɔː(r)|Бедный||adj
+powerful|ˈpaʊəfl|Мощный||adj
+possible|ˈpɒsəbl|Возможный||adj
+quiet|ˈkwaɪət|Тихий||adj
+rare|reə(r)|Редкий||adj
+recent|ˈriːsnt|Недавний||adj
+relevant|ˈreləvənt|Релевантный, актуальный||adj
+remote|rɪˈməʊt|Удаленный||adj
+safe|seɪf|Безопасный||adj
+short|ʃɔːt|Короткий||adj
+small|smɔːl|Маленький||adj
+strange|streɪndʒ|Странный, незнакомый, чужой||adj
+successful|səkˈsesfl|Успешный||adj
+tasty|ˈteɪ.sti|Вкусный, приятный||adj
+terrible|ˈterəbl|Жуткий||adj
+tired|ˈtaɪəd|Усталый||adj
+warm|wɔːm|Теплый||adj
+weak|wiːk|Слабый||adj
+responsible|rɪˈspɒnsəbl|Ответственный, надежный||adj
+sad|sæd|Грустный||adj
+international|ˌɪntəˈnæʃnəl|Международный||adj
+together|təˈɡeðə(r)|Вместе||adv
+according|əˈkɔːdɪŋ|В соответствии||adv
+again|əˈɡen|Снова||adv
+always|ˈɔːlweɪz|Всегда||adv
+beautifully|ˈbjuːtɪfli|Красиво||adv
+carefully|ˈkeə.fəl.i|Осторожно||adv
+correctly|kəˈrektli|Верно, правильно||adv
+especially|ɪˈspeʃəli|Особенно||adv
+friendly|ˈfrendli|Дружелюбно||adv
+indeed|ɪnˈdiːd|Действительно||adv
+above|əˈbʌv|Выше||adv
+accidentally|ˌæk.sɪˈden.təl.i|Случайно||adv
+actually|ˈæktʃuəli|На самом деле||adv
+badly|ˈbædli|Плохо||adv
+besides|bɪˈsaɪdz|Помимо этого||adv
+briefly|ˈbriːfli|Кратко||adv
+certainly|ˈsɜːtnli|Конечно||adv
+daily|ˈdeɪli|Ежедневно||adv
+dreamily|ˈdriː.mɪ.li|Мечтательно||adv
+even|ˈiːvn|Даже||adv
+eventually|ɪˈventʃuəli|В конце концов||adv
+foolishly|ˈfuːlɪʃli|Глупо||adv
+forward|ˈfɔːwəd|Вперед||adv
+ever|ˈevə(r)|Когда-либо||adv
+equally|ˈiːkwəli|Одинаково||adv
+fortunately|ˈfɔː.tʃən.ət.li|К счастью||adv
+honestly|ˈɒnɪstli|Честно||adv
+instead|ɪnˈsted|Вместо||adv
+inside|ˌɪnˈsaɪd|Внутри||adv
+also|ˈɔːlsəʊ|Также||adv
+hardly|ˈhɑːdli|С трудом||adv
+lately|ˈleɪt.li|Недавно||adv
+less|les|Меньше||adv
+loudly|ˈlaʊd.li|Громко, шумно||adv
+nearly|ˈnɪəli|Около||adv
+never|ˈnevə(r)|Никогда||adv
+only|ˈəʊnli|Только||adv
+once|wʌns|Один раз||adv
+often|ˈɒfn|Часто||adv
+perhaps|pəˈhæps|Возможно||adv
+quickly|ˈkwɪkli|Быстро||adv
+probably|ˈprɒbəbli|Вероятно||adv
+rarely|ˈreəli|Редко||adv
+really|ˈriːəli|Действительно||adv
+sometimes|ˈsʌmtaɪmz|Иногда||adv
+yesterday|ˈjestədeɪ|Вчера||adv
+thus|ðʌs|Таким образом||adv
+somehow|ˈsʌmhaʊ|Как-то||adv
+soon|suːn|Скоро||adv
+regularly|ˈreɡjələli|Регулярно||adv
+somewhere|ˈsʌmweə(r)|Где-то||adv` },
+  a2: { name: "A2 Pre-Intermediate", words: `
+appear|əˈpɪə|Появляться||verb
+cancel|ˈkænsəl|Отменять||verb
+bite|baɪt|Кусать, укусить||verb
+regret|rɪˈgrɛt|Сожалеть||verb
+blow|bləʊ|Дуть (о ветре), развеять, раздувать||verb
+compose|kəmˈpəʊz|Составлять||verb
+congratulate|kənˈgrætjʊleɪt|Поздравлять||verb
+correct|kəˈrɛkt|Исправлять||verb
+fall asleep|fɔːl əˈsliːp|Засыпать||verb
+burn|bɜːn|Гореть||verb
+invent|ɪnˈvɛnt|Придумать, изобретать||verb
+mention|ˈmɛnʃən|Упоминать, заметить, отметить||verb
+suppose|səˈpəʊz|Предполагать||verb
+suggest|səˈʤɛst|Предлагать, намекать||verb
+consider|kənˈsɪdə|Размышлять, учитывать||verb
+escape|ɪsˈkeɪp|Сбегать, убегать||verb
+publish|ˈpʌblɪʃ|Публиковать||verb
+solve|sɒlv|Решить, разгадать||verb
+tidy up|ˈtaɪdi ʌp|Убираться, наводить порядок||verb
+win|‘taɪdi ʌp|Выиграть||verb
+swallow|ˈswɒləʊ|Глотать||verb
+follow|ˈfɒləʊ|Следовать||verb
+abandon|əˈbændən|Покидать, оставлять||verb
+be able|biː ˈeɪbl|Быть в состоянии||verb
+abuse|əˈbjuːs|Оскорблять||verb
+accelerate|əkˈsɛləreɪt|Ускорять||verb
+reveal|rɪˈviːl|Раскрывать||verb
+consist of|kənˈsɪst ɒv|Состоять из||verb
+include|ɪnˈkluːd|Включать||verb
+guess|gɛs|Думать, предполагать||verb
+accept|əkˈsɛpt|Одобрять, согласовать||verb
+formulate|ˈfɔːmjʊleɪt|Формулировать||verb
+form|fɔːm|Формировать||verb
+achieve|əˈʧiːv|Достигать||verb
+acknowledge|əkˈnɒlɪʤ|Подтверждать||verb
+act|ækt|Действовать||verb
+adhere|ədˈhɪə|Придерживаться||verb
+admire|ədˈmaɪə|Восхищаться||verb
+adjust|əˈʤʌst|Адаптировать, настроить||verb
+advise|ədˈvaɪz|Советовать||verb
+allow|əˈlaʊ|Позволять, разрешать||verb
+improve|ɪmˈpruːv|Улучшать||verb
+edit|ˈɛdɪt|Редактировать||verb
+conclude|kənˈkluːd|Включать в себя||verb
+settle|ˈsɛtl|Располагаться, поселиться||verb
+handle|ˈhændl|Справиться||verb
+boost|buːst|Увеличить, поддержать||verb
+amplify|ˈæmplɪfaɪ|Усилить, расширить||verb
+appeal|əˈpiːl|Просить, обращаться||verb
+assemble|əˈsɛmbl|Собираться, созывать||verb
+assess|əˈsɛs|Оценивать, рассматривать||verb
+assist|əˈsɪst|Присутствовать, помогать||verb
+astonish|əsˈtɒnɪʃ|Удивлять||verb
+assure|əˈʃʊə|Убеждать, заверять||verb
+avoid|əˈvɔɪd|Избегать||verb
+await|əˈweɪt|Ожидать||verb
+pick up|pɪk ʌp|Подбирать, забирать||verb
+cross off|krɒs ɒf|Вычеркивать||verb
+claim|kleɪm|Утверждать, заявлять||verb
+hurry up|ˈhʌri ʌp|Торопиться||verb
+find out|faɪnd aʊt|Находить||verb
+divide|dɪˈvaɪd|Делить, разделять||verb
+bark|bɑːk|Лаять||verb
+bathe|beɪð|Купаться||verb
+beat|biːt|Бить, превосходить||verb
+blackmail|ˈblækmeɪl|Шантажировать||verb
+spent|spɛnt|Тратить||verb
+send|sɛnd|Посылать||verb
+laugh|lɑːf|Смеяться||verb
+struggle|ˈstrʌgl|Бороться||verb
+motivate|ˈməʊtɪveɪt|Мотивировать||verb
+perceive|pəˈsiːv|Воспринимать||verb
+receive|rɪˈsiːv|Получать||verb
+recognize|ˈrɛkəgnaɪz|Распознавать||verb
+remain|rɪˈmeɪn|Напоминать||verb
+retain|rɪˈteɪn|Удержать||verb
+remember|rɪˈmɛmbə|Помнить, запоминать||verb
+observed|əbˈzɜːvd|Исследовать||verb
+fight|faɪt|Драться||verb
+renew|rɪˈnju|Обновлять||verb
+keep calm|kiːp kɑːm|Успокаиваться||verb
+break up|breɪk ʌp|Разрушать, расходиться||verb
+focus|ˈfəʊkəs|Фокусироваться||verb
+perform|pəˈfɔːm|Исполнять обязанности||verb
+offer|ˈɒfə|Предлагать||verb
+display|dɪsˈpleɪ|Отображать||verb
+behave|bɪˈheɪv|Вести себя||verb
+get rid|gɛt rɪd|Избавляться||verb
+squeeze|skwiːz|Выжимать||verb
+release|rɪˈliːs|Выпускать, публиковать||verb
+push|pʊʃ|Толкать||verb
+foster|ˈfɒstə|Поощрять||verb
+enhance|ɪnˈhɑːns|Расширять, поощрять||verb
+develop|dɪˈvɛləp|Развивать, разрабатывать||verb
+envelop|ɪnˈvɛləp|Окутывать, обволакивать||verb
+obtain|əbˈteɪn|Получить, добиться, приобрести||verb
+investigate|ɪnˈvɛstɪgeɪt|Расследовать||verb
+adore|əˈdɔː|Обожать||verb
+block out|blɒk aʊt|Блокировать||verb
+boil|bɔɪl|Кипеть||verb
+bother|ˈbɒðə|Побеспокоить, заморачиваться||verb
+breathe|briːð|Дышать||verb
+brew|bruː|Варить, заваривать||verb
+celebrate|ˈsɛlɪbreɪt|Отмечать||verb
+broadcast|ˈbrɔːdkɑːst|Вещать, транслировать||verb
+modify|ˈmɒdɪfaɪ|Изменять, модифицировать||verb
+bump|bʌmp|Ударять||verb
+buzz|bʌz|Жужжать||verb
+lead|liːd|Вести, лидировать, быть лидером||verb
+call back|kɔːl bæk|Перезвонить||verb
+waste|weɪst|Тратить впустую, мусорить||verb
+take care|teɪk keə|Заботиться||verb
+carry out|ˈkæri aʊt|Выполнять, осуществлять||verb
+carve|kɑːv|Вырезать||verb
+cease|siːs|Прекратить||verb
+collaborate|kəˈlæbəreɪt|Сотрудничать||verb
+reward|rɪˈwɔːd|Награждать||verb
+come back|kʌm bæk|Возвращаться||verb
+relate|rɪˈleɪt|Относиться, касаться||verb
+upgrade|ʌpˈgreɪd|Обновлять||verb
+restore|rɪsˈtɔː|Восстановить||verb
+describe|dɪsˈkraɪb|Описывать||verb
+share|ʃeə|Делиться||verb
+increase|ˈɪnkriːs|Увеличивать||verb
+automate|ˈɔːtəmeɪt|Автоматизировать||verb
+manage|ˈmænɪʤ|Управлять||verb
+provide|prəˈvaɪd|Обеспечивать||verb
+integrate|ˈɪntɪgreɪt|Соединять, интегрировать||verb
+realize|ˈrɪəlaɪz|Реализовывать, осуществлять||verb
+remind|ˈrɪmaɪnd|Напоминать||verb
+install|ɪnˈstɔːl|Устанавливать||verb
+download|daʊnˈləʊd|Загружать||verb
+unpack|ʌnˈpæk|Распаковать||verb
+engage|ɪnˈgeɪʤ|Увлечь, привлечь||verb
+create|kri(ː)ˈeɪt|Создавать||verb
+prefer|priˈfɜː|Предпочитать||verb
+inspire|ɪnˈspaɪə|Вдохновлять||verb
+apply|əˈplaɪ|Применять||verb
+explain|ɪksˈpleɪn|Объяснять||verb
+simplify|ˈsɪmplɪfaɪ|Упрощать||verb
+strive|straɪv|Стремиться||verb
+arrive|əˈraɪv|Прибывать||verb
+enable|ɪˈneɪbl|Разрешить, включить||verb
+support|səˈpɔːt|Поддерживать||verb
+allot|əˈlɒt|Выделить||verb
+empower|ɪmˈpaʊə|Разрешать, уполномочить||verb
+overwhelm|əʊvəˈwɛlm|Переполнять||verb
+fulfill|fʊlˈfɪl|Выполнять||verb
+take over|teɪk ˈəʊvə|Принять на себя||verb
+encourage|ɪnˈkʌrɪʤ|Поощрять||verb
+stimulate|ˈstɪmjʊleɪt|Стимулировать||verb
+cause|kɔːz|Вызывать||verb
+deal|diːl|Справляться||verb
+reach|riːʧ|Достигать||verb
+touch|tʌʧ|Прикасаться||verb
+attain|əˈteɪn|Достигать, получать||verb
+require|rɪˈkwaɪə|Запрашивать, требовать||verb
+figure out|ˈfɪgər aʊt|Разбираться||verb
+forgive|fəˈgɪv|Прощать||verb
+light|laɪt|Освещать, светить||verb
+shine|ʃaɪn|Сиять||verb
+spread|sprɛd|Распространять||verb
+throw|θrəʊ|Бросать||verb
+spoil|spɔːɪl|Испортить||verb
+split|splɪt|Разбить, разделить||verb
+go mad|gəʊ mæd|Сходить с ума||verb
+steal|stiːl|Украсть||verb
+smell|smɛl|Пахнуть||verb
+activity|ækˈtɪvɪti|Деятельность||noun
+amount|əˈmaʊnt|Сумма, количество||noun
+author|ˈɔːθə|Автор||noun
+character|ˈkærɪktə|Характер||noun
+dictionary|ˈdɪkʃ(ə)n(ə)ri|Словарь||noun
+event|ɪˈvɛnt|Событие||noun
+dashboard|ˈdæʃbɔːd|Панель управления||noun
+task manager|tɑːsk ˈmænɪʤə|Планировщик задач||noun
+sick day|sɪk deɪ|Больничный||noun
+trouble|ˈtrʌbl|Проблема||noun
+deadline|ˈdɛdlaɪn|Дедлайн||noun
+reason|ˈriːzn|Причина, смысл||noun
+to-do list|təˈduː lɪst|Список дел||noun
+remark|ˈrɪˈmɑːk|Замечание, ремарка||noun
+proofreading|ˈpruːfˌriːdɪŋ|Редактирование, вычитка||noun
+performance|pəˈfɔːməns|Исполнение, выступление||noun
+co-working space|kəʊ-ˈwɜːkɪŋ speɪs|Ко-воркинг||noun
+duty|ˈdjuːti|Обязанность||noun
+function|ˈfʌŋkʃən|Функция||noun
+burnout|ˈbɜːnˈaʊt|Выгорание||noun
+goal|gəʊl|Цель||noun
+timetable|ˈtaɪmˌteɪb(ə)l|Расписание||noun
+area|ˈeərɪə|Сфера, область||noun
+state|steɪt|Состояние, положение||noun
+mentoring|ˈmɛntɔːrɪŋ|Менторство||noun
+tiredness|ˈtaɪədnəs|Усталость||noun
+probation period|prəˈbeɪʃən ˈpɪərɪəd|Испытательный срок||noun
+expectation|ɛkspɛkˈteɪʃən|Ожидание||noun
+benefit|ˈbɛnɪfɪt|Прибыль||noun
+salary|ˈsæləri|Зарплата||noun
+outsource|aʊtˈsɔːs|Аутсорс||noun
+team|tiːm|Команда||noun
+project|ˈprɒʤɛkt|Проект||noun
+check out|ʧɛk aʊt|Проверка||noun
+research|rɪˈsɜːʧ|Исследование||noun
+routine|ruːˈtiːn|Рутина||noun
+planner|ˈplænə|Планнер, блокнот||noun
+schedule|ˈʃɛdjuːl|Расписание||noun
+cartoon|kɑːˈtuːn|Мультфильм||noun
+movie|ˈmuːvi|Фильм||noun
+circus|ˈsɜːkəs|Цирк||noun
+composer|kəmˈpəʊzə|Композитор||noun
+dream|driːm|Мечта||noun
+daily routine|ˈdeɪli ruːˈtiːn|Ежедневная рутина||noun
+horror|ˈhɒrə|Ужастик||noun
+laughter|ˈlɑːftə|Смех||noun
+novel|ˈnɒvəl|Роман||noun
+story|ˈstɔːri|История||noun
+weather forecast|ˈwɛðə ˈfɔːkɑːst|Прогноз погоды||noun
+thought|θɔːt|Мысль||noun
+writer|ˈraɪtə|Писатель||noun
+access|ˈæksɛs|Доступ||noun
+account|əˈkaʊnt|Аккаунт||noun
+adventure|ədˈvɛnʧə|Приключение||noun
+affair|əˈfeə|Страх||noun
+anniversary|ænɪˈvɜːsəri|Дело, интрига||noun
+entertainment|ɛntəˈteɪnmənt|Развлечение||noun
+amusement|əˈmjuːzmənt|Веселье||noun
+influence|ˈɪnflʊəns|Влияние||noun
+attraction|əˈtrækʃ(ə)n|Достопримечательность, аттракцион||noun
+rock-climbing|rɒk-ˈklaɪmɪŋ|Скалолазание||noun
+cycling|ˈsaɪklɪŋ|Катание на велосипеде||noun
+number painting|ˈnʌmbə ˈpeɪntɪŋ|Живопись по номерам||noun
+swimming pool|ˈswɪmɪŋ puːl|Бассейн||noun
+yoga|ˈjəʊgə|Йога||noun
+coffee shop|ˈkɒfi ʃɒp|Кофейня||noun
+central park|ˈsɛntrəl pɑːk|Центральный парк||noun
+inspiration|ɪnspəˈreɪʃən|Вдохновение||noun
+scenery|ˈsiːnəri|Пейзаж||noun
+landscape|ˈlænskeɪp|Ландшафт, пейзаж||noun
+computer game|kəmˈpjuːtə geɪm|Компьютерная игра||noun
+mood|muːd|Настроение||noun
+situation|sɪtjʊˈeɪʃən|Ситуация||noun
+movement|ˈmuːvmənt|Движение||noun
+arrangement|əˈreɪnʤmənt|Договоренность||noun
+accommodation|əˌkɒməˈdeɪʃ(ə)n|Жилье||noun
+beverage|ˈbɛvərɪʤ|Напиток||noun
+binge|bɪnʤ|Гулянка||noun
+activist|ˈæktɪvɪst|Активист||noun
+pollution|pəˈluːʃən|Загрязнение||noun
+impurity|ɪmˈpjʊərɪti|Примеси, загрязнение||noun
+algae|ˈælʤiː|Водоросли||noun
+earth|ɜːθ|Земля||noun
+atmosphere|ˈætməsfɪə|Атмосфера||noun
+environment|ɪnˈvaɪərənmənt|Окружающий мир||noun
+climate|ˈklaɪmɪt|Климат||noun
+air|eə|Воздух||noun
+water reserve|ˈwɔːtə rɪˈzɜːv|Водные ресурсы||noun
+greenhouse effect|ˈgriːnhaʊs ɪˈfɛkt|Парниковый эффект||noun
+oxygen|ˈɒksɪʤən|Кислород||noun
+explorer|ɪksˈplɔːrə|Исследователь||noun
+investigation|ɪnˌvɛstɪˈgeɪʃən|Расследование||noun
+future|ˈfjuːʧə|Будущее||noun
+tropic forest|ˈtrɒpɪk ˈfɒrɪst|Тропический лес||noun
+humidity|hju(ː)ˈmɪdɪti|Влажность, влага||noun
+flora|ˈflɔːrə|Флора||noun
+wildlife|ˈwaɪldlaɪf|Дикая природа, животные||noun
+plastic waste|ˈplæstɪk weɪst|Пластиковые отходы||noun
+recycling|riːˈsaɪklɪŋ|Переработка||noun
+hydrosphere|ˈhaɪdrəʊsfɪə|Гидросфера||noun
+meeting|ˈmiːtɪŋ|Митинг||noun
+background|ˈbækgraʊnd|Происхождение, фон||noun
+bank|bæŋk|Берег||noun
+banner|ˈbænə|Баннер, реклама||noun
+beast|biːst|Зверь, животное||noun
+cave|keɪv|Пещера, грот||noun
+caviar|ˈkævɪɑː|Икра||noun
+charity|ˈʧærɪti|Благотворительность||noun
+chemistry|ˈkɛmɪstri|Химия||noun
+economical use|iːkəˈnɒmɪkəl juːz<|Экономное потребление||noun
+cohesion|kəʊˈhiːʒən|Уголь||noun
+commitment|kəˈmɪtmənt|Обязательство||noun
+concern|kənˈsɜːn|Озабоченность||noun
+conscience|ˈkɒnʃəns|Совесть, сознание||noun
+court|kɔːt|Суд||noun
+custody|ˈkʌstədi|Опека, сохранение||noun
+desert|ˈdɛzət|Пустыня||noun
+dimension|dɪˈmɛnʃən|Разрушение||noun
+disaster|dɪˈzɑːstə|Катастрофа||noun
+disease|dɪˈziːz|Заболевание||noun
+downturn|ˈdaʊntɜːn|Убыток, спад||noun
+drain|dreɪn|Сток, слив||noun
+emphasis|ˈɛmfəsɪs|Акцент||noun
+engine|ˈɛnʤɪn|Двигатель||noun
+evidence|ˈɛvɪdəns|Доказательство||noun
+excess|ɪkˈsɛs|Превышение||noun
+famine|ˈfæmɪn|Голод||noun
+detriment|ˈdɛtrɪmənt|Ущерб||noun
+blind|blaɪnd|Слепой||adj
+catchy|ˈkæʧi|Броский, запоминающийся||adj
+common|ˈkɒmən|Распространенный||adj
+familiar|fəˈmɪliə|Знакомый||adj
+frequent|ˈfriːkwənt|Частый||adj
+recurrent|rɪˈkʌrənt|Повторяющийся||adj
+enormous|ɪˈnɔːməs|Огромный||adj
+expensive|ɪksˈpɛnsɪv|Дорогой||adj
+valuable|ˈvæljʊəbl|Ценный||adj
+muslim|ˈmʊslɪm|Мусульманский||adj
+lucky|ˈlʌki|Удачный||adj
+clear|klɪə|Чистый, понятный||adj
+scientific|saɪənˈtɪfɪk|Научный||adj
+huge|hjuːʤ|Большой, огромный||adj
+messy|ˈmɛsi|Беспорядочный||adj
+unforgettable|ʌnfəˈgɛtəbl|Незабываемый||adj
+false|fɔːls|Неверный, неправильный||adj
+fierce|fɪəs|Свирепый, жестокий||adj
+explicit|ɪksˈplɪsɪt|Ярко выраженный||adj
+exterior|ɛksˈtɪərɪə|Внешний||adj
+hidden|ˈhɪdn|Скрытый||adj
+powerful|ˈpaʊəfʊl|Мощный||adj
+internal|ɪnˈtɜːnl|Внутренний||adj
+fabulous|ˈfæbjʊləs|Невероятный||adj
+beautiful|ˈbjuːtəfʊl|Красивый||adj
+gorgeous|ˈgɔːʤəs|Великолепный||adj
+fruitful|ˈfruːtfʊl|Плодотворный||adj
+formidable|ˈfɔːmɪdəbl|Замечательный||adj
+fortunate|ˈfɔːʧnɪt|Удачливый, счастливый||adj
+frail|freɪl|Хилый, хрупкий||adj
+friendly|ˈfrɛndli|Дружелюбный||adj
+loyal|ˈlɔɪəl|Лояльный||adj
+general|ˈʤɛnərəl|Общий, генеральный||adj
+generous|ˈʤɛnərəs|Щедрый||adj
+gradual|ˈgrædjʊəl|Постепенный||adj
+productive|prəˈdʌktɪv|Продуктивный||adj
+protected|prəˈtɛktɪd|Защищенный||adj
+hardy|ˈhɑːdi|Выносливый||adj
+peaceful|ˈpiːsfʊl|Мирный, миролюбивый||adj
+digital|ˈdɪʤɪtl|Цифровой||adj
+social|ˈsəʊʃəl|Социальный||adj
+hideous|hɪdɪə|Отвратительный||adj
+awful|ˈɔːfʊl|Ужасный||adj
+awesome|ˈɔːsəm|Милый||adj
+high-quality|haɪ-ˈkwɒlɪti|Высококачественный||adj
+helpless|ˈhɛlplɪs|Беспомощный||adj
+hilarious|hɪˈleərɪəs|Уморительный||adj
+idle|ˈaɪdl|Безработный||adj
+immediate|ɪˈmiːdiət|Незамедлительный||adj
+main|meɪn|Главный||adj
+european|jʊərəˈpi(ː)ən|Европейский||adj
+simultaneous|sɪməlˈteɪniəs|Одновременный||adj
+special|ˈspɛʃəl|Специальный||adj
+visible|ˈvɪzəbl|Видимый||adj
+honest|ˈɒnɪst|Честный||adj
+mortal|ˈmɔːtl|Смертельный||adj
+hyperactive|ˈhaɪpə ˈæktɪv|Гиперактивный||adj
+personal|ˈpɜːsnl|Личный, персональный||adj
+foolish|ˈfuːlɪʃ|Безумный, глупый||adj
+sudden|ˈsʌdn|Внезапный||adj
+endlessly|ˈɛndlɪsli|Бесконечно||adv
+unselfishly|ʌnˈsɛlfɪʃli|Бескорыстно||adv
+generously|ˈʤɛnərəsli|Щедро||adv
+along|əˈlɒŋ|Вдоль, по||adv
+accordingly|əˈkɔːdɪŋli|Соответственно||adv
+subsequently|ˈsʌbsɪkwəntli|Впоследствии||adv
+subtly|ˈsʌtli|Тонко||adv
+precisely|prɪˈsaɪsli|Точно, четко||adv
+better|ˈbɛtə|Лучше||adv
+everywhere|ˈɛvrɪweə|Везде, где угодно||adv
+out|aʊt|За, из||adv
+fully|ˈfʊli|Полностью||adv
+partly|ˈpɑːtli|Частично||adv
+utterly|ˈʌtəli|Полностью||adv
+entirely|ɪnˈtaɪəli|Совершенно, целиком||adv
+therefore|ˈðeəfɔː|Поэтому||adv
+hence|hɛns|Вот почему, отсюда||adv
+consequently|ˈkɒnsɪkwəntli|Таким образом, соответственно||adv
+bravely|ˈbreɪvli|Отважно, храбро||adv
+carefully|ˈkeəfli|Внимательно, осторожно||adv
+seldom|ˈsɛldəm|Редко||adv
+frequently|ˈfriːkwəntli|Часто||adv
+outside|aʊtˈsaɪd|Снаружи||adv
+upstairs|ʌpˈsteəz|Наверху||adv
+downstairs|daʊnˈsteəz|Внизу||adv
+quite|kwaɪt|Вполне||adv
+early|ˈɜːli|Рано||adv
+simply|ˈsɪmpli|Легко, просто||adv
+hard|hɑːd|Трудно||adv
+late|leɪt|Поздно||adv` },
+  b1: { name: "B1 Intermediate", words: `
+abolish|əˈbɒlɪʃ|Уничтожать||verb
+approve|əˈpruːv|Утвердить, одобрить||verb
+boast|bəʊst|Гордиться, хвастаться||verb
+contribute|kənˈtrɪbju(ː)t|Вносить свой вклад||verb
+deliver|dɪˈlɪvə|Доставлять, поставлять, приносить||verb
+descend|dɪˈsɛnd|Спуститься, сходить, снизойти||verb
+concentrate|ˈkɒnsəntreɪt|Сосредотачиваться||verb
+distract|dɪsˈtrækt|Отвлечь, отвлекать||verb
+torture|ˈtɔːʧə|Мучить, терзать||verb
+confuse|kənˈfjuːz|Путать, запутать, сбить с толку||verb
+abandon|əˈbændən|Покинуть, бросить, оставить||verb
+escape|ɪsˈkeɪp|Совершить побег, убежать, сбежать||verb
+distribute|dɪsˈtrɪbju(ː)t|Распространять, распределить||verb
+elaborate|ɪˈlæbərɪt|Разрабатывать, прорабатывать||verb
+construct|kənˈstrʌkt|Строить, построить||verb
+humiliate|hju(ː)ˈmɪlɪeɪt|Унижать||verb
+maintain|meɪnˈteɪn|Поддерживать||verb
+squeeze|skwiːz|Сжимать, выжимать, сжать||verb
+delegate|ˈdɛlɪgɪt|Делегировать, посылать||verb
+transfer|ˈtrænsfə(ː)|Передавать, перечислять||verb
+employ|ɪmˈplɔɪ|Нанимать, использовать, работать||verb
+catch|kæʧ|Поймать, ловить||verb
+commit|kəˈmɪt|Совершить, зафиксировать, поручить||verb
+arrange|əˈreɪnʤ|Организовать, устроить||verb
+implement|ˈɪmplɪmənt|Внедрить, реализовать, осуществить||verb
+insulate|ˈɪnsjʊleɪt|Ограждать||verb
+encourage|ɪnˈkʌrɪʤ|Стимулировать||verb
+foster|ˈfɒstə|Поощрять||verb
+boost|buːst|Повышать||verb
+optimize|ˈɒptɪmaɪz|Оптимизировать||verb
+rank|ræŋk|Ранжировать||verb
+identify|aɪˈdɛntɪfaɪ|Определить, идентифицировать||verb
+empower|ɪmˈpaʊə|Наделить полномочиями, расширять||verb
+ensure|ɪnˈʃʊə|Обеспечить, убедить, гарантировать||verb
+accomplish|əˈkɒmplɪʃ|Выполнить, завершить, осуществить||verb
+customize|ˈkʌstəˌmaɪz|Настроить, сделать||verb
+localize|ˈləʊkəlaɪz|Локализовать, определить||verb
+tailor|ˈteɪlə|Приспособить||verb
+validate|ˈvælɪdeɪt|Удостоверять||verb
+reserve|rɪˈzɜːv|Резервировать||verb
+estimate|ˈɛstɪmɪt|Оценивать||verb
+consulate|ˈkɒnsjʊlɪt|Консультировать||verb
+regard|rɪˈgɑːd|Рассматривать, учитывать, относиться||verb
+indicate|ˈɪndɪkeɪt|Указывать, обозначать, показывать||verb
+unify|juːnɪfaɪ|Объединять||verb
+digitalize|ˈdɪdʒɪtəlaɪz|Оцифровать, перевести в online-формат||verb
+expose|ɪksˈpəʊz|Подвергать||verb
+idealize|aɪˈdɪəlaɪz|Идеализировать||verb
+navigate|ˈnævɪgeɪt|Ориентироваться||verb
+sustain|səsˈteɪn|Выдерживать||verb
+constrain|kənˈstreɪn|Сдерживать||verb
+evade|ɪˈveɪd|Обойти||verb
+purchase|ˈpɜːʧəs|Приобретать||verb
+earn|ɜːn|Зарабатывать||verb
+make sure|meɪk ʃʊə|Убедиться||verb
+prototype|ˈprəʊtəʊtaɪp|Создать протопит, план||verb
+endeavour|ɪnˈdɛvə|Стремиться||verb
+blend|blɛnd|Смешивать||verb
+prioritize|praɪˈɒrɪˌtaɪz|Расставить приоритеты||verb
+mitigate|ˈmɪtɪgeɪt|Смягчать, принимать||verb
+emphasize|ˈɛmfəsaɪz|Подчеркнуть, придать акцент||verb
+observe|əbˈzɜːv|Наблюдать, замечать||verb
+evolve|ɪˈvɒlv|Развиваться, расти, проявляться||verb
+incentivize|ɪnˈsen.tɪ.vaɪz|Стимулировать, побуждать||verb
+respond|rɪsˈpɒnd|Реагировать, отвечать||verb
+connect|kəˈnɛkt|Соединить||verb
+command|kəˈmɑːnd|Командовать||verb
+check-out|ʧɛk-aʊt|Проверить, оформить||verb
+extend|ɪksˈtɛnd|Продлить, расширить, увеличить||verb
+retain|rɪˈteɪn|Оставить, удержать, сохранить||verb
+exhibit|ɪgˈzɪbɪt|Показывать||verb
+invent|ɪnˈvɛnt|Изобретать||verb
+abridge|əˈbrɪʤ|Ограничивать||verb
+self-express|sɛlf-ɪksˈprɛs|Самовыражаться||verb
+neglect|nɪˈglɛkt|Пренебрегать||verb
+negotiate|nɪˈgəʊʃɪeɪt|Договариваться, вести переговоры||verb
+upgrade|ʌpˈgreɪd|Повышать, улучшать||verb
+renew|rɪˈnjuː|Обновить||verb
+specialize|ˈspɛʃəlaɪz|Специализироваться||verb
+balance|ˈbæləns|Уравновешивать||verb
+absorb|əbˈsɔːb|Поглощать||verb
+overwhelm|əʊvəˈwɛlm|Переполнять||verb
+align|əˈlaɪn|Выравнивать||verb
+withdraw|wɪðˈdrɔː|Отстраниться||verb
+whistle|ˈwɪsl|Свистеть||verb
+suspect|ˈsʌspɛkt|Подозревать||verb
+surrender|səˈrɛndə|Сдаваться||verb
+depend on|dɪˈpɛnd ɒn|Зависеть от||verb
+correct|kəˈrɛkt|Исправлять||verb
+define|dɪˈfaɪn|Определить||verb
+visualize|ˈvɪzjʊəlaɪz|Визуализировать||verb
+design|dɪˈzaɪn|Проектировать||verb
+minimize|ˈmɪnɪmaɪz|Минимизировать||verb
+disturb|dɪsˈtɜːb|Нарушить, беспокоить||verb
+integrate|ˈɪntɪgreɪt|Интегрировать||verb
+exchange|ɪksˈʧeɪnʤ|Обменивать, менять||verb
+organize|ˈɔːgənaɪz|Организовать||verb
+collaborate|kəˈlæbəreɪt|Сотрудничать||verb
+embed|ɪmˈbɛd|Встраивать||verb
+generate|ˈʤɛnəreɪt|Генерировать||verb
+addiction|əˈdɪkʃ(ə)n|Зависимость, пристрастие||noun
+amateur|ˈæmətə(ː)|Любитель||noun
+ambivalence|æmˈbɪvələns|Нерешительность||noun
+commission|kəˈmɪʃən|Комиссия, поручение, заказчик||noun
+confidence|ˈkɒnfɪdəns|Доверие, уверенность, достоверность||noun
+craving|ˈkreɪvɪŋ|Желание, тяга, стремление, жажда||noun
+district|ˈdɪstrɪkt|Район||noun
+evidence|ˈɛvɪdəns|Доказательство, признак, факт||noun
+honesty|ˈɒnɪsti|Честность||noun
+circumstance|ˈsɜːkəmstəns|Обстоятельство, случай, событие||noun
+kindness|ˈkaɪndnɪs|Доброта||noun
+justice|ˈʤʌstɪs|Справедливость||noun
+disgust|dɪsˈgʌst|Отвращение, брезгливость||noun
+suggestion|səˈʤɛsʧən|Предложение, суждение, идея||noun
+nobility|nəʊˈbɪlɪti|Благородство, достоинство||noun
+commotion|kəˈməʊʃən|Суета||noun
+adherence|ədˈhɪərəns|Приверженность||noun
+devotion|dɪˈvəʊʃən|Преданность||noun
+enticement|ɪnˈtaɪsmənt|Приманка, соблазн, заманивание||noun
+attractiveness|əˈtræktɪvnəs|Привлекательность||noun
+freedom-loving|ˈfriːdəm-ˈlʌvɪŋ|Свободолюбие||noun
+rebel|ˈrɛbl|Бунтарь||noun
+influence|ˈɪnflʊəns|Влияние||noun
+sway|sweɪ|Колебание||noun
+willpower|ˈwɪlˌpaʊə|Сила воли||noun
+inequality|ˌɪni(ː)ˈkwɒlɪti|Неравенство||noun
+violence|ˈvaɪələns|Насилие, жестокость||noun
+bullying|ˈbʊliɪŋ|Издевательство, травля||noun
+godliness|ˈgɒdlɪnɪs|Благочестие, бодрость||noun
+compassion|kəmˈpæʃən|Сострадание||noun
+inclusivity|ɪnˌkluːˈsɪvətɪ|Инклюзивность||noun
+reciprocity|rɛsɪˈprɒsɪti|Взаимность, обоюдность||noun
+friskiness|ˈfrɪskɪnəs|Игривость, раскованность, живость||noun
+fervor|ˈfɜːvə|Пылкость, задор, рвение||noun
+youth|juːθ|Молодежь, юноша, молодость||noun
+adolescence|ædəʊˈlɛsns|Подростковый возраст, отрочество||noun
+prerequisite|ˌpriːˈrɛkwɪzɪt|Предпосылка, условие||noun
+fortune|ˈfɔːʧən|Судьба, удача, желание, успех||noun
+stubbornness|ˈstʌbənnɪs|Упрямость||noun
+disappointment|dɪsəˈpɔɪntmənt|Разочарование||noun
+distancing|ˈdɪstənsɪŋ|Дистанцирование||noun
+isolation|ˌaɪsəʊˈleɪʃən|Изоляция||noun
+self-care|sɛlf-keə|Забота о себе||noun
+medication|ˌmɛdɪˈkeɪʃən|Лекарство||noun
+celebration|ˌsɛlɪˈbreɪʃən|Мероприятие||noun
+physician|fɪˈzɪʃən|Врач, доктор, терапевт||noun
+treatment|ˈtriːtmənt|Лечение||noun
+improvement|ɪmˈpruːvmənt|Улучшение||noun
+symptom|ˈsɪmptəm|Симптом||noun
+dismay|dɪsˈmeɪ|Огорчение||noun
+cancellation|ˌkænsəˈleɪʃən|Отмена||noun
+suspiciousness|səsˈpɪʃəsnəs|Подозрительность||noun
+escalation|ˌɛskəˈleɪʃən|Обострение, эскалация||noun
+proceeding|prəˈsiːdɪŋ|Разбирательство||noun
+awareness|əˈweənəs|Осознание||noun
+responsibility|rɪsˌpɒnsəˈbɪlɪti|Ответственность||noun
+aftermath|ˈɑːftəmæθ|Последствие||noun
+weakness|ˈwiːknɪs|Слабость||noun
+rivalry|raɪvəlri|Соперничество, противостояние||noun
+restlessness|ˈrɛstlɪsnɪs|Беспокойство||noun
+uncertainty|ʌnˈsɜːtnti|Неуверенность, неопределенность||noun
+stress resistance|strɛs rɪˈzɪstəns|Стрессоустойчивость||noun
+conscience|kɒnʃəns|Совесть||noun
+mindfulness|ˈmaɪndfʊlnəs|Внимательность, мышление, осознанность||noun
+protection|prəˈtɛkʃən|Защита, протекция||noun
+referral|rɪˈfɜrəl|Направление||noun
+hopelessness|ˈhəʊplɪsnɪs|Безнадежность||noun
+reliability|rɪˌlaɪəˈbɪlɪti|Надежность||noun
+verification|ˌvɛrɪfɪˈkeɪʃən|Проверка||noun
+self-isolation|sɛlf-ˌaɪsəʊˈleɪʃən|Самоизоляция||noun
+provocation|prɒvəˈkeɪʃən|Провокация||noun
+prevention|prɪˈvɛnʃən|Профилактика||noun
+side effect|saɪd ɪˈfɛkt|Побочный эффект||noun
+vaccination|ˌvæksɪˈneɪʃən|Вакцинация||noun
+immunization|ɪˌmju(ː)naɪˈzeɪʃən|Иммунизация||noun
+contradiction|ˌkɒntrəˈdɪkʃən|Противоречие||noun
+emotion|ɪˈməʊʃən|Эмоция||noun
+disagreement|ˌdɪsəˈgriːmənt|Разногласие||noun
+misunderstanding|ˌmɪsʌndəˈstændɪŋ|Недоразумение, недопонимание||noun
+negotiation|nɪˌgəʊʃɪˈeɪʃən|Переговоры||noun
+downfall|ˈdaʊnfɔːl|Падение, упадок, крах, понижение||noun
+setback|ˈsɛtbæk|Неудача, провал||noun
+bad luck|bæd lʌk|Невезение, несчастье||noun
+depression|dɪˈprɛʃən|Депрессия||noun
+solitude|ˈsɒlɪtjuːd|Одиночество||noun
+self-blame|sɛlf-bleɪm|Самобичевание||noun
+disorder|dɪsˈɔːdə|Расстройство, разлад||noun
+instability|ɪnstəˈbɪlɪti|Нестабильность||noun
+challenge|ˈʧælɪnʤ|Вызов, сложность||noun
+sustainability|səsˌteɪnəˈbɪlɪti|Устойчивость, жизнеспособность||noun
+duration|djʊəˈreɪʃən|Продолжительность||noun
+luckiness|ˈlʌkɪnəs|Удачливость, везение||noun
+fluke|fluːk|Случайность, шанс||noun
+winning|ˈwɪnɪŋ|Выигрыш, победа, завоевание||noun
+lottery|ˈlɒtəri|Лотерея||noun
+destination|ˌdɛstɪˈneɪʃən|Предназначение||noun
+advantage|ədˈvɑːntɪʤ|Преимущество||noun
+win-win|wɪn-wɪn|Победа, выигрыш||noun
+condition|kənˈdɪʃən|Условие, обстоятельство, состояние||noun
+contest|ˈkɒntɛst|Соревнование, борьба, конкурс||noun
+humbleness|ˈhʌmblnəs|Смирение, скромность, покорность||noun
+fearlessness|ˈfɪəlɪsnəs|Бесстрашие||noun
+hardening|ˈhɑːdnɪŋ|Закалка, твердость||noun
+buoyancy|ˈbɔɪənsi|Оживленность, жизнелюбие||noun
+cheerfulness|ˈʧɪəfʊlnəs|Жизнерадостность, веселость||noun
+hospitality|hɒspɪˈtælɪti|Гостеприимство, радушие||noun
+pessimism|ˈpɛsɪmɪzm|Пессимизм||noun
+morale|mɒˈrɑːl|Мораль, дух, нрав, мужество||noun
+wisdom|ˈwɪzdəm|Мудрость||noun
+proficiency|prəˈfɪʃənsi|Мастерство, умение, квалификация||noun
+applicant|ˈæplɪkənt|Претендент, соискать, заявитель||noun
+decisiveness|dɪˈsaɪsɪvnəs|Решительность||noun
+loophole|ˈluːphəʊl|Лазейка, дыра||noun
+frustration|frʌsˈtreɪ.ʃən|Фрустрация, разочарование||noun
+knowledge|ˈnɒlɪʤ|Знание, познание||noun
+decision-making|dɪˈsɪʒən-ˈmeɪkɪŋ|Принятие решения||noun
+alacrity|əˈlækrɪti|Аккуратность, активность, стремительность||noun
+extremity|ɪksˈtrɛmɪti|Крайность, упорство, чрезмерность||noun
+background|ˈbækgraʊnd|Фон, предпосылка||noun
+preparatory|prɪˈpærətəri|Подготовка||noun
+arrogant|ˈærəʊgənt|Высокомерный, заносчивый||adj
+civilian|səˈvɪljən|Гражданский||adj
+commercial|kəˈmɜːʃəl|Коммерческий||adj
+convenient|kənˈviːniənt|Удобный||adj
+creative|kri(ː)ˈeɪtɪv|Креативный, творческий||adj
+naughty|ˈnɔːti|Озорной, шаловливый||adj
+stationary|ˈsteɪʃnəri|Стационарный||adj
+valuable|ˈvæljʊəbl|Ценный||adj
+significant|sɪgˈnɪfɪkənt|Значительный, существенный||adj
+foremost|ˈfɔːməʊst|Передовой, основной, главный||adj
+recent|ˈriːsnt|Недавний||adj
+updated|ʌpˈdeɪtɪd|Обновленный||adj
+operational|ˌɒpəˈreɪʃənl|Оперативный, рабочий, действующий||adj
+intuitive|ɪnˈtju(ː)ɪtɪv|Интуитивно понятный, интуитивный||adj
+essential|ɪˈsɛnʃəl|Существенный, важный||adj
+numerous|ˈnjuːmərəs|Многочисленный||adj
+compliant|kəmˈplaɪənt|Соответствующий||adj
+straightforward|streɪtˈfɔːwəd|Прямой, прямолинейный||adj
+understandable|ʌndəˈstændəbl|Понятный, доступный||adj
+uncompromising|ʌnˈkɒmprəmaɪzɪŋ|Беспрекословный||adj
+distinguished|dɪsˈtɪŋgwɪʃt|Выдающийся, уважаемый, отличительный||adj
+separate|ˈsɛprɪt|Отдельный||adj
+outstanding|aʊtˈstændɪŋ|Незаурядный||adj
+principal|ˈprɪnsəpəl|Принципиальный, главный||adj
+leading|ˈliːdɪŋ|Ведущий, лидирующий||adj
+cognitive|ˈkɒgnɪtɪv|Когнитивный, познавательный||adj
+cutting-edge|kʌtɪŋ-ɛʤ|Современный, новейший||adj
+precise|prɪˈsaɪs|Точный, четкий||adj
+unmatched|ʌnˈmæʧt|Неповторимый, непревзойденный||adj
+reasonable|ˈriːznəbl|Разумный, целесообразный||adj
+fundamental|ˌfʌndəˈmɛntl|Основополагающий||adj
+brilliant|ˈbrɪljənt|Блестящий, гениальный||adj
+inflexible|ɪnˈflɛksəbl|Несгибаемый, непогрешимый||adj
+crucial||Решающий, критический, важный||adj
+contemporary|kənˈtɛmpərəri|Современный, актуальный||adj
+duplicated|ˈdjuːplɪkeɪtɪd|Дублированный||adj
+tedious|ˈtiːdiəs|Утомительный, кропотливый, надоедливый||adj
+multiple|ˈmʌltɪpl|Множественный, многочисленный||adj
+individual|ɪndɪˈvɪdjʊəl|Личный, индивидуальный||adj
+fitting|ˈfɪtɪŋ|Подходящий||adj
+monotonous|məˈnɒtnəs|Монотонный, однообразный||adj
+ruthless|ˈruːθlɪs|Бесчеловечный||adj
+multi-channel|ˈmʌltɪ-ˈʧænl|Многоканальный||adj
+astonishing|əsˈtɒnɪʃɪŋ|Удивительный, изумительный||adj
+ambitious|æmˈbɪʃəs|Амбициозный, честолюбивый||adj
+captivating|ˈkæptɪveɪtɪŋ|Захватывающий, завораживающий||adj
+profound|prəˈfaʊnd|Глубокомысленный||adj
+qualified|ˈkwɒlɪfaɪd|Квалифицированный||adj
+remarkable|rɪˈmɑːkəbl|Замечательный, примечательный, выдающийся||adj
+additional|əˈdɪʃənl|Дополнительный||adj
+burning|ˈbɜːnɪŋ|Горящий, жгучий||adj
+unassuming|ˌʌnəˈsjuːmɪŋ|Непритязательный||adj
+meaningful|ˈmiːnɪŋfʊl|Значимый, осмысленный||adj
+private|ˈpraɪvɪt|Личный, частный||adj
+careful|ˈkeəfʊl|Бережный, осторожный||adj
+obscure|əbˈskjʊə|Наблюдательный, непонятный||adj
+accomplished|əˈkɒmplɪʃt|Состоятельный, успешный, достигнутый||adj
+ridiculous|rɪˈdɪkjʊləs|Нелепый, смешной||adj
+contemptuous|kənˈtɛmptjʊəs|Презрительный||adj
+fashionable|ˈfæʃnəbl|Модный||adj
+invariably|ɪnˈveərɪəbli|Неизменно||adv
+intermittently|ɪntə(ː)ˈmɪtəntli|Иногда||adv
+infrequently||Редко||adv
+predominantly|prɪˈdɒmɪnəntli|Постоянно||adv
+elsewhere|ˈɛlsˈweə|Где-нибудь||adv
+scarcely|ˈskeəsli|Едва||adv
+otherwise|ˈʌðəwaɪz|Иначе||adv
+quickly|ˈkwɪkli|Быстро||adv
+quietly|ˈkwaɪətli|Спокойно, тихо||adv
+moreover|mɔːˈrəʊvə|Более того||adv
+nevertheless|ˌnɛvəðəˈlɛs|Тем не менее||adv
+somewhat|ˈsʌmwɒt|До некоторой степени||adv
+cheerfully|ˈʧɪəfʊli|Весело||adv
+clumsily|klʌmzɪli|Неуклюже||adv
+in vain|ɪn veɪn|Напрасно||adv
+at once|æt wʌns|Немедленно||adv
+casually|ˈkæʒjʊəli|Случайно||adv
+since that|sɪns ðæt|С тех пор||adv
+by all means|baɪ ɔːl miːnz|Во что бы то ни стало||adv
+readily|ˈrɛdɪli|Охотно||adv
+outside|ˌaʊtˈsaɪd|Снаружи||adv
+besides|bɪˈsaɪdz|Кроме того||adv
+once|wʌns|Однажды||adv
+however|haʊˈɛvə|Однако, как бы ни||adv
+yet|jɛt|Еще, до сих пор||adv
+foolishly|ˈfuːlɪʃli|Глупо, по глупости||adv
+clearly|ˈklɪəli|Очевидно||adv
+actually|ˈækʧʊəli|В общем, вообще-то||adv
+completely|kəmˈpliːtli|Совершенно, абсолютно||adv
+extremely|ɪksˈtriːmli|Безумно||adv
+nearby|ˈnɪəbaɪ|Рядом, неподалеку||adv
+unmistakable|ʌnmɪsˈteɪkəbl|Безошибочно||adv
+accurately|ˈækjʊrɪtli|Точно||adv
+definitely|ˈdɛfɪnɪtli|Абсолютно||adv
+relentlessly|rɪˈlɛntlɪsli|Безостановочно||adv
+incredibly|ɪnˈkrɛdəbli|Невероятно, очень, неимоверно||adv
+decidedly|dɪˈsaɪdɪdli|Решительно||adv
+firmly|ˈfɜːmli|Уверенно||adv
+carelessly|ˈkeəlɪsli|Беспечно||adv` },
+  b2: { name: "B2 Upper-Intermediate", words: `
+abhor|əbˈhɔː|Ненавидеть||verb
+abrogate|ˈæbrəʊgeɪt|Отменить||verb
+abstain|əbˈsteɪn|Воздержаться||verb
+strengthen|ˈstrɛŋθən|Укрепить, усилить||verb
+yield|jiːld|Уступить||verb
+sustain|səsˈteɪn|Поддерживать||verb
+seize|siːz|Захватить||verb
+nourish|ˈnʌrɪʃ|Питать||verb
+desist|dɪˈzɪst|Запретить||verb
+recapitulate|riːkəˈpɪtjʊleɪt|Пересказывать||verb
+proclaim|prəˈkleɪm|Провозгласить, объявить||verb
+beget|bɪˈgɛt|Родить||verb
+mature|məˈtjʊə|Созреть||verb
+contemplate|ˈkɒntɛmpleɪt|Созерцать||verb
+flourish|ˈflʌrɪʃ|Процветать||verb
+cable|ˈkeɪbl|Проводить||verb
+congregate|ˈkɒŋgrɪgeɪt|Собираться||verb
+induce|ɪnˈdjuːs|Побудить, побуждать||verb
+highlight|ˈhaɪˌlaɪt|Выделять||verb
+foretell|fɔːˈtɛl|Предсказывать||verb
+foreshadow|fɔːˈʃædəʊ|Предвещать||verb
+interlace|ɪntə(ː)ˈleɪs|Переплетать||verb
+relish|ˈrɛlɪʃ|Наслаждаться, смаковать||verb
+tread|trɛd|Ухаживать||verb
+rehearse|rɪˈhɜːs|Репетировать||verb
+narrate|nəˈreɪt|Рассказывать||verb
+alleviate|əˈliːvɪeɪt|Облегчать, облегчить||verb
+bilk|bɪlk|Обналичивать||verb
+refine|rɪˈfaɪn|Усовершенствовать||verb
+restructure|riːˈstrʌkʧə|Реструктурировать||verb
+decay|dɪˈkeɪ|Распадаться||verb
+corrupt|kəˈrʌpt|Развращать||verb
+alter|ˈɔːltə|Изменяться||verb
+discern|dɪˈsɜːn|Различить||verb
+disclose|dɪsˈkləʊz|Раскрыть||verb
+inscribe|ɪnˈskraɪb|Начертать||verb
+proffer|ˈprɒfə|Предложить||verb
+meddle|ˈmɛdl|Вмешиваться||verb
+violate|ˈvaɪəleɪt|Нарушать||verb
+further|ˈfɜːðə|Продолжать||verb
+humble|hʌmbl|Смирять||verb
+subdue|səbˈdjuː|Покорять||verb
+demote|dɪˈməʊt|Понижать, разжаловать||verb
+obey|əˈbeɪ|Подчиняться, слушаться||verb
+employ|ɪmˈplɔɪ|Нанимать||verb
+chastise|ʧæsˈtaɪz|Наказывать||verb
+concoct|kənˈkɒkt|Придумать||verb
+condone|kənˈdəʊn|Потворствовать||verb
+cringe|krɪnʤ|Сокрушаться||verb
+ensconce|ɪnˈskɒns|Приютить, успокоить||verb
+sanction|ˈsæŋkʃən|Наказывать||verb
+affix|ˈæfɪks|Прикрепить, зафиксировать||verb
+curb|kɜːb|Ограничить, обуздать||verb
+restrain|rɪsˈtreɪn|Сдерживать||verb
+enlarge|ɪnˈlɑːʤ|Увеличить, повысить||verb
+govern|ˈgʌvən|Управлять||verb
+reckon|ˈrɛkən|Пересчитать||verb
+esteem|ɪsˈtiːm|Ценить, уважать||verb
+sweeten|swiːtn|Подсластить||verb
+fluctuate|ˈflʌktjʊeɪt|Колебаться||verb
+fare|feə|Зависеть, дорожать, подвергаться||verb
+halt|hɔːlt|Остановить, останавливать||verb
+endure|ɪnˈdjʊə|Выдержать, выдерживать||verb
+revenge|rɪˈvɛnʤ|Мстить||verb
+attain|əˈteɪn|Достигать, достичь||verb
+divest|daɪˈvɛst|Расставаться||verb
+elucidate|ɪˈluːsɪdeɪt|Прояснить||verb
+invent|ɪnˈvɛnt|Изобретать, придумывать||verb
+shield|ʃiːld|Защищать||verb
+resemble|rɪˈzɛmbl|Походить, быть похожим, напоминать||verb
+ingest|ɪnˈʤɛst|Проглотить, заглотить||verb
+dispense|dɪsˈpɛns|Раздавать, дозировать, выдавать||verb
+match|mæʧ|Соответствовать||verb
+engross|ɪnˈgrəʊs|Вовлечь, увлечь, задействовать||verb
+collude|kəˈluːd|Сговориться, войти||verb
+split|splɪt|Разделить, разрушить||verb
+unveil|ʌnˈveɪl|Раскрыть, огласить, показать||verb
+bear|beə|Выносить, выдерживать, рожать||verb
+prompt|prɒmpt|Подсказать, побудить||verb
+mold|məʊld|Лепить, формировать||verb
+rub|rʌb|Натирать, втирать, растирать||verb
+stomp|stɒmp|Топтать, затоптать||verb
+sense|sɛns|Чувствовать, понимать||verb
+outdate|ˈaʊtˌdeɪt|Устаревать||verb
+clutter|ˈklʌtə|Загромождать, захламить||verb
+scrabble|ˈskræbl|Царапать||verb
+accuse|əˈkjuːz|Обвинять||verb
+summon|ˈsʌmən|Вызвать, созвать||verb
+outfit|ˈaʊtfɪt|Снарядить, обмундировать||verb
+convert|ˈkɒnvɜːt|Преобразовать||verb
+override|əʊvəˈraɪd|Переопределить, перераспределить||verb
+bind|baɪnd|Связать||verb
+nurture|ˈnɜːʧə|Воспитывать||verb
+recount|riːˈkaʊnt|Пересказывать||verb
+backlog|ˈbæklɒg|Отставать||verb
+inspectorate|ɪnˈspɛktərɪt|Инспектировать, проверять||verb
+unearth|ʌnˈɜːθ|Раскопать||verb
+trap|træp|Заманить в ловушку||verb
+questionnaire|ˌkwɛstɪəˈneə|Анкета, опросник||noun
+oversight|ˈəʊvəsaɪt|Надзор, контроль, проверка||noun
+stewardship||Ответственность, управление||noun
+estimating|ˈɛstɪmeɪtɪŋ|Оценивание, подсчет, оценка||noun
+inquiry|ɪnˈkwaɪəri|Исследование, опрос, изучение, следствие||noun
+contemplation|ˌkɒntɛmˈpleɪʃən|Размышление, обдумывание, рассуждение||noun
+alternative|ɔːlˈtɜːnətɪv|Альтернатива||noun
+grade|greɪd|Класс, ранг, балл, оценка||noun
+graduate|ˈgrædjʊət|Выпускник, дипломник||noun
+credential|krɪˈdɛnʃəl|Диплом, аттестат, свидетельство||noun
+accolade|ækəʊleɪd|Награда, похвала, благодарность||noun
+scale|skeɪl|Шкала, величина||noun
+gliding|ˈglaɪdɪŋ|Планерка||noun
+record|ˈrɛkɔːd|Запись, досье, рекорд||noun
+measurability|ˌmɛʒərəˈbɪlɪti|Исчислимость, измеримость, измерение||noun
+homeschooler|həʊm skuːlə|Ученик на домашнем обучении||noun
+worksheet|ˈwɜːkˌʃiːt|Рабочий лист, таблица||noun
+galore|gəˈlɔː|Множество, куча, обилиие||noun
+membership|ˈmɛmbəʃɪp|Членство, участие, принадлежность, состав||noun
+progress tracker|ˈprəʊgrəs ˈtrækə|Трекер прогресса||noun
+sequence|ˈsiːkwəns|Последовательность, порядок, очередь||noun
+undergraduate|ˌʌndəˈgrædjʊɪt|Бакалавр, ученик||noun
+degree|dɪˈgriː|Степень, диплом||noun
+carer|ˈkeərə|Воспитатель, опекун||noun
+transition|trænˈzɪʃ(ə)n|Переход, превращение||noun
+recognition|ˌrɛkəgˈnɪʃən|Признание, осознание||noun
+workforce|wɜːkˌfɔːs|Рабочая сила, кадры||noun
+volunteering|ˌvɒlənˈtɪərɪŋ|Волонтерство||noun
+internship|ˈɪntɜːnʃɪp|Стажировка, интернатура||noun
+accommodation|əˌkɒməˈdeɪʃ(ə)n|Проживание, размещение, жилье||noun
+enrolment||Зачисление, набор, поступление||noun
+guideline|ˈgaɪdlaɪn|Рекомендация, инструкция||noun
+hub|hʌb|Центр, средоточие, концентратор||noun
+piety|ˈpaɪəti|Благочестие||noun
+impact|ˈɪmpækt|Последствие, результат, влияние||noun
+well-being|wɛl-ˈbiːɪŋ|Благополучие||noun
+reasoning|ˈriːznɪŋ|Довод, логика, обоснование||noun
+incursion|ɪnˈkɜːʃən|Нарушение, столкновение||noun
+venue|ˈvɛnjuː|Место проведения||noun
+doorstep|ˈdɔːstɛp|Порог квартиры||noun
+supervisor|ˈsjuːpəvaɪzə|Супервайзер||noun
+affirmation|ˌæfɜːˈmeɪʃ(ə)n|Утверждение, подтверждение||noun
+uptick|ʌp tɪk|Стимул, увеличение, толчок, подъем||noun
+drop-off|drɒp-ɒf|Спад, снижение, упадок||noun
+conversation|kɒnvəˈseɪʃən|Разговор, беседа, обсуждение||noun
+indifference|ɪnˈdɪfrəns|Безразличие, безучастие||noun
+ageism|ˈeɪʤɪz(ə)m|Эйджизм||noun
+segmentation|sɛgmɛnˈteɪʃən|Сегментация||noun
+landmark|ˈlændmɑːk|Веха, ориентир, достопримечательность||noun
+upheaval|ʌpˈhiːvəl|Переворот, катастрофа, волнение||noun
+harassment|ˈhærəsmənt|Преследование, домогательство||noun
+disarray|dɪsəˈreɪ|Беспорядок, разброд||noun
+proof|pruːf|Доказательство||noun
+influx|ˈɪnflʌks|Наплыв, приток||noun
+struggle|ˈstrʌgl|Борьба, поединок, спор||noun
+loneliness|ˈləʊnlɪnəs|Одиночество, уединение||noun
+mental health|ˈmɛntl hɛlθ|Психическое здоровье||noun
+authenticity|ˌɔːθɛnˈtɪsɪti|Подлинность, самобытность||noun
+donation|dəʊˈneɪʃən|Пожертвование, донорство||noun
+backlash|ˈbæklæʃ|Обратная реакция||noun
+connotation|kɒnəʊˈteɪʃən|Подтекст, смысл, намек||noun
+affinity|əˈfɪnɪti|Близость, сходство, симпатия||noun
+diversification|daɪˌvɜːsɪfɪˈkeɪʃən|Диверсификация, разнообразие||noun
+takeover|pteɪkˌəʊvə|Поглощение||noun
+feminism|ˈfɛmɪnɪzm|Феминизм||noun
+equality|i(ː)ˈkwɒlɪti|Равенство||noun
+sustainability|səsˌteɪnəˈbɪlɪti|Устойчивость, стабильность||noun
+chunk|ʧʌŋk|Кусок, ломоть, глыба||noun
+repercussion|ˌriːpɜːˈkʌʃən|Последствия, отзвук||noun
+preference|ˈprɛfərəns|Предпочтение, преимущество||noun
+aspiration|ˌæspəˈreɪʃ(ə)n|Стремление, желание||noun
+consumption|kənˈsʌm(p)ʃən|Потребление, расход||noun
+mismanagement|ˌmɪsˈmænɪʤmənt|Бесхозяйственность||noun
+keynote|ˈkiːnəʊt|Лейтмотив||noun
+rivalry|ˈraɪvəlri|Соперничество, противостояние||noun
+disparity|dɪsˈpærɪti|Несоответствие, неравенство||noun
+repayment|riːˈpeɪmənt|Расплата, погашение, возврат||noun
+allegation|ˌælɪˈgeɪʃ(ə)n|Обвинение, утверждение||noun
+prevalence|ˈprɛvələns|Распространенность, преобладание||noun
+nostalgia|nɒstˈælʤɪə|Ностальгия, сожаление||noun
+uplighting|ʌp ˈlaɪtɪŋ|Освещение, просвещение||noun
+escapism|ɪsˈkeɪpɪzm|Эскапизм, уход, бегство||noun
+nonfiction|nɒnˈfɪkʃən|Нон-фикшн, нехудожественная литература||noun
+psychology|saɪˈkɒləʤi|Психология||noun
+funnel|ˈfʌnl|Воронка, водоворот||noun
+amateur|ˈæmətə(ː)|Любитель, фанат||noun
+protagonist|prəʊˈtægənɪst|Протагонист, главный герой||noun
+pinpoint|ˈpɪnpɔɪnt|Точка опоры, привязка||noun
+announcement|əˈnaʊnsmənt|Анонс, объявление||noun
+consequence|ˈkɒnsɪkwəns|Заключение, следствие||noun
+exaggeration|ɪgˌzæʤəˈreɪʃən|Преувеличение, утрирование||noun
+scrutiny|ˈskruːtɪni|Исследование, тщательная проверка||noun
+blueprint|ˈbluːprɪnt|План, проект, чертеж||noun
+expansion|ɪksˈpænʃən|Развитие, расширение||noun
+extent|ɪksˈtɛnt|Степень, размах, масштаб||noun
+victim|ˈvɪktɪm|Жертва||noun
+ownership|ˈəʊnəʃɪp|Право собственности, владение||noun
+mass-market|mæs-ˈmɑːkɪt|Масс-маркет, массовая торговля||noun
+variety|vəˈraɪəti|Многообразие, разновидность||noun
+headline|ˈhɛdlaɪn|Заголовок, заглавие||noun
+restriction|rɪsˈtrɪkʃən|Ограничение, запрет||noun
+comprehension|ˌkɒmprɪˈhɛnʃən|Понимание, осмысление||noun
+existence|ɪgˈzɪstəns|Бытие, существование||noun
+counterpart|ˈkaʊntəpɑːt|Аналог, двойник||noun
+goldmine|ˈgəʊldmaɪn|Золотая жила||noun
+applause|əˈplɔːz|Аплодисменты||noun
+satisfaction|ˌsætɪsˈfækʃən|Удовлетворение, удовольствие||noun
+testimonial|ˌtɛstəˈməʊniəl|Отзыв||noun
+empathy|ˈɛmpəθi|Эмпатия||noun
+consideration|kənˌsɪdəˈreɪʃən|Размышление, соображение||noun
+touchpoint|tʌʧ pɔɪnt|Точка соприкосновения||noun
+jargon|ˈʤɑːgən|Жаргон||noun
+background|ˈbækgraʊnd|Предыстория||noun
+relief|rɪˈliːf|Помощь, разрядка||noun
+perception|pəˈsɛpʃən|Восприятие||noun
+stance|stɑːns|Позиция, отношение||noun
+catharsis|kəˈθɑːsɪs|Катарсис||noun
+solace|ˈsɒləs|Утешение||noun
+fast-changing|fɑːst-ˈʧeɪnʤɪŋ|Быстро меняющийся||adj
+highly skilled|ˈhaɪli skɪld|Высококвалифицированный||adj
+eligible|ˈɛlɪʤəbl|Подходящий||adj
+vibrant|ˈvaɪbrənt|Жизнеспособный, яркий, живой||adj
+lifelong|ˈlaɪflɒŋ|Пожизненный||adj
+fully furnished|ˈfʊli ˈfɜːnɪʃt|Полностью обустроенный||adj
+canonical|kəˈnɒnɪkəl|Канонический||adj
+research-based|rɪˈsɜːʧ-beɪst|Основанный на исследованиях||adj
+inspirational|ˌɪnspəˈreɪʃən(ə)l|Вдохновляющий||adj
+holistic|həˈlɪstɪk|Целостный||adj
+empirical|ɛmˈpɪrɪkəl|Эмпирический||adj
+fun-filled|fʌn-fɪld|Наполненный весельем||adj
+award-winning|əˈwɔːd-ˈwɪnɪŋ|Отмеченный наградой, награжденный||adj
+rapid|ˈræpɪd|Быстрый||adj
+job-ready|ʤɒb-ˈrɛdi|Готовый к работе||adj
+median|ˈmiːdiən|Средний, медианный||adj
+lucrative|ˈluːkrətɪv|Выгодный||adj
+savvy|ˈsævi|Проницательный||adj
+thoughtful|θɔːtfʊl|Вдумчивый||adj
+elusive|ɪˈluːsɪv|Неуловимый||adj
+on-demand|ɒn-dɪˈmɑːnd|Востребованный||adj
+nonexistent|nɒn ɪgˈzɪstənt|Несуществующий||adj
+luxurious|lʌgˈzjʊərɪəs|Роскошный||adj
+entertaining|ˌɛntəˈteɪnɪŋ|Развлекательный||adj
+conscious|ˈkɒnʃəs|Сознательный||adj
+mythological|ˌmɪθəˈlɒʤɪkəl|Мифологический||adj
+prosaic|prəʊˈzeɪɪk|Прозаический||adj
+uplifting|ʌpˈlɪftɪŋ|Поднимающий настроение||adj
+looming|ˈluːmɪŋ|Надвигающийся||adj
+people-first|ˈpiːpl-fɜːst|Ориентированный на человека||adj
+user-generated|ˈjuːzə-ˈʤɛnəreɪtɪd|Созданный пользователями||adj
+experimental|ɛksˌpɛrɪˈmɛntl|Экспериментальный||adj
+aesthetic|iːsˈθɛtɪk|Эстетический||adj
+feasible|ˈfiːzəbl|Осуществимый||adj
+foreseeable|fɔːˈsiːəbl|Предвидимый||adj
+streamlined|ˈstriːmlaɪnd|Оптимизированный, удобный, обтекаемый||adj
+brand new|brænd njuː|Инновационный||adj
+ephemeral|ɪˈfɛmərəl|Эфемерный||adj
+prevalent|ˈprɛvələnt|Распространенный||adj
+sizable|ˈsaɪzəbl|Большой||adj
+shoppable|ˈʃɒpəbl|Доступный для покупки||adj
+stratospheric|Strato ˈsfɛrɪk|Стратосферный||adj
+major|ˈmeɪʤə|Крупный, главный||adj
+unprecedented|ʌnˈprɛsɪdəntɪd|Беспрецедентный||adj
+exorbitant|ɪgˈzɔːbɪtənt|Непомерный||adj
+artistic|ɑːˈtɪstɪk|Художественный, творческий||adj
+prospective|prəsˈpɛktɪv|Перспективный||adj
+like-minded|ˈlaɪkˈmaɪndɪd|Похожий||adj
+customer-centric|ˈkʌstəmə-ˈsɛntrɪk|Ориентированный на клиента||adj
+editorial|ˌɛdɪˈtɔːrɪəl|Редакционный, редакторский||adj
+solitary|ˈsɒlɪtəri|Одиночный, уединенный||adj
+controversial|ˌkɒntrəˈvɜːʃəl|Спорный||adj
+shareable|ˈʃeərəbl|Делимый, разделяемый||adj
+journalistic|ˌʤɜːnəˈlɪstɪk|Журналистский||adj
+elegiac|ˌɛlɪˈʤaɪək|Элегический||adj
+short-lived|ʃɔːt-lɪvd|Недолговечный||adj
+authoritative|ɔːˈθɒrɪtətɪv|Авторитетный||adj
+subsequent|ˈsʌbsɪkwənt|Последующий||adj
+unavoidable|ˌʌnəˈvɔɪdəbl|Неизбежный||adj
+disastrous|dɪˈzɑːstrəs|Катастрофический||adj
+collaboratively|kəˈlæb(ə)rətɪvli|Совместно||adv
+twofold|ˈtuːfəʊld|Вдвойне||adv
+backwards|ˈbækwədz|Наоборот, назад||adv
+alongside|əˈlɒŋˈsaɪd|Наряду||adv
+face-to-face|feɪs-tuː-feɪs|Лицом к лицу||adv
+increasingly|ɪnˈkriːsɪŋli|Все чаще||adv
+likewise|ˈlaɪkwaɪz|Аналогично||adv
+inherently|ɪnˈhɪərəntli|По своей сути||adv
+yearslong|jɪəzlɒŋ|В течение года||adv
+dramatically|drəˈmætɪk(ə)li|Значительно||adv
+overall|ˈəʊvərɔːl|В целом||adv
+sustainably|səsˈteɪnˈeɪbli|Устойчиво||adv
+thoroughly|ˈθʌrəli|Тщательно||adv
+radically|ˈrædɪkəli|Радикально||adv
+undeniably|ˌʌndɪˈnaɪəbli|Бесспорно||adv
+amongst|əˈmʌŋst|Среди||adv
+specifically|spəˈsɪfɪk(ə)li|Конкретно||adv
+unless|ənˈlɛs|Если только||adv
+seamless|ˈsiːmlɪs|Беспрепятственно||adv
+alternatively|ɔːlˈtɜːnətɪvli|Альтернативно||adv
+disproportionately|ˌdɪsprəˈpɔːʃnɪtli|Непропорционально||adv
+innermost|ˈɪnəməʊst|Сокровенно||adv
+midway|ˈmɪdˈweɪ|Посредине||adv
+unthinkable|ʌnˈθɪŋkəbl|Немыслимо||adv
+ruthlessly|ˈruːθlɪsli|Беспощадно||adv
+altogether|ˌɔːltəˈgɛðə|В целом||adv
+beneath|bɪˈniːθ|Под, внизу||adv
+factually|ˈfækʧʊəli|По-настоящему||adv
+indeed|ɪnˈdiːd|Действительно||adv
+occasionally|əˈkeɪʒnəli|Время от времени||adv
+plenty|ˈplɛnti|Много, достаточно, полно||adv
+anywise|ˈɛnɪwaɪz|Как угодно||adv
+somewhere|ˈsʌmweə|Где-то||adv
+throughout|θru(ː)ˈaʊt|Повсюду||adv
+scarcely|ˈskeəsli|Скудно, редко||adv
+weekly|ˈwiːkli|Еженедельно||adv
+quietly|ˈkwaɪətli|Тихо||adv
+rather too|ˈrɑːðə tuː|Скорее слишком||adv
+chiefly|ˈʧiːfli|В основном||adv` }
+};
 const SETS = {
+  ...LEVEL_DATA,
   basics: { name: "Повседневное", words: `
 appreciate|əˈpriːʃieɪt|ценить; быть благодарным|I really appreciate your help.
 available|əˈveɪləbl|доступный, свободный|Is this seat available?
@@ -331,18 +1739,20 @@ const SESSION = 12, NEW_LIMIT = 8;
 const DAY = 864e5;
 const KEY = "leksikon.v1";
 
-let db = { progress: {}, custom: [], streak: { last: "", count: 0 }, set: "basics", mode: "cards", dir: "en" };
+let db = { progress: {}, custom: [], streak: { last: "", count: 0 }, set: "a1", mode: "cards", dir: "en" };
 try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) db = Object.assign(db, s); } catch (e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} };
 
-const parse = (set, text) => text.trim().split("\n").map(l => { const [en, ipa, ru, ex] = l.split("|"); return { id: set + ":" + en, en, ipa, ru, ex }; });
+const parse = (set, text) => text.trim().split("\n").map(l => { const [en, ipa, ru, ex, pos] = l.split("|"); return { id: set + ":" + en, en, ipa, ru, ex, pos }; });
 const WORDS = {};
 for (const k in SETS) WORDS[k] = parse(k, SETS[k].words);
 const customWords = () => db.custom.map(w => ({ id: "custom:" + w.en, en: w.en, ipa: "", ru: w.ru, ex: w.ex || "" }));
 const setWords = k => k === "custom" ? customWords() : WORDS[k] || [];
 const allSetKeys = () => [...Object.keys(SETS), "custom"];
 const setName = k => k === "custom" ? "Мои слова" : SETS[k].name;
-if (!allSetKeys().includes(db.set)) db.set = "basics";
+if (!allSetKeys().includes(db.set)) db.set = "a1";
+const POS = { verb: "глагол", noun: "существительное", adj: "прилагательное", adv: "наречие" };
+const POS_PLURAL = { verb: "Глаголы", noun: "Существительные", adj: "Прилагательные", adv: "Наречия" };
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -407,9 +1817,9 @@ function progressBar() {
   return `<div class="progress"><span>${done} / ${S.queue.length}</span><div class="track"><i style="width:${S.queue.length ? done / S.queue.length * 100 : 0}%"></i></div><span>${setName(db.set)}</span></div>`;
 }
 function boxLabel(w) {
-  const p = prog(w);
-  if (!p) return "новое слово";
-  return p.box >= LEARNED_BOX ? "выучено · уровень " + p.box : "уровень " + p.box + " из 5";
+  const p = prog(w), pos = w.pos ? POS[w.pos] + " · " : "";
+  if (!p) return pos + "новое";
+  return pos + (p.box >= LEARNED_BOX ? "выучено" : "уровень " + p.box + " из 5");
 }
 
 function emptyState() {
@@ -450,7 +1860,9 @@ function cardsView(w) {
 function quizView(w) {
   const en = db.dir === "en";
   if (!S.state.opts) {
-    const pool = setWords(db.set).length >= 4 ? setWords(db.set) : allSetKeys().flatMap(setWords);
+    let pool = setWords(db.set).length >= 4 ? setWords(db.set) : allSetKeys().flatMap(setWords);
+    const samePos = pool.filter(x => x.pos === w.pos);
+    if (w.pos && samePos.length >= 4) pool = samePos;
     const others = shuffle(pool.filter(x => x.id !== w.id && x.ru !== w.ru)).slice(0, 3);
     S.state.opts = shuffle([w, ...others]);
   }
@@ -477,7 +1889,7 @@ function writeView(w) {
     <div class="word ru">${esc(w.ru)}</div>
     ${clue ? `<div class="ex">${clue}</div>` : ""}
     ${st.done ? `<div class="ipa">${w.ipa ? "[" + esc(w.ipa) + "]" : ""} ${speakBtn(w.en)}</div>` : ""}
-    <div class="hint">${w.en.includes(" ") ? "Несколько слов · " : ""}${w.en.length} символов${hintStr ? " · подсказка: <b>" + esc(hintStr) + "</b>" : ""}</div>
+    <div class="hint">${w.pos === "verb" ? "Без to · " : ""}${w.en.includes(" ") ? "Несколько слов · " : ""}${w.en.length} символов${hintStr ? " · подсказка: <b>" + esc(hintStr) + "</b>" : ""}</div>
   </div>
   <form class="type-row" id="writeForm" autocomplete="off">
     <input id="answer" class="${st.done ? (st.ok ? "right" : "wrong") : ""}" placeholder="Ваш ответ" autocapitalize="off" spellcheck="false" ${st.done ? "readonly" : ""} value="${esc(st.value || "")}">
@@ -488,29 +1900,34 @@ function writeView(w) {
 }
 
 // ---- dictionary ----
-let dictQuery = "", confirmReset = false;
+let dictQuery = "", dictPos = "", confirmReset = false;
 function dictView() {
   const ws = setWords(db.set), q = norm(dictQuery);
-  const list = q ? ws.filter(w => norm(w.en).includes(q) || w.ru.toLowerCase().includes(q)) : ws;
+  const posKeys = Object.keys(POS).filter(k => ws.some(w => w.pos === k));
+  if (!posKeys.includes(dictPos)) dictPos = "";
+  const list = ws.filter(w => (!dictPos || w.pos === dictPos) && (!q || norm(w.en).includes(q) || w.ru.toLowerCase().includes(q)));
+  const posChips = posKeys.length ? `<div class="sets">${[["", "Все"], ...posKeys.map(k => [k, POS_PLURAL[k]])].map(([k, n]) =>
+    `<button class="set" data-pos="${k}" aria-pressed="${k === dictPos}">${n} <small>${k ? ws.filter(w => w.pos === k).length : ws.length}</small></button>`).join("")}</div>` : "";
   const isCustom = db.set === "custom";
   const rows = list.map(w => {
     const box = prog(w)?.box || 0;
     return `<div class="row"><div class="l"><span class="en">${esc(w.en)}</span>${w.ipa ? `<span class="ipa">[${esc(w.ipa)}]</span>` : ""}<div class="ru">${esc(w.ru)}</div></div>
       <div class="r"><span class="dots" title="Уровень ${box} из 5">${[1,2,3,4,5].map(n => `<i class="${box >= n ? "on" : ""}"></i>`).join("")}</span>${speakBtn(w.en)}${isCustom ? `<button class="del" data-del="${esc(w.en)}" aria-label="Удалить ${esc(w.en)}" title="Удалить">×</button>` : ""}</div></div>`;
   }).join("");
-  return `<div class="panel"><h2>Добавить своё слово</h2>
+  return `  <div class="dict-tools"><input id="search" type="search" placeholder="Поиск в наборе «${setName(db.set)}»" value="${esc(dictQuery)}">
+    <span class="legend"><span class="dots"><i class="on"></i><i class="on"></i><i></i></span> уровень запоминания</span></div>
+  ${posChips}
+  <div class="dict">${rows || `<div class="empty">${ws.length ? "Ничего не найдено" : "Здесь пока пусто. Добавьте первое слово в форме ниже."}</div>`}</div>
+  <div class="confirm">${confirmReset
+    ? `Сбросить прогресс набора «${setName(db.set)}»? <button class="link danger" data-act="reset-yes">Да, сбросить</button> <button class="link" data-act="reset-no">Отмена</button>`
+    : `<button class="link" data-act="reset">Сбросить прогресс этого набора</button>`}</div>
+  <div class="panel"><h2>Добавить своё слово</h2>
     <form class="add" id="addForm" autocomplete="off">
       <input id="addEn" placeholder="Слово по-английски, например: wholesome" required>
       <input id="addRu" placeholder="Перевод, например: полезный, здоровый" required>
       <input id="addEx" class="full" placeholder="Пример (необязательно): It's a wholesome meal.">
       <button class="btn primary full" type="submit">Добавить в «Мои слова»</button>
-    </form></div>
-  <div class="dict-tools"><input id="search" type="search" placeholder="Поиск в наборе «${setName(db.set)}»" value="${esc(dictQuery)}">
-    <span class="legend"><span class="dots"><i class="on"></i><i class="on"></i><i></i></span> уровень запоминания</span></div>
-  <div class="dict">${rows || `<div class="empty">${ws.length ? "Ничего не найдено" : "Здесь пока пусто. Добавьте первое слово в форме выше."}</div>`}</div>
-  <div class="confirm">${confirmReset
-    ? `Сбросить прогресс набора «${setName(db.set)}»? <button class="link danger" data-act="reset-yes">Да, сбросить</button> <button class="link" data-act="reset-no">Отмена</button>`
-    : `<button class="link" data-act="reset">Сбросить прогресс этого набора</button>`}</div>`;
+    </form></div>`;
 }
 
 // ---- render ----
@@ -559,7 +1976,8 @@ document.addEventListener("click", e => {
   const t = e.target.closest("button, #flip"); if (!t) return;
   if (t.dataset.say) { e.stopPropagation(); speak(t.dataset.say); return; }
   if (t.id === "flip") { if (!S.state.turned) act("flip"); return; }
-  if (t.dataset.set) { db.set = t.dataset.set; dictQuery = ""; confirmReset = false; save(); S = null; renderSets(); render(); return; }
+  if (t.dataset.pos !== undefined) { dictPos = t.dataset.pos; render(); return; }
+  if (t.dataset.set) { db.set = t.dataset.set; dictQuery = ""; dictPos = ""; confirmReset = false; save(); S = null; renderSets(); render(); return; }
   if (t.dataset.mode) { db.mode = t.dataset.mode; save(); if (S) { S.state = {}; } render(); return; }
   if (t.dataset.go) { db.mode = t.dataset.go; save(); render(); return; }
   if (t.id === "dir") { db.dir = db.dir === "en" ? "ru" : "en"; save(); if (S) S.state = {}; render(); return; }
