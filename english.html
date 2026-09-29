@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Английский Лексикон</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,500;0,7..72,700;1,7..72,400&family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap">
+<style>
+/* Layout: one centered study column; the word lives on a ruled index card, everything else is quiet chrome around it */
+:root {
+  --paper: #eef1f5;
+  --card: #fdfdfb;
+  --ink: #1b2340;
+  --ink-soft: #5a6380;
+  --rule: #d6deea;
+  --line: #c9d5e6;
+  --margin: #e0736f;
+  --mark: #f5d45a;
+  --mark-ink: #3a2e00;
+  --good: #2f8f5b;
+  --good-bg: #e2f3e9;
+  --bad: #c2413b;
+  --bad-bg: #fbe5e3;
+  --chip: #e2e7ef;
+  --shadow: 0 1px 2px rgba(27,35,64,.06), 0 8px 24px rgba(27,35,64,.08);
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-word: "Literata", Georgia, "Times New Roman", serif;
+  --f-ui: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #11141d; --card: #1a1f2d; --ink: #e7eaf3; --ink-soft: #9aa3bd;
+    --rule: #2a3144; --line: #283047; --margin: #b85a57; --mark: #d9b440; --mark-ink: #1c1600;
+    --good: #5fc48c; --good-bg: #173325; --bad: #f07a73; --bad-bg: #3a1c1b; --chip: #232a3b;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #11141d; --card: #1a1f2d; --ink: #e7eaf3; --ink-soft: #9aa3bd;
+  --rule: #2a3144; --line: #283047; --margin: #b85a57; --mark: #d9b440; --mark-ink: #1c1600;
+  --good: #5fc48c; --good-bg: #173325; --bad: #f07a73; --bad-bg: #3a1c1b; --chip: #232a3b;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 720px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 18px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 20px; letter-spacing: -.01em; display: flex; align-items: baseline; gap: 8px; }
+.brand .ab { background: var(--mark); color: var(--mark-ink); padding: 0 6px; border-radius: 3px; }
+.stats { display: flex; gap: 18px; font-variant-numeric: tabular-nums; }
+.stat { display: flex; flex-direction: column; line-height: 1.2; }
+.stat b { font-size: 18px; font-weight: 700; }
+.stat span { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); }
+
+.sets { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.set { flex: 0 0 auto; border: 1px solid transparent; background: var(--chip); border-radius: 999px; padding: 6px 12px 6px 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.set[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.set .meter { width: 34px; height: 4px; border-radius: 2px; background: color-mix(in srgb, currentColor 22%, transparent); overflow: hidden; }
+.set .meter i { display: block; height: 100%; background: var(--mark); }
+
+.bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tabs { display: inline-flex; background: var(--chip); border-radius: 10px; padding: 3px; gap: 2px; flex-wrap: wrap; }
+.tab { border: 0; background: transparent; padding: 7px 14px; border-radius: 8px; font-weight: 500; font-size: 14px; color: var(--ink-soft); }
+.tab[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.dir { border: 1px solid var(--rule); background: transparent; border-radius: 8px; padding: 6px 10px; font-size: 13px; font-weight: 600; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+
+.progress { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.progress .track { flex: 1; height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.progress .track i { display: block; height: 100%; background: var(--ink); transition: width .3s; }
+
+/* index card */
+.stage { perspective: 1400px; }
+.card { position: relative; min-height: 300px; border-radius: 6px; background: var(--card); box-shadow: var(--shadow); padding: 34px 24px 24px 56px; overflow: hidden;
+  background-image: linear-gradient(var(--card) 0 58px, transparent 58px), repeating-linear-gradient(to bottom, transparent 0 31px, var(--line) 31px 32px);
+  display: flex; flex-direction: column; gap: 14px; }
+.card::before { content: ""; position: absolute; left: 40px; top: 0; bottom: 0; width: 1px; background: var(--margin); opacity: .7; }
+.card::after { content: ""; position: absolute; left: 0; right: 0; top: 58px; height: 2px; background: var(--margin); opacity: .45; }
+.flip { cursor: pointer; transition: transform .45s cubic-bezier(.3,.7,.3,1); transform-style: preserve-3d; position: relative; }
+.flip.turned { transform: rotateY(180deg); }
+.flip .face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip .back { position: absolute; inset: 0; transform: rotateY(180deg); }
+.eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); font-weight: 600; margin-top: -22px; display: flex; justify-content: space-between; gap: 2px 12px; flex-wrap: wrap; }
+.eyebrow span { white-space: nowrap; }
+.word { font-family: var(--f-word); font-weight: 700; font-size: clamp(32px, 7vw, 48px); line-height: 1.1; letter-spacing: -.01em; text-wrap: balance; margin-top: 18px; overflow-wrap: anywhere; }
+.word.ru { font-size: clamp(26px, 5.5vw, 38px); }
+.ipa { font-family: var(--f-word); font-style: italic; color: var(--ink-soft); font-size: 17px; display: flex; align-items: center; gap: 10px; }
+.ex { font-family: var(--f-word); font-size: 17px; line-height: 32px; color: var(--ink); max-width: 60ch; }
+.ex mark { background: linear-gradient(transparent 55%, var(--mark) 55% 90%, transparent 90%); color: inherit; padding: 0 2px; }
+.hint { margin-top: auto; font-size: 13px; color: var(--ink-soft); }
+.speak { border: 1px solid var(--rule); background: var(--card); width: 32px; height: 32px; border-radius: 50%; display: inline-grid; place-items: center; flex: 0 0 auto; }
+.speak svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { flex: 1 1 140px; border: 1px solid var(--rule); background: var(--card); padding: 12px 16px; border-radius: 10px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; }
+.btn kbd { font: 500 11px var(--f-ui); border: 1px solid var(--rule); border-radius: 4px; padding: 0 5px; color: var(--ink-soft); }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.primary kbd { color: inherit; border-color: color-mix(in srgb, currentColor 40%, transparent); }
+.btn.good { background: var(--good-bg); color: var(--good); border-color: transparent; }
+.btn.bad { background: var(--bad-bg); color: var(--bad); border-color: transparent; }
+.btn.ghost { flex: 0 0 auto; background: transparent; }
+.btn:disabled { opacity: .5; cursor: default; }
+
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 520px) { .options { grid-template-columns: 1fr; } .card { padding-left: 50px; } .card::before { left: 34px; } }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--card); border-radius: 10px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; min-width: 0; }
+.opt kbd { font: 600 11px var(--f-ui); color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 4px; padding: 1px 6px; margin-top: 2px; }
+.opt span { min-width: 0; overflow-wrap: anywhere; }
+.opt.right { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+.opt.wrong { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+
+.type-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.type-row input { flex: 1 1 220px; min-width: 0; border: 1px solid var(--rule); background: var(--card); border-radius: 10px; padding: 12px 14px; font-family: var(--f-word); font-size: 20px; }
+.type-row input.right { border-color: var(--good); background: var(--good-bg); }
+.type-row input.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.verdict { font-size: 15px; }
+.verdict.ok { color: var(--good); }
+.verdict.no { color: var(--bad); }
+.verdict b { font-family: var(--f-word); font-size: 18px; }
+
+.panel { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+.panel h2 { font-family: var(--f-display); font-weight: 600; font-size: 18px; margin: 0; text-wrap: balance; }
+.panel p { margin: 0; color: var(--ink-soft); }
+.sum-list { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.sum-list li { display: flex; gap: 10px; align-items: baseline; }
+.sum-list .m { font-weight: 700; width: 16px; }
+.sum-list .m.ok { color: var(--good); }
+.sum-list .m.no { color: var(--bad); }
+.sum-list .en { font-family: var(--f-word); font-weight: 700; }
+.sum-list .ru { color: var(--ink-soft); }
+.big { font-family: var(--f-display); font-size: 36px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* dictionary */
+.dict-tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.dict-tools input { flex: 1 1 200px; min-width: 0; border: 1px solid var(--rule); background: var(--card); border-radius: 10px; padding: 10px 12px; }
+.dict { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 12px 16px; border-top: 1px solid var(--rule); align-items: center; }
+.row:first-child { border-top: 0; }
+.row .l { min-width: 0; }
+.row .en { font-family: var(--f-word); font-weight: 700; font-size: 17px; }
+.row .ipa { font-size: 14px; display: inline; margin-left: 6px; }
+.row .ru { color: var(--ink-soft); font-size: 14px; overflow-wrap: anywhere; }
+.row .r { display: flex; gap: 8px; align-items: center; }
+.dots { display: flex; gap: 3px; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--rule); }
+.dots i.on { background: var(--good); }
+.del { border: 0; background: transparent; color: var(--ink-soft); font-size: 18px; line-height: 1; padding: 4px; }
+.empty { padding: 24px 16px; color: var(--ink-soft); text-align: center; }
+form.add { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+form.add input { min-width: 0; border: 1px solid var(--rule); background: var(--paper); border-radius: 8px; padding: 10px 12px; }
+form.add .full { grid-column: 1 / -1; }
+@media (max-width: 520px) { form.add { grid-template-columns: 1fr; } }
+.legend { font-size: 12px; color: var(--ink-soft); display: flex; gap: 6px; align-items: center; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.link { border: 0; background: none; color: var(--ink-soft); text-decoration: underline; padding: 0; font-size: 13px; }
+.link.danger { color: var(--bad); }
+footer { font-size: 12px; color: var(--ink-soft); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .flip, .progress .track i { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="ab">Aa</span> Лексикон</div>
+    <div class="stats" aria-label="Статистика">
+      <div class="stat"><b id="stStreak">0</b><span>дней подряд</span></div>
+      <div class="stat"><b id="stLearned">0</b><span>выучено</span></div>
+      <div class="stat"><b id="stDue">0</b><span>повторить</span></div>
+    </div>
+  </header>
+
+  <nav class="sets" id="sets" aria-label="Наборы слов"></nav>
+
+  <div class="bar">
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-mode="cards">Карточки</button>
+      <button class="tab" role="tab" data-mode="quiz">Тест</button>
+      <button class="tab" role="tab" data-mode="write">Письмо</button>
+      <button class="tab" role="tab" data-mode="dict">Словарь</button>
+    </div>
+    <button class="dir" id="dir" title="Направление перевода">EN → RU</button>
+  </div>
+
+  <main id="main"></main>
+
+  <footer>Интервальное повторение: слово, которое вы помните, вернётся через 1, 2, 4, 8, 16 дней. Прогресс хранится в этом браузере.</footer>
+</div>
+
+<script>
+(() => {
+const SETS = {
+  basics: { name: "Повседневное", words: `
+appreciate|əˈpriːʃieɪt|ценить; быть благодарным|I really appreciate your help.
+available|əˈveɪləbl|доступный, свободный|Is this seat available?
+borrow|ˈbɒrəʊ|брать взаймы|Can I borrow your pen?
+carry|ˈkæri|нести|Can you carry this bag for me?
+decide|dɪˈsaɪd|решать|You have to decide today.
+enough|ɪˈnʌf|достаточно|We have enough time.
+explain|ɪkˈspleɪn|объяснять|Can you explain this rule?
+forget|fəˈɡet|забывать|Don't forget your keys.
+improve|ɪmˈpruːv|улучшать|I want to improve my English.
+journey|ˈdʒɜːni|поездка, путь|The journey took five hours.
+knowledge|ˈnɒlɪdʒ|знание|Knowledge is power.
+lend|lend|давать взаймы|Could you lend me ten dollars?
+measure|ˈmeʒə|измерять|Measure the room first.
+neighbour|ˈneɪbə|сосед|Our neighbour has a big dog.
+offer|ˈɒfə|предлагать; предложение|It's a good offer.
+probably|ˈprɒbəbli|вероятно|It will probably rain.
+reach|riːtʃ|достигать, дотягиваться|I can't reach the top shelf.
+suggest|səˈdʒest|предлагать, советовать|I suggest we leave early.
+thorough|ˈθʌrə|тщательный|He did a thorough check.
+whether|ˈweðə|ли (в косвенном вопросе)|I don't know whether he'll come.` },
+  travel: { name: "Путешествия", words: `
+departure|dɪˈpɑːtʃə|отправление, вылет|Departure is at 7 a.m.
+luggage|ˈlʌɡɪdʒ|багаж|My luggage got lost.
+boarding pass|ˈbɔːdɪŋ pɑːs|посадочный талон|Show your boarding pass at the gate.
+delay|dɪˈleɪ|задержка|The flight has a two-hour delay.
+accommodation|əˌkɒməˈdeɪʃn|жильё|We found cheap accommodation near the beach.
+sightseeing|ˈsaɪtsiːɪŋ|осмотр достопримечательностей|We spent the day sightseeing.
+itinerary|aɪˈtɪnərəri|маршрут поездки|Here is our itinerary for the week.
+currency|ˈkʌrənsi|валюта|What currency do they use?
+customs|ˈkʌstəmz|таможня|It took an hour to go through customs.
+round trip|ˌraʊnd ˈtrɪp|поездка туда и обратно|A round trip ticket is cheaper.
+landmark|ˈlændmɑːk|достопримечательность, ориентир|The tower is the city's main landmark.
+destination|ˌdestɪˈneɪʃn|пункт назначения|Rome is a popular destination.
+fare|feə|стоимость проезда|The bus fare is two euros.
+souvenir|ˌsuːvəˈnɪə|сувенир|I bought a souvenir for my mom.
+check in|ˌtʃek ˈɪn|регистрироваться|We need to check in two hours early.
+abroad|əˈbrɔːd|за границей|She has never been abroad.
+reservation|ˌrezəˈveɪʃn|бронь|I have a reservation for two.
+platform|ˈplætfɔːm|платформа|The train leaves from platform 4.
+guide|ɡaɪd|гид; путеводитель|Our guide spoke three languages.
+passenger|ˈpæsɪndʒə|пассажир|Every passenger must wear a seat belt.` },
+  work: { name: "Работа и учёба", words: `
+deadline|ˈdedlaɪn|крайний срок|The deadline is on Friday.
+colleague|ˈkɒliːɡ|коллега|My colleague helped me with the report.
+salary|ˈsæləri|зарплата|She asked for a higher salary.
+schedule|ˈʃedjuːl|расписание, график|My schedule is full this week.
+achieve|əˈtʃiːv|достигать|You can achieve anything.
+require|rɪˈkwaɪə|требовать|These jobs require experience.
+responsible|rɪˈspɒnsəbl|ответственный|Who is responsible for this?
+skill|skɪl|навык|Communication is a key skill.
+apply|əˈplaɪ|подавать заявку|You should apply for this job.
+hire|ˈhaɪə|нанимать|We want to hire two designers.
+resign|rɪˈzaɪn|увольняться по собственному желанию|He decided to resign.
+negotiate|nɪˈɡəʊʃieɪt|вести переговоры|We need to negotiate a better price.
+attend|əˈtend|посещать|Please attend the meeting.
+purpose|ˈpɜːpəs|цель, назначение|What is the purpose of your visit?
+efficient|ɪˈfɪʃnt|эффективный|This is an efficient method.
+assignment|əˈsaɪnmənt|задание|Finish the assignment by Monday.
+earn|ɜːn|зарабатывать|How much do you earn?
+experience|ɪkˈspɪəriəns|опыт|She has ten years of experience.
+manage|ˈmænɪdʒ|управлять; справляться|I can manage it myself.
+advantage|ədˈvɑːntɪdʒ|преимущество|Speaking English is a big advantage.` },
+  feelings: { name: "Эмоции и характер", words: `
+anxious|ˈæŋkʃəs|тревожный, обеспокоенный|I feel anxious before exams.
+grateful|ˈɡreɪtfl|благодарный|I'm grateful for your support.
+embarrassed|ɪmˈbærəst|смущённый|He was embarrassed by his mistake.
+confident|ˈkɒnfɪdənt|уверенный|She is confident in her English.
+jealous|ˈdʒeləs|ревнивый, завистливый|Don't be jealous of his success.
+proud|praʊd|гордый|I'm proud of you.
+upset|ʌpˈset|расстроенный|She was upset about the news.
+curious|ˈkjʊəriəs|любопытный|Kids are naturally curious.
+stubborn|ˈstʌbən|упрямый|My brother is very stubborn.
+reliable|rɪˈlaɪəbl|надёжный|He is a reliable friend.
+generous|ˈdʒenərəs|щедрый|Thank you, that's very generous.
+lazy|ˈleɪzi|ленивый|I feel lazy on Sundays.
+honest|ˈɒnɪst|честный|Please be honest with me.
+relieved|rɪˈliːvd|испытывающий облегчение|I was relieved to hear that.
+exhausted|ɪɡˈzɔːstɪd|измотанный|After the match we were exhausted.
+frightened|ˈfraɪtnd|испуганный|The child was frightened by the noise.
+polite|pəˈlaɪt|вежливый|Always be polite to waiters.
+annoyed|əˈnɔɪd|раздражённый|I'm annoyed with the noise.
+cheerful|ˈtʃɪəfl|жизнерадостный|She is always cheerful.
+shy|ʃaɪ|застенчивый|He's too shy to speak in public.` },
+  football: { name: "Футбол", words: `
+pitch|pɪtʃ|футбольное поле|The players ran onto the pitch.
+referee|ˌrefəˈriː|судья|The referee showed a yellow card.
+goalkeeper|ˈɡəʊlkiːpə|вратарь|The goalkeeper saved a penalty.
+defender|dɪˈfendə|защитник|He plays as a central defender.
+equaliser|ˈiːkwəlaɪzə|гол, сравнявший счёт|They scored the equaliser in the 90th minute.
+draw|drɔː|ничья|The match ended in a draw.
+substitute|ˈsʌbstɪtjuːt|запасной игрок, замена|The coach brought on a substitute.
+offside|ˌɒfˈsaɪd|вне игры (офсайд)|The goal was disallowed for offside.
+tackle|ˈtækl|отбор мяча, подкат|That was a clean tackle.
+score|skɔː|забивать; счёт|What's the score?
+header|ˈhedə|удар головой|He scored with a header.
+corner|ˈkɔːnə|угловой|We won a corner.
+free kick|ˌfriː ˈkɪk|штрафной удар|He curled the free kick into the net.
+injury|ˈɪndʒəri|травма|He missed the season with an injury.
+captain|ˈkæptɪn|капитан|The captain lifted the trophy.
+league|liːɡ|лига, чемпионат|They won the league last year.
+fixture|ˈfɪkstʃə|матч по расписанию|The next fixture is on Saturday.
+crossbar|ˈkrɒsbɑː|перекладина|The shot hit the crossbar.
+supporter|səˈpɔːtə|болельщик|Every supporter sang the anthem.
+kick-off|ˈkɪk ɒf|начало матча|Kick-off is at 8 p.m.` },
+  phrasal: { name: "Фразовые глаголы", words: `
+give up|ˌɡɪv ˈʌp|сдаваться, бросать|Never give up on your dreams.
+look after|ˌlʊk ˈɑːftə|присматривать, заботиться|Can you look after my cat?
+find out|ˌfaɪnd ˈaʊt|выяснить|I need to find out the truth.
+put off|ˌpʊt ˈɒf|откладывать|Don't put off your homework.
+turn down|ˌtɜːn ˈdaʊn|отклонять; убавлять|Please turn down the music.
+get along|ˌɡet əˈlɒŋ|ладить|I get along with my sister.
+run out of|ˌrʌn ˈaʊt əv|израсходовать, закончиться|We often run out of milk.
+come up with|ˌkʌm ˈʌp wɪð|придумать|Can you come up with a better idea?
+look forward to|ˌlʊk ˈfɔːwəd tə|с нетерпением ждать|I look forward to seeing you.
+set up|ˌset ˈʌp|основать; настроить|Let's set up a meeting.
+break down|ˌbreɪk ˈdaʊn|сломаться|Old cars often break down.
+carry on|ˌkæri ˈɒn|продолжать|Carry on, you're doing great.
+figure out|ˌfɪɡər ˈaʊt|разобраться, понять|I can't figure out this problem.
+pick up|ˌpɪk ˈʌp|подобрать; забрать|I'll pick up the kids at six.
+show up|ˌʃəʊ ˈʌp|появиться, прийти|Did he show up to the meeting?
+take off|ˌteɪk ˈɒf|взлетать; снимать|The plane will take off soon.
+work out|ˌwɜːk ˈaʊt|тренироваться; получаться|I work out three times a week.
+bring up|ˌbrɪŋ ˈʌp|воспитывать; поднимать тему|Don't bring up that topic again.
+call off|ˌkɔːl ˈɒf|отменять|They had to call off the match.
+deal with|ˈdiːl wɪð|иметь дело, справляться|I'll deal with this problem.` },
+};
+
+const INTERVALS = [0, 1, 2, 4, 8, 16]; // days, indexed by box
+const LEARNED_BOX = 3;
+const SESSION = 12, NEW_LIMIT = 8;
+const DAY = 864e5;
+const KEY = "leksikon.v1";
+
+let db = { progress: {}, custom: [], streak: { last: "", count: 0 }, set: "basics", mode: "cards", dir: "en" };
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) db = Object.assign(db, s); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} };
+
+const parse = (set, text) => text.trim().split("\n").map(l => { const [en, ipa, ru, ex] = l.split("|"); return { id: set + ":" + en, en, ipa, ru, ex }; });
+const WORDS = {};
+for (const k in SETS) WORDS[k] = parse(k, SETS[k].words);
+const customWords = () => db.custom.map(w => ({ id: "custom:" + w.en, en: w.en, ipa: "", ru: w.ru, ex: w.ex || "" }));
+const setWords = k => k === "custom" ? customWords() : WORDS[k] || [];
+const allSetKeys = () => [...Object.keys(SETS), "custom"];
+const setName = k => k === "custom" ? "Мои слова" : SETS[k].name;
+if (!allSetKeys().includes(db.set)) db.set = "basics";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const today = (d = new Date()) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const prog = w => db.progress[w.id];
+const isDue = w => { const p = prog(w); return p && p.due <= Date.now(); };
+
+const canSpeak = "speechSynthesis" in window;
+function speak(text) {
+  if (!canSpeak) return;
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = .9; speechSynthesis.speak(u); } catch (e) {}
+}
+const speakBtn = en => canSpeak ? `<button class="speak" data-say="${esc(en)}" aria-label="Произнести ${esc(en)}" title="Произнести"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>` : "";
+
+function grade(w, result) { // result: "ok" | "no" | "meh"
+  const p = db.progress[w.id] || { box: 0, right: 0, wrong: 0 };
+  if (result === "ok") { p.box = Math.min(p.box + 1, 5); p.right++; }
+  else if (result === "no") { p.box = 0; p.wrong++; }
+  p.due = result === "meh" ? Date.now() + DAY : Date.now() + INTERVALS[p.box] * DAY - 36e5; // an hour of slack so tomorrow's review is ready in the morning
+  db.progress[w.id] = p;
+  const t = today(), y = today(new Date(Date.now() - DAY));
+  if (db.streak.last !== t) { db.streak.count = db.streak.last === y ? db.streak.count + 1 : 1; db.streak.last = t; }
+  save(); renderStats(); renderSets();
+}
+
+function renderStats() {
+  const all = allSetKeys().flatMap(setWords);
+  const t = today(), y = today(new Date(Date.now() - DAY));
+  $("#stStreak").textContent = (db.streak.last === t || db.streak.last === y) ? db.streak.count : 0;
+  $("#stLearned").textContent = all.filter(w => (prog(w)?.box || 0) >= LEARNED_BOX).length;
+  $("#stDue").textContent = all.filter(isDue).length;
+}
+function renderSets() {
+  $("#sets").innerHTML = allSetKeys().map(k => {
+    const ws = setWords(k), learned = ws.filter(w => (prog(w)?.box || 0) >= LEARNED_BOX).length;
+    const pct = ws.length ? Math.round(learned / ws.length * 100) : 0;
+    return `<button class="set" data-set="${k}" aria-pressed="${k === db.set}" title="Выучено ${learned} из ${ws.length}">${setName(k)} <span class="meter"><i style="width:${pct}%"></i></span></button>`;
+  }).join("");
+}
+
+// ---- session ----
+let S = null;
+function newSession(force) {
+  const ws = setWords(db.set);
+  const due = shuffle(ws.filter(isDue)).sort((a, b) => prog(a).box - prog(b).box);
+  const fresh = ws.filter(w => !prog(w)).slice(0, NEW_LIMIT);
+  let q = [...due.slice(0, SESSION), ...fresh].slice(0, SESSION);
+  if (!q.length && force) q = shuffle(ws).slice(0, Math.min(10, ws.length));
+  S = { queue: shuffle(q), i: 0, total: q.length, log: [], retried: new Set(), state: {} };
+}
+const current = () => S && S.queue[S.i];
+function answer(w, result) {
+  grade(w, result);
+  S.log.push({ w, ok: result !== "no" });
+  if (result === "no" && !S.retried.has(w.id)) { S.retried.add(w.id); S.queue.splice(Math.min(S.i + 4, S.queue.length), 0, w); }
+}
+function next() { S.i++; S.state = {}; render(); }
+
+function progressBar() {
+  const done = Math.min(S.i, S.queue.length);
+  return `<div class="progress"><span>${done} / ${S.queue.length}</span><div class="track"><i style="width:${S.queue.length ? done / S.queue.length * 100 : 0}%"></i></div><span>${setName(db.set)}</span></div>`;
+}
+function boxLabel(w) {
+  const p = prog(w);
+  if (!p) return "новое слово";
+  return p.box >= LEARNED_BOX ? "выучено · уровень " + p.box : "уровень " + p.box + " из 5";
+}
+
+function emptyState() {
+  const ws = setWords(db.set);
+  if (!ws.length) return `<div class="panel"><h2>В наборе пока нет слов</h2><p>Добавьте свои слова во вкладке «Словарь», и они появятся здесь.</p><div class="actions"><button class="btn primary" data-go="dict">Открыть словарь</button></div></div>`;
+  const nextDue = ws.map(prog).filter(Boolean).map(p => p.due).sort((a, b) => a - b)[0];
+  const when = nextDue ? new Date(nextDue).toLocaleDateString("ru-RU", { day: "numeric", month: "long" }) : "";
+  return `<div class="panel"><h2>На сегодня всё повторено</h2><p>Все слова набора «${setName(db.set)}» изучены по расписанию.${when ? " Следующее повторение: " + when + "." : ""} Можно выбрать другой набор или пройти слова ещё раз.</p><div class="actions"><button class="btn primary" data-act="force">Повторить 10 слов</button></div></div>`;
+}
+function summary() {
+  const uniq = new Map(); S.log.forEach(r => { if (!uniq.has(r.w.id)) uniq.set(r.w.id, r); });
+  const first = [...uniq.values()], ok = first.filter(r => r.ok).length;
+  return `<div class="panel"><h2>Сессия закончена</h2>
+    <div class="big">${ok} / ${first.length}</div><p>правильно с первой попытки</p>
+    <ul class="sum-list">${first.map(r => `<li><span class="m ${r.ok ? "ok" : "no"}">${r.ok ? "✓" : "✗"}</span><span class="en">${esc(r.w.en)}</span><span class="ru">${esc(r.w.ru)}</span></li>`).join("")}</ul>
+    <div class="actions"><button class="btn primary" data-act="again">Новая сессия <kbd>Enter</kbd></button></div></div>`;
+}
+const highlight = (ex, en) => { const re = new RegExp("(" + en.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "i"); return esc(ex).replace(re, "<mark>$1</mark>"); };
+
+function cardsView(w) {
+  const en = db.dir === "en";
+  const front = en
+    ? `<div class="word">${esc(w.en)}</div>${w.ipa ? `<div class="ipa">[${esc(w.ipa)}] ${speakBtn(w.en)}</div>` : `<div class="ipa">${speakBtn(w.en)}</div>`}`
+    : `<div class="word ru">${esc(w.ru)}</div>`;
+  const back = `<div class="word">${esc(w.en)}</div>${`<div class="ipa">${w.ipa ? "[" + esc(w.ipa) + "]" : ""} ${speakBtn(w.en)}</div>`}
+    <div class="word ru" style="margin-top:0;font-size:clamp(22px,4.6vw,30px)">${esc(w.ru)}</div>${w.ex ? `<div class="ex">${highlight(w.ex, w.en)}</div>` : ""}`;
+  const turned = S.state.turned;
+  return `${progressBar()}
+  <div class="stage"><div class="flip ${turned ? "turned" : ""}" id="flip" tabindex="0" role="button" aria-label="Перевернуть карточку">
+    <div class="card face front"><div class="eyebrow"><span>${boxLabel(w)}</span><span>${en ? "EN" : "RU"}</span></div>${front}<div class="hint">Вспомните перевод и нажмите на карточку</div></div>
+    <div class="card face back"><div class="eyebrow"><span>${boxLabel(w)}</span><span>ответ</span></div>${back}</div>
+  </div></div>
+  <div class="actions">${turned
+    ? `<button class="btn bad" data-act="no">Не помню <kbd>1</kbd></button><button class="btn good" data-act="ok">Помню <kbd>2</kbd></button>`
+    : `<button class="btn primary" data-act="flip">Показать ответ <kbd>Пробел</kbd></button>`}</div>`;
+}
+
+function quizView(w) {
+  const en = db.dir === "en";
+  if (!S.state.opts) {
+    const pool = setWords(db.set).length >= 4 ? setWords(db.set) : allSetKeys().flatMap(setWords);
+    const others = shuffle(pool.filter(x => x.id !== w.id && x.ru !== w.ru)).slice(0, 3);
+    S.state.opts = shuffle([w, ...others]);
+  }
+  const picked = S.state.picked;
+  const prompt = en ? `<div class="word">${esc(w.en)}</div><div class="ipa">${w.ipa ? "[" + esc(w.ipa) + "]" : ""} ${speakBtn(w.en)}</div>` : `<div class="word ru">${esc(w.ru)}</div>`;
+  return `${progressBar()}
+  <div class="card"><div class="eyebrow"><span>${boxLabel(w)}</span><span>выберите перевод</span></div>${prompt}
+    ${picked && w.ex ? `<div class="ex">${highlight(w.ex, w.en)}</div>` : ""}</div>
+  <div class="options">${S.state.opts.map((o, i) => {
+    let cls = ""; if (picked) { if (o.id === w.id) cls = "right"; else if (o.id === picked) cls = "wrong"; }
+    return `<button class="opt ${cls}" data-opt="${esc(o.id)}" ${picked ? "disabled" : ""}><kbd>${i + 1}</kbd><span>${esc(en ? o.ru : o.en)}</span></button>`;
+  }).join("")}</div>
+  ${picked ? `<div class="actions"><button class="btn primary" data-act="next">Дальше <kbd>Enter</kbd></button></div>` : ""}`;
+}
+
+const norm = s => s.toLowerCase().replace(/[’`]/g, "'").replace(/[-\s]+/g, " ").trim();
+function writeView(w) {
+  const st = S.state; st.hints = st.hints || 0;
+  const re = new RegExp(w.en.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+  const clue = w.ex && re.test(w.ex) ? esc(w.ex).replace(re, "<mark>" + (st.done ? esc(w.en) : "_".repeat(Math.max(3, w.en.length))) + "</mark>") : "";
+  const hintStr = st.hints ? w.en.slice(0, st.hints) + "…" : "";
+  return `${progressBar()}
+  <div class="card"><div class="eyebrow"><span>${boxLabel(w)}</span><span>напишите по-английски</span></div>
+    <div class="word ru">${esc(w.ru)}</div>
+    ${clue ? `<div class="ex">${clue}</div>` : ""}
+    ${st.done ? `<div class="ipa">${w.ipa ? "[" + esc(w.ipa) + "]" : ""} ${speakBtn(w.en)}</div>` : ""}
+    <div class="hint">${w.en.includes(" ") ? "Несколько слов · " : ""}${w.en.length} символов${hintStr ? " · подсказка: <b>" + esc(hintStr) + "</b>" : ""}</div>
+  </div>
+  <form class="type-row" id="writeForm" autocomplete="off">
+    <input id="answer" class="${st.done ? (st.ok ? "right" : "wrong") : ""}" placeholder="Ваш ответ" autocapitalize="off" spellcheck="false" ${st.done ? "readonly" : ""} value="${esc(st.value || "")}">
+    ${st.done ? `<button class="btn primary" type="button" data-act="next">Дальше <kbd>Enter</kbd></button>`
+      : `<button class="btn ghost" type="button" data-act="hint" ${st.hints >= w.en.length - 1 ? "disabled" : ""}>Подсказка</button><button class="btn primary" type="submit">Проверить <kbd>Enter</kbd></button>`}
+  </form>
+  ${st.done ? `<div class="verdict ${st.ok ? "ok" : "no"}">${st.ok ? (st.hints ? "Верно, но с подсказкой. Слово вернётся завтра." : "Верно!") : `Правильно: <b>${esc(w.en)}</b>`}</div>` : ""}`;
+}
+
+// ---- dictionary ----
+let dictQuery = "", confirmReset = false;
+function dictView() {
+  const ws = setWords(db.set), q = norm(dictQuery);
+  const list = q ? ws.filter(w => norm(w.en).includes(q) || w.ru.toLowerCase().includes(q)) : ws;
+  const isCustom = db.set === "custom";
+  const rows = list.map(w => {
+    const box = prog(w)?.box || 0;
+    return `<div class="row"><div class="l"><span class="en">${esc(w.en)}</span>${w.ipa ? `<span class="ipa">[${esc(w.ipa)}]</span>` : ""}<div class="ru">${esc(w.ru)}</div></div>
+      <div class="r"><span class="dots" title="Уровень ${box} из 5">${[1,2,3,4,5].map(n => `<i class="${box >= n ? "on" : ""}"></i>`).join("")}</span>${speakBtn(w.en)}${isCustom ? `<button class="del" data-del="${esc(w.en)}" aria-label="Удалить ${esc(w.en)}" title="Удалить">×</button>` : ""}</div></div>`;
+  }).join("");
+  return `<div class="panel"><h2>Добавить своё слово</h2>
+    <form class="add" id="addForm" autocomplete="off">
+      <input id="addEn" placeholder="Слово по-английски, например: wholesome" required>
+      <input id="addRu" placeholder="Перевод, например: полезный, здоровый" required>
+      <input id="addEx" class="full" placeholder="Пример (необязательно): It's a wholesome meal.">
+      <button class="btn primary full" type="submit">Добавить в «Мои слова»</button>
+    </form></div>
+  <div class="dict-tools"><input id="search" type="search" placeholder="Поиск в наборе «${setName(db.set)}»" value="${esc(dictQuery)}">
+    <span class="legend"><span class="dots"><i class="on"></i><i class="on"></i><i></i></span> уровень запоминания</span></div>
+  <div class="dict">${rows || `<div class="empty">${ws.length ? "Ничего не найдено" : "Здесь пока пусто. Добавьте первое слово в форме выше."}</div>`}</div>
+  <div class="confirm">${confirmReset
+    ? `Сбросить прогресс набора «${setName(db.set)}»? <button class="link danger" data-act="reset-yes">Да, сбросить</button> <button class="link" data-act="reset-no">Отмена</button>`
+    : `<button class="link" data-act="reset">Сбросить прогресс этого набора</button>`}</div>`;
+}
+
+// ---- render ----
+function render() {
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.mode === db.mode));
+  $("#dir").textContent = db.dir === "en" ? "EN → RU" : "RU → EN";
+  $("#dir").hidden = db.mode === "write" || db.mode === "dict";
+  const main = $("#main");
+  if (db.mode === "dict") { main.innerHTML = `<div style="display:flex;flex-direction:column;gap:14px">${dictView()}</div>`; return; }
+  if (!S) newSession();
+  const w = current();
+  if (!S.total) main.innerHTML = emptyState();
+  else if (!w) main.innerHTML = summary();
+  else main.innerHTML = `<div style="display:flex;flex-direction:column;gap:14px">${db.mode === "cards" ? cardsView(w) : db.mode === "quiz" ? quizView(w) : writeView(w)}</div>`;
+  if (db.mode === "write" && w && !S.state.done) { const a = $("#answer"); if (a && document.activeElement?.id !== "search") a.focus({ preventScroll: true }); }
+}
+
+function act(a) {
+  const w = current();
+  if (a === "flip" && w) {
+    S.state.turned = true; $("#flip").classList.add("turned"); if (db.dir === "ru") speak(w.en);
+    $("#main .actions").innerHTML = `<button class="btn bad" data-act="no">Не помню <kbd>1</kbd></button><button class="btn good" data-act="ok">Помню <kbd>2</kbd></button>`;
+  }
+  else if ((a === "ok" || a === "no") && w && S.state.turned) { answer(w, a); next(); }
+  else if (a === "next" && w) next();
+  else if (a === "hint" && w) { const v = $("#answer")?.value; S.state.value = v; S.state.hints++; render(); }
+  else if (a === "again") { newSession(); render(); }
+  else if (a === "force") { newSession(true); render(); }
+  else if (a === "reset") { confirmReset = true; render(); }
+  else if (a === "reset-no") { confirmReset = false; render(); }
+  else if (a === "reset-yes") { setWords(db.set).forEach(x => delete db.progress[x.id]); confirmReset = false; save(); S = null; renderStats(); renderSets(); render(); }
+}
+function pick(id) {
+  const w = current(); if (!w || S.state.picked) return;
+  S.state.picked = id; const ok = id === w.id; answer(w, ok ? "ok" : "no"); if (db.dir === "en" || ok) speak(w.en); render();
+}
+function checkWrite() {
+  const w = current(); if (!w || S.state.done) return;
+  const v = $("#answer").value; if (!v.trim()) return;
+  const ok = norm(v) === norm(w.en);
+  Object.assign(S.state, { done: true, ok, value: v });
+  answer(w, ok ? (S.state.hints ? "meh" : "ok") : "no"); speak(w.en); render();
+}
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("button, #flip"); if (!t) return;
+  if (t.dataset.say) { e.stopPropagation(); speak(t.dataset.say); return; }
+  if (t.id === "flip") { if (!S.state.turned) act("flip"); return; }
+  if (t.dataset.set) { db.set = t.dataset.set; dictQuery = ""; confirmReset = false; save(); S = null; renderSets(); render(); return; }
+  if (t.dataset.mode) { db.mode = t.dataset.mode; save(); if (S) { S.state = {}; } render(); return; }
+  if (t.dataset.go) { db.mode = t.dataset.go; save(); render(); return; }
+  if (t.id === "dir") { db.dir = db.dir === "en" ? "ru" : "en"; save(); if (S) S.state = {}; render(); return; }
+  if (t.dataset.opt) { pick(t.dataset.opt); return; }
+  if (t.dataset.del) { db.custom = db.custom.filter(x => x.en !== t.dataset.del); delete db.progress["custom:" + t.dataset.del]; save(); S = null; renderStats(); renderSets(); render(); return; }
+  if (t.dataset.act) act(t.dataset.act);
+});
+document.addEventListener("submit", e => {
+  e.preventDefault();
+  if (e.target.id === "writeForm") checkWrite();
+  if (e.target.id === "addForm") {
+    const en = $("#addEn").value.trim(), ru = $("#addRu").value.trim(), ex = $("#addEx").value.trim();
+    if (!en || !ru) return;
+    db.custom = db.custom.filter(x => norm(x.en) !== norm(en)); db.custom.unshift({ en, ru, ex });
+    save(); if (db.set === "custom") S = null; renderSets(); renderStats(); render();
+    $("#addEn").focus();
+  }
+});
+document.addEventListener("input", e => {
+  if (e.target.id === "search") { dictQuery = e.target.value; const pos = e.target.selectionStart; render(); const s = $("#search"); s.focus(); s.setSelectionRange(pos, pos); }
+});
+document.addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const inField = e.target.matches("input");
+  const w = S && current();
+  if (db.mode === "dict") return;
+  if (!w) { if (e.key === "Enter" && S && S.total && !inField) { e.preventDefault(); act("again"); } return; }
+  if (db.mode === "cards" && !inField) {
+    if ((e.key === " " || e.key === "Enter") && !S.state.turned) { e.preventDefault(); act("flip"); }
+    else if (S.state.turned && e.key === "1") act("no");
+    else if (S.state.turned && e.key === "2") act("ok");
+  } else if (db.mode === "quiz" && !inField) {
+    if (!S.state.picked && /^[1-4]$/.test(e.key)) { const o = S.state.opts[+e.key - 1]; if (o) pick(o.id); }
+    else if (S.state.picked && e.key === "Enter") { e.preventDefault(); next(); }
+  } else if (db.mode === "write" && S.state.done && e.key === "Enter") { e.preventDefault(); next(); }
+});
+
+renderStats(); renderSets(); render();
+})();
+</script>
+</body>
+</html>
