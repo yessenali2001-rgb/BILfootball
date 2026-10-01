@@ -394,6 +394,11 @@
         .stat-note { font-size: 12px; color: var(--text-light); margin: 10px 0 0; text-align: center; }
         .pair-names { display: inline-flex; flex-wrap: wrap; gap: 0 4px; align-items: baseline; }
         .pair-names .plus { color: var(--text-light); }
+        .att-bar { display: block; height: 6px; border-radius: 3px; background: var(--row-bg); overflow: hidden; margin-top: 4px; min-width: 50px; }
+        .att-bar i { display: block; height: 100%; background: var(--primary); }
+        .att-bar.mid i { background: var(--accent); }
+        .att-bar.low i { background: var(--down-color); }
+        .stat-table td.missed { color: var(--down-color); }
         .partner-line { font-size: 14px; background: var(--row-bg); border-radius: 10px; padding: 10px 12px; }
 
         .backup-row { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -468,6 +473,12 @@
             <button data-board="points" onclick="setLeaderBoard('points')">Гол + пас</button>
         </div>
         <div id="leaderBoard"></div>
+    </div>
+
+    <div class="card">
+        <h2>🗓 Посещаемость</h2>
+        <div id="attendanceBoard"></div>
+        <p class="stat-note">Считаются игровые вечера: два матча в один день — это один вечер.</p>
     </div>
 
     <div class="card">
@@ -1252,6 +1263,45 @@
         renderLeaderBoard();
         renderMatchHistory();
         renderPairs();
+        renderAttendance();
+    }
+
+    function eveningKey(ts) {
+        const d = new Date(ts);
+        return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }
+
+    function attendanceOf(p, evenings) {
+        const came = new Set(periodHistory(p).map(e => eveningKey(e.m)));
+        const attended = [...came].filter(k => evenings.has(k)).length;
+        return { attended, missed: evenings.size - attended, pct: evenings.size ? Math.round(attended / evenings.size * 100) : 0 };
+    }
+
+    function allEvenings(all) {
+        const keys = new Set();
+        players.forEach(p => (all ? (p.history || []) : periodHistory(p)).forEach(e => keys.add(eveningKey(e.m))));
+        return keys;
+    }
+
+    function renderAttendance() {
+        const el = document.getElementById('attendanceBoard');
+        const evenings = allEvenings(false);
+        if (!evenings.size) {
+            el.innerHTML = `<div class="empty-note">Посещаемость появится после первого внесённого матча.</div>`;
+            return;
+        }
+        const rows = players.map(p => ({ p, a: attendanceOf(p, evenings) }))
+            .sort((x, y) => y.a.attended - x.a.attended || x.p.name.localeCompare(y.p.name));
+        el.innerHTML = `<table class="stat-table">
+            <thead><tr><th>#</th><th>Игрок</th><th>Пришёл</th><th>Пропустил</th><th>%</th></tr></thead>
+            <tbody>${rows.map((r, i) => `<tr>
+                <td class="place">${i + 1}</td>
+                <td>${playerLink(r.p)}</td>
+                <td class="main">${r.a.attended}</td>
+                <td class="${r.a.missed ? 'missed' : ''}">${r.a.missed}</td>
+                <td>${r.a.pct}%<span class="att-bar ${r.a.pct >= 70 ? '' : r.a.pct >= 40 ? 'mid' : 'low'}"><i style="width:${r.a.pct}%"></i></span></td>
+            </tr>`).join('')}</tbody></table>
+            <p class="stat-note">Всего вечеров${period === 'all' ? '' : ' за ' + monthName(period).toLowerCase()}: ${evenings.size}</p>`;
     }
 
     function setLeaderBoard(board) {
@@ -1371,6 +1421,11 @@
                 </div>
                 <div class="wdl-legend"><span>Победы: ${s.win}</span><span>Ничьи: ${s.draw}</span><span>Поражения: ${s.loss}</span></div>
                 ${sparkline(p.history, p.rating)}
+                ${(() => {
+                    const evenings = allEvenings(true);
+                    const came = new Set((p.history || []).map(e => eveningKey(e.m))).size;
+                    return `<h4>Посещаемость</h4><div class="partner-line">🗓 Пришёл ${came} из ${evenings.size} ${plural(evenings.size, 'вечера', 'вечеров', 'вечеров')} (${evenings.size ? Math.round(came / evenings.size * 100) : 0}%), пропустил ${evenings.size - came}</div>`;
+                })()}
                 ${(() => {
                     const bp = bestPartner(p);
                     return bp ? `<h4>Лучший партнёр</h4><div class="partner-line">🤝 ${escapeHtml(bp.partner.name)}: ${bp.wins} ${plural(bp.wins, 'победа', 'победы', 'побед')} вместе из ${bp.together} ${plural(bp.together, 'общего матча', 'общих матчей', 'общих матчей')}</div>` : '';
