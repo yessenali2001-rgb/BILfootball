@@ -448,7 +448,7 @@
         <div id="adminSection">
             <h2>📝 Внести результаты матча</h2>
             <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">
-                Участие (+0.05), Победа (+0.1), Поражение (-0.1), Ничья (0.00). Гол (+0.01), Пас (+0.005).
+                Победа (+0.10), Ничья (0.00), Поражение (-0.10). Гол (+0.04), Пас (+0.02).
             </p>
             <div id="matchForm"></div>
             <button onclick="submitMatchResults()" class="btn-update">🔄 Обновить рейтинг по итогам матча</button>
@@ -819,13 +819,11 @@
             updatedCount++;
             let diff = 0;
 
-            diff += 0.05;
-
             if (result === "win") diff += 0.1;
             if (result === "loss") diff -= 0.1;
 
-            diff += (goals * 0.01);
-            diff += (assists * 0.005);
+            diff += (goals * 0.04);
+            diff += (assists * 0.02);
 
             p.lastDiff = diff;
             p.rating = Math.min(10, Math.max(0, p.rating + diff));
