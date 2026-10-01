@@ -300,6 +300,86 @@
         .team-members li .member-stats { color: var(--text-light); white-space: nowrap; }
         .team-members li:last-child { border-bottom: none; }
 
+        .btn-inline {
+            background: none; color: inherit; box-shadow: none; width: auto; margin: 0; padding: 0;
+            font: inherit; letter-spacing: normal; border-radius: 0; text-align: left;
+        }
+        .btn-inline:hover { transform: none; box-shadow: none; }
+        .player-link { cursor: pointer; text-decoration: underline dotted var(--text-light); text-underline-offset: 3px; }
+        .player-link:hover { color: var(--primary); }
+        .btn-stats { font-size: 15px; padding: 2px 4px; opacity: 0.7; }
+        .btn-stats:hover { opacity: 1; }
+
+        .btn-copy { background: linear-gradient(135deg, var(--navy), var(--navy-light)); box-shadow: 0 6px 14px rgba(11,31,58,0.25); }
+        .btn-copy:hover { box-shadow: 0 10px 18px rgba(11,31,58,0.3); }
+        .copy-status { text-align: center; font-size: 13px; color: var(--primary); min-height: 18px; margin-top: 6px; }
+
+        .seg { display: flex; background: var(--row-bg); border-radius: 10px; padding: 3px; gap: 3px; margin-bottom: 12px; }
+        .seg button {
+            background: none; color: var(--text-light); box-shadow: none; margin: 0; padding: 8px 6px;
+            font-size: 13px; border-radius: 8px; flex: 1;
+        }
+        .seg button:hover { transform: none; box-shadow: none; color: var(--text-dark); }
+        .seg button.active { background: var(--card-bg); color: var(--text-dark); box-shadow: 0 1px 3px rgba(11,31,58,0.12); }
+
+        .stat-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .stat-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-light); font-weight: 600; text-align: right; padding: 6px 4px; }
+        .stat-table th:nth-child(2), .stat-table td:nth-child(2) { text-align: left; }
+        .stat-table td { padding: 8px 4px; border-top: 1px solid var(--border-color); text-align: right; font-variant-numeric: tabular-nums; }
+        .stat-table td.main { font-weight: bold; color: var(--primary); font-size: 15px; }
+        .stat-table td.place { color: var(--text-light); width: 28px; text-align: center; }
+        .stat-table tr:nth-child(1) td.place { color: #b08600; font-weight: bold; }
+        .empty-note { text-align: center; color: var(--text-light); font-size: 14px; padding: 12px 0; }
+
+        .match-card { background: var(--row-bg); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+        .match-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+        .match-date { font-weight: bold; }
+        .match-meta { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+        .match-group { display: flex; gap: 8px; font-size: 14px; padding: 3px 0; align-items: baseline; }
+        .match-group .tag { flex: 0 0 auto; font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .match-group .names { min-width: 0; line-height: 1.6; }
+        .match-group .names .sep { color: var(--text-light); }
+        .match-group .names .nm { white-space: nowrap; }
+        .match-group .names small { color: var(--text-light); white-space: nowrap; }
+        .tag.win, .res-chip.win { background: rgba(15,169,104,0.15); color: var(--up-color); }
+        .tag.draw, .res-chip.draw { background: rgba(100,116,139,0.18); color: var(--text-light); }
+        .tag.loss, .res-chip.loss { background: rgba(225,29,72,0.13); color: var(--down-color); }
+        .btn-more { background: var(--row-bg); color: var(--text-dark); box-shadow: none; font-size: 14px; padding: 10px; }
+        .btn-more:hover { box-shadow: none; transform: none; background: var(--hover-bg); }
+
+        .modal-backdrop {
+            position: fixed; inset: 0; background: rgba(11,18,32,0.55); display: none;
+            align-items: flex-end; justify-content: center; z-index: 50; padding: 16px;
+        }
+        .modal-backdrop.open { display: flex; }
+        @media (min-width: 560px) { .modal-backdrop { align-items: center; } }
+        .modal {
+            background: var(--card-bg); color: var(--text-dark); width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+            border-radius: 18px; padding: 20px; position: relative; border-top: 4px solid var(--primary);
+        }
+        .modal h3 { margin: 0 36px 4px 0; font-size: 20px; }
+        .modal .sub { color: var(--text-light); font-size: 13px; margin-bottom: 14px; }
+        .modal-close {
+            position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; padding: 0; margin: 0; border-radius: 50%;
+            background: var(--row-bg); color: var(--text-dark); box-shadow: none; font-size: 16px;
+        }
+        .modal-close:hover { transform: none; box-shadow: none; background: var(--hover-bg); }
+        .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+        .kpi { background: var(--row-bg); border-radius: 10px; padding: 10px 6px; text-align: center; }
+        .kpi b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
+        .kpi span { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; }
+        .modal h4 { margin: 14px 0 8px; font-size: 13px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; }
+        .wdl-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--row-bg); }
+        .wdl-bar i { display: block; height: 100%; }
+        .wdl-legend { display: flex; justify-content: space-between; font-size: 13px; margin-top: 6px; color: var(--text-light); }
+        .spark { width: 100%; height: 90px; display: block; }
+        .recent { display: flex; flex-direction: column; gap: 6px; }
+        .recent-row { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .res-chip { font-size: 11px; font-weight: bold; padding: 2px 0; border-radius: 6px; width: 26px; text-align: center; }
+        .recent-row .date { color: var(--text-light); width: 84px; }
+        .recent-row .ga { flex: 1; }
+        .recent-row .diff { font-size: 12px; font-weight: bold; font-variant-numeric: tabular-nums; }
+
         #adminSection { display: none; }
         #loading { text-align: center; color: var(--text-light); padding: 10px; font-size: 14px; }
     </style>
@@ -343,6 +423,23 @@
     <div id="results" class="card">
         <h2>Результат жеребьевки</h2>
         <div id="teamsContainer"></div>
+        <button onclick="copyTeams()" class="btn-copy">📋 Скопировать составы</button>
+        <div id="copyStatus" class="copy-status"></div>
+    </div>
+
+    <div class="card">
+        <h2>🏆 Бомбардиры и ассистенты</h2>
+        <div class="seg" id="leaderTabs">
+            <button data-board="goals" class="active" onclick="setLeaderBoard('goals')">⚽ Голы</button>
+            <button data-board="assists" onclick="setLeaderBoard('assists')">🎯 Пасы</button>
+            <button data-board="points" onclick="setLeaderBoard('points')">Гол + пас</button>
+        </div>
+        <div id="leaderBoard"></div>
+    </div>
+
+    <div class="card">
+        <h2>📅 История матчей</h2>
+        <div id="matchHistory"></div>
     </div>
 
     <div class="card">
@@ -375,6 +472,13 @@
             </div>
             <button onclick="savePlayerList()" class="btn-update">💾 Сохранить список игроков</button>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="playerModal" onclick="if (event.target === this) closePlayerModal()">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pmName">
+        <button class="modal-close" onclick="closePlayerModal()" aria-label="Закрыть">✕</button>
+        <div id="playerModalBody"></div>
     </div>
 </div>
 
@@ -461,9 +565,11 @@
                 if (typeof p.weight !== 'number' || isNaN(p.weight)) p.weight = 75;
                 if (typeof p.height !== 'number' || isNaN(p.height)) p.height = 175;
                 if (typeof p.age !== 'number' || isNaN(p.age)) p.age = 25;
+                if (!Array.isArray(p.history)) p.history = [];
             });
             document.getElementById('loading').style.display = 'none';
             renderPlayers();
+            renderStatsSections();
         }
     }
 
@@ -488,6 +594,7 @@
         } finally {
             document.getElementById('loading').style.display = 'none';
             renderPlayers();
+            renderStatsSections();
         }
     }
 
@@ -511,7 +618,8 @@
             div.innerHTML = `
                 <div class="player-info">
                     <input type="checkbox" id="p_${player.id}" value="${player.id}" checked onchange="updateSelectedCount()">
-                    <label for="p_${player.id}" class="player-name">${player.name}</label>
+                    <label for="p_${player.id}" class="player-name">${escapeHtml(player.name)}</label>
+                    <button class="btn-inline btn-stats" onclick="openPlayerModal(${player.id})" title="Статистика игрока" aria-label="Статистика: ${escapeHtml(player.name)}">📊</button>
                 </div>
                 <div class="player-rating-container">
                     ${diffHtml}
@@ -696,6 +804,7 @@
 
     async function submitMatchResults() {
         let updatedCount = 0;
+        const matchId = Date.now();
 
         players.forEach(p => {
             const result = document.getElementById(`result_${p.id}`).value;
@@ -720,6 +829,8 @@
 
             p.lastDiff = diff;
             p.rating = Math.min(10, Math.max(0, p.rating + diff));
+            if (!Array.isArray(p.history)) p.history = [];
+            p.history.push({ m: matchId, r: result, g: goals, a: assists, d: +diff.toFixed(3), rt: +p.rating.toFixed(3) });
         });
 
         if (updatedCount === 0) {
@@ -733,7 +844,10 @@
 
     async function resetRatingsToDefault() {
         if (confirm("Вы уверены, что хотите сбросить все рейтинги до исходного состояния?")) {
+            // Рейтинги и состав возвращаются к исходным, а история матчей остаётся
+            const historyById = new Map(players.map(p => [p.id, p.history || []]));
             players = JSON.parse(JSON.stringify(defaultPlayers));
+            players.forEach(p => { p.history = historyById.get(p.id) || []; });
             await savePlayersData();
             renderMatchForm();
         }
@@ -795,6 +909,7 @@
 
         let bestTeams = goodRatingAttempts[0].tempTeams;
         bestTeams.sort((a, b) => a.id - b.id);
+        lastTeams = bestTeams;
         renderTeams(bestTeams);
     }
 
@@ -816,16 +931,225 @@
             `;
 
             team.members.forEach(member => {
-                html += `<li><span>${member.name}</span> <span class="member-stats">⭐ ${member.rating.toFixed(3)} &nbsp; ⚡ ${member.calcSpeed.toFixed(1)}</span></li>`;
+                html += `<li><span>${escapeHtml(member.name)}</span> <span class="member-stats">⭐ ${member.rating.toFixed(3)} &nbsp; ⚡ ${member.calcSpeed.toFixed(1)}</span></li>`;
             });
 
             html += `</ul></div>`;
             container.innerHTML += html;
         });
 
+        document.getElementById('copyStatus').textContent = '';
         document.getElementById('results').style.display = 'block';
         document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
+
+    // ---------- Копирование составов ----------
+    let lastTeams = null;
+
+    function teamsAsText(teams) {
+        const date = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+        const blocks = teams.map(team => {
+            const avg = team.members.length ? (team.totalScore / team.members.length).toFixed(2) : '0';
+            const lines = team.members.map((m, i) => `${i + 1}. ${m.name}`);
+            return `${team.name} (${team.members.length} чел., ⭐ ${avg})\n${lines.join('\n')}`;
+        });
+        return `⚽ Составы на ${date}\n\n${blocks.join('\n\n')}`;
+    }
+
+    async function copyTeams() {
+        if (!lastTeams) return;
+        const text = teamsAsText(lastTeams);
+        const status = document.getElementById('copyStatus');
+        let ok = false;
+        try {
+            await navigator.clipboard.writeText(text);
+            ok = true;
+        } catch (e) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+            document.body.removeChild(ta);
+        }
+        status.style.color = ok ? 'var(--primary)' : 'var(--down-color)';
+        status.textContent = ok ? '✅ Скопировано, можно вставить в чат' : 'Не удалось скопировать. Выделите составы вручную.';
+    }
+
+    // ---------- Статистика ----------
+    const RESULT_LABEL = { win: 'Победа', draw: 'Ничья', loss: 'Поражение' };
+    const RESULT_SHORT = { win: 'В', draw: 'Н', loss: 'П' };
+    let leaderBoard = 'goals';
+    let historyShown = 5;
+
+    function playerStats(p) {
+        const h = p.history || [];
+        const s = { games: h.length, win: 0, draw: 0, loss: 0, goals: 0, assists: 0 };
+        h.forEach(e => {
+            if (s[e.r] !== undefined) s[e.r]++;
+            s.goals += e.g || 0;
+            s.assists += e.a || 0;
+        });
+        s.points = s.goals + s.assists;
+        s.winRate = s.games ? Math.round(s.win / s.games * 100) : 0;
+        return s;
+    }
+
+    function formatDate(ts, withYear) {
+        const opts = { day: 'numeric', month: 'long' };
+        if (withYear) opts.year = 'numeric';
+        return new Date(ts).toLocaleDateString('ru-RU', opts);
+    }
+
+    function playerLink(p) {
+        return `<button class="btn-inline player-link" onclick="openPlayerModal(${p.id})">${escapeHtml(p.name)}</button>`;
+    }
+
+    function renderStatsSections() {
+        renderLeaderBoard();
+        renderMatchHistory();
+    }
+
+    function setLeaderBoard(board) {
+        leaderBoard = board;
+        document.querySelectorAll('#leaderTabs button').forEach(b => b.classList.toggle('active', b.dataset.board === board));
+        renderLeaderBoard();
+    }
+
+    function renderLeaderBoard() {
+        const el = document.getElementById('leaderBoard');
+        const rows = players.map(p => ({ p, s: playerStats(p) })).filter(r => r.s.games > 0);
+        if (!rows.length) {
+            el.innerHTML = `<div class="empty-note">Таблица появится после первого матча, внесённого администратором.</div>`;
+            return;
+        }
+        const key = leaderBoard;
+        rows.sort((a, b) => b.s[key] - a.s[key] || (b.s[key] / b.s.games) - (a.s[key] / a.s.games) || a.p.name.localeCompare(b.p.name));
+        const title = { goals: 'Голы', assists: 'Пасы', points: 'Г+П' }[key];
+        el.innerHTML = `<table class="stat-table">
+            <thead><tr><th>#</th><th>Игрок</th><th>Игр</th><th>${title}</th><th>За игру</th></tr></thead>
+            <tbody>${rows.map((r, i) => `<tr>
+                <td class="place">${i + 1}</td>
+                <td>${playerLink(r.p)}</td>
+                <td>${r.s.games}</td>
+                <td class="main">${r.s[key]}</td>
+                <td>${(r.s[key] / r.s.games).toFixed(2)}</td>
+            </tr>`).join('')}</tbody></table>`;
+    }
+
+    function collectMatches() {
+        const byId = new Map();
+        players.forEach(p => (p.history || []).forEach(e => {
+            if (!byId.has(e.m)) byId.set(e.m, { id: e.m, entries: [] });
+            byId.get(e.m).entries.push({ p, ...e });
+        }));
+        return [...byId.values()].sort((a, b) => b.id - a.id);
+    }
+
+    function renderMatchHistory() {
+        const el = document.getElementById('matchHistory');
+        const matches = collectMatches();
+        if (!matches.length) {
+            el.innerHTML = `<div class="empty-note">Пока нет сыгранных матчей. После того как администратор внесёт результаты, они появятся здесь.</div>`;
+            return;
+        }
+        const thisYear = new Date().getFullYear();
+        el.innerHTML = matches.slice(0, historyShown).map(m => {
+            const goals = m.entries.reduce((s, e) => s + (e.g || 0), 0);
+            const groups = ['win', 'draw', 'loss'].map(r => {
+                const list = m.entries.filter(e => e.r === r).sort((a, b) => (b.g || 0) - (a.g || 0) || a.p.name.localeCompare(b.p.name));
+                if (!list.length) return '';
+                const names = list.map(e => {
+                    const extra = [e.g ? `⚽${e.g > 1 ? '×' + e.g : ''}` : '', e.a ? `🎯${e.a > 1 ? '×' + e.a : ''}` : ''].filter(Boolean).join(' ');
+                    return `<span class="nm">${playerLink(e.p)}${extra ? ` <small>${extra}</small>` : ''}</span>`;
+                }).join('<span class="sep">, </span>');
+                return `<div class="match-group"><span class="tag ${r}">${RESULT_LABEL[r]}</span><span class="names">${names}</span></div>`;
+            }).join('');
+            return `<div class="match-card">
+                <div class="match-head"><span class="match-date">${formatDate(m.id, new Date(m.id).getFullYear() !== thisYear)}</span>
+                <span class="match-meta">${m.entries.length} игроков · ${goals} ${plural(goals, 'гол', 'гола', 'голов')}</span></div>
+                ${groups}
+            </div>`;
+        }).join('') + (matches.length > historyShown
+            ? `<button class="btn-more" onclick="historyShown += 5; renderMatchHistory()">Показать ещё (${matches.length - historyShown})</button>`
+            : '');
+    }
+
+    function plural(n, one, few, many) {
+        const m10 = n % 10, m100 = n % 100;
+        if (m10 === 1 && m100 !== 11) return one;
+        if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+        return many;
+    }
+
+    function sparkline(history, current) {
+        const pts = history.filter(e => typeof e.rt === 'number').map(e => e.rt);
+        if (pts.length < 2) return '';
+        const W = 300, H = 90, pad = 8;
+        const min = Math.min(...pts), max = Math.max(...pts), span = (max - min) || 1;
+        const x = i => pad + i * (W - pad * 2) / (pts.length - 1);
+        const y = v => H - pad - (v - min) / span * (H - pad * 2);
+        const line = pts.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+        const area = `${line} L${x(pts.length - 1).toFixed(1)},${H - pad} L${x(0).toFixed(1)},${H - pad} Z`;
+        const last = pts.length - 1;
+        return `<h4>Рейтинг по матчам · от ${min.toFixed(2)} до ${max.toFixed(2)}</h4>
+            <svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="График рейтинга">
+                <path d="${area}" fill="var(--primary)" fill-opacity="0.12" stroke="none"></path>
+                <path d="${line}" fill="none" stroke="var(--primary)" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+                <circle cx="${x(last)}" cy="${y(pts[last])}" r="4" fill="var(--primary)"></circle>
+            </svg>`;
+    }
+
+    function openPlayerModal(id) {
+        const p = players.find(pl => pl.id === id);
+        if (!p) return;
+        const s = playerStats(p);
+        const speed = calculateSpeed(p.weight, p.height, p.age);
+        const recent = (p.history || []).slice(-5).reverse();
+        const pct = n => s.games ? (n / s.games * 100) : 0;
+        document.getElementById('playerModalBody').innerHTML = `
+            <h3 id="pmName">${escapeHtml(p.name)}</h3>
+            <div class="sub">⭐ Рейтинг ${p.rating.toFixed(3)} · ⚡ Скорость ${speed.toFixed(1)}</div>
+            <div class="kpis">
+                <div class="kpi"><b>${s.games}</b><span>Игр</span></div>
+                <div class="kpi"><b>${s.winRate}%</b><span>Побед</span></div>
+                <div class="kpi"><b>${s.goals}</b><span>Голов</span></div>
+                <div class="kpi"><b>${s.assists}</b><span>Пасов</span></div>
+                <div class="kpi"><b>${s.games ? (s.goals / s.games).toFixed(2) : '0'}</b><span>Голов за игру</span></div>
+                <div class="kpi"><b>${s.points}</b><span>Гол + пас</span></div>
+            </div>
+            ${s.games ? `
+                <h4>Результаты</h4>
+                <div class="wdl-bar">
+                    <i style="width:${pct(s.win)}%; background: var(--up-color)"></i>
+                    <i style="width:${pct(s.draw)}%; background: var(--text-light)"></i>
+                    <i style="width:${pct(s.loss)}%; background: var(--down-color)"></i>
+                </div>
+                <div class="wdl-legend"><span>Победы: ${s.win}</span><span>Ничьи: ${s.draw}</span><span>Поражения: ${s.loss}</span></div>
+                ${sparkline(p.history, p.rating)}
+                <h4>Последние матчи</h4>
+                <div class="recent">${recent.map(e => `
+                    <div class="recent-row">
+                        <span class="res-chip ${e.r}" title="${RESULT_LABEL[e.r] || ''}">${RESULT_SHORT[e.r] || '–'}</span>
+                        <span class="date">${new Date(e.m).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
+                        <span class="ga">${e.g ? '⚽ ' + e.g : ''} ${e.a ? '🎯 ' + e.a : ''}</span>
+                        <span class="diff ${e.d >= 0 ? 'rating-up' : 'rating-down'}">${e.d >= 0 ? '+' : ''}${(e.d || 0).toFixed(3)}</span>
+                    </div>`).join('')}
+                </div>`
+            : `<div class="empty-note">Статистика появится после первого матча, внесённого администратором.</div>`}
+        `;
+        document.getElementById('playerModal').classList.add('open');
+        document.querySelector('#playerModal .modal-close').focus();
+    }
+
+    function closePlayerModal() {
+        document.getElementById('playerModal').classList.remove('open');
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePlayerModal(); });
 
     function applyTheme(theme) {
         document.body.classList.toggle('theme-dark', theme === 'dark');
