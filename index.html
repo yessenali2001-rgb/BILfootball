@@ -906,8 +906,10 @@
             diff += (goals * 0.04);
             diff += (assists * 0.02);
 
+            // Округляем до тысячных, чтобы не копились ошибки вида 0.1 + 0.2 = 0.30000000000000004
+            diff = Math.round(diff * 1000) / 1000;
             p.lastDiff = diff;
-            p.rating = Math.min(10, Math.max(0, p.rating + diff));
+            p.rating = Math.round(Math.min(10, Math.max(0, p.rating + diff)) * 1000) / 1000;
             if (!Array.isArray(p.history)) p.history = [];
             p.history.push({ m: matchId, r: result, g: goals, a: assists, d: +diff.toFixed(3), rt: +p.rating.toFixed(3) });
         });
