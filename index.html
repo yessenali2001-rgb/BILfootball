@@ -3,65 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Футбольная Лига - Жеребьевка и Онлайн Рейтинг</title>
+    <title>BIL Football — жеребьёвка и рейтинг</title>
+    <link rel="icon" type="image/png" href="assets/bil-logo-navy.png">
+    <meta name="theme-color" content="#111233">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap">
     <style>
+        /* Фирменный стиль «Білім-Инновация»: тёмно-синий #111233, синий #28315F, жёлтый #F8DF83 */
         :root {
-            --primary: #0fa968;
-            --primary-hover: #12c978;
-            --accent: #ffb800;
-            --navy: #0b1f3a;
-            --navy-light: #14335e;
-            --bg-color: #eef6f0;
+            --brand-navy: #111233;
+            --brand-navy-2: #28315F;
+            --brand-yellow: #F8DF83;
+            --btn-bg: #111233;
+            --btn-bg-2: #28315F;
+            --btn-fg: #ffffff;
+            --font-display: 'Montserrat', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --primary: #111233;
+            --primary-hover: #28315F;
+            --accent: #E9C14E;
+            --navy: #111233;
+            --navy-light: #28315F;
+            --bg-color: #EEF0F6;
             --card-bg: #ffffff;
-            --text-dark: #10241c;
-            --text-light: #64748b;
-            --up-color: #0fa968;
-            --down-color: #e11d48;
+            --text-dark: #111233;
+            --text-light: #5E6385;
+            --up-color: #15A05A;
+            --down-color: #E11D48;
             --gold: #ffd54a;
             --silver: #d7dde3;
             --bronze: #e3a06b;
-            --border-color: #eef1f0;
-            --input-bg: #fbfdfc;
-            --input-border: #dfe6e2;
-            --row-bg: #f7faf8;
-            --hover-bg: #f6fbf8;
-            --rating-badge-start: #e6f9f0;
-            --rating-badge-end: #d3f2e3;
-            --rating-badge-text: var(--primary);
+            --border-color: #E6E8F1;
+            --input-bg: #F8F9FC;
+            --input-border: #D6D9E8;
+            --row-bg: #F4F5FA;
+            --hover-bg: #F1F2F8;
+            --rating-badge-start: #FCF1C8;
+            --rating-badge-end: #F8DF83;
+            --rating-badge-text: #111233;
             --speed-badge-start: #e6f0fb;
             --speed-badge-end: #d3e6f7;
             --speed-badge-text: #1e88e5;
         }
 
         body.theme-dark {
-            --bg-color: #0b1220;
-            --card-bg: #131b2c;
-            --text-dark: #e5e7eb;
-            --text-light: #94a3b8;
-            --border-color: #23304a;
-            --input-bg: #0f1830;
-            --input-border: #2a3652;
-            --row-bg: #182238;
-            --hover-bg: #17233a;
-            --rating-badge-start: #123524;
-            --rating-badge-end: #16432c;
-            --rating-badge-text: #4ade80;
+            --btn-bg: #F8DF83;
+            --btn-bg-2: #F3D266;
+            --btn-fg: #111233;
+            --primary: #F8DF83;
+            --primary-hover: #F3D266;
+            --accent: #F8DF83;
+            --bg-color: #0B0C22;
+            --card-bg: #16183A;
+            --text-dark: #ECEDF7;
+            --text-light: #A3A7C7;
+            --up-color: #4ADE80;
+            --down-color: #FB7185;
+            --border-color: #262A52;
+            --input-bg: #10122E;
+            --input-border: #2E3361;
+            --row-bg: #1D2047;
+            --hover-bg: #1F2350;
+            --rating-badge-start: #2B2A3A;
+            --rating-badge-end: #3A3420;
+            --rating-badge-text: #F8DF83;
             --speed-badge-start: #12233a;
             --speed-badge-end: #16304a;
             --speed-badge-text: #60a5fa;
         }
 
-        body.theme-dark {
-            background-image: repeating-linear-gradient(90deg, rgba(15,169,104,0.08) 0, rgba(15,169,104,0.08) 40px, transparent 40px, transparent 80px);
-        }
+        body.theme-dark { background-image: none; }
 
         * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            background-image:
-                repeating-linear-gradient(90deg, rgba(15,169,104,0.05) 0, rgba(15,169,104,0.05) 40px, transparent 40px, transparent 80px);
             color: var(--text-dark);
             margin: 0;
             padding: 0 16px 30px;
@@ -306,9 +323,10 @@
         }
         .team-card:hover { transform: translateY(-2px); }
 
-        .team-card.team-color-1 { border-left-color: #1e88e5; }
-        .team-card.team-color-2 { border-left-color: var(--accent); }
-        .team-card.team-color-3 { border-left-color: #8e44ad; }
+        .team-card.team-color-0 { border-left-color: #3949AB; }
+        .team-card.team-color-1 { border-left-color: #E9C14E; }
+        .team-card.team-color-2 { border-left-color: #E53935; }
+        .team-card.team-color-3 { border-left-color: #43A047; }
 
         .team-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; font-weight: bold; font-size: 17px; gap: 10px; }
         .team-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; color: var(--text-light); font-size: 13px; font-weight: normal; white-space: nowrap; }
@@ -423,6 +441,81 @@
         .btn-restore { background: #556274; box-shadow: none; }
         .btn-restore:hover { background: #3f4a58; box-shadow: none; }
 
+        /* ===== Фирменный стиль BIL и футбольные детали ===== */
+        h1, h2, h3, .team-header, .big, .kpi b, .match-date { font-family: var(--font-display); }
+        h2 { font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 17px; text-wrap: balance; }
+
+        .hero {
+            overflow: hidden;
+            background: repeating-linear-gradient(90deg, #111233 0 56px, #15173F 56px 112px);
+            border-radius: 0 0 28px 28px;
+            padding: 34px 16px 28px;
+            box-shadow: 0 14px 30px rgba(17,18,51,0.28);
+            border-bottom: 4px solid var(--brand-yellow);
+        }
+        .hero .pitch { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+        .hero .pitch * { fill: none; stroke: rgba(255,255,255,0.16); stroke-width: 2; vector-effect: non-scaling-stroke; }
+        .hero .pitch .spot { fill: rgba(255,255,255,0.22); stroke: none; }
+        .hero-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .hero-logo { width: 84px; height: 84px; display: block; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35)); }
+        .hero h1 {
+            font-family: var(--font-display); font-weight: 800; font-size: 30px; letter-spacing: 0.06em;
+            text-transform: uppercase; text-shadow: none; line-height: 1.1; margin-top: 4px;
+        }
+        .hero h1 span { color: var(--brand-yellow); }
+        .hero .subtitle { color: rgba(255,255,255,0.78); font-family: var(--font-display); font-weight: 600; letter-spacing: 0.18em; font-size: 11px; margin-top: 0; }
+        .theme-toggle { z-index: 2; }
+
+        .fact {
+            display: flex; gap: 12px; align-items: flex-start;
+            background: var(--card-bg); border-radius: 16px; padding: 14px 16px; margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(17,18,51,0.06); border-left: 5px solid var(--brand-yellow);
+        }
+        .fact .ball { font-size: 26px; line-height: 1; flex: 0 0 auto; }
+        .fact .fact-label { font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); }
+        .fact .fact-text { font-size: 14px; line-height: 1.45; margin-top: 2px; }
+        .fact button { background: none; color: var(--text-light); box-shadow: none; width: auto; margin: 0 0 0 auto; padding: 2px 6px; font-size: 18px; flex: 0 0 auto; }
+        .fact button:hover { transform: rotate(90deg); box-shadow: none; color: var(--text-dark); }
+
+        .card { border-top: none; box-shadow: 0 8px 22px rgba(17,18,51,0.07); }
+        body.theme-dark .card, body.theme-dark .fact { box-shadow: 0 8px 22px rgba(0,0,0,0.35); }
+
+        button { background: linear-gradient(135deg, var(--btn-bg), var(--btn-bg-2)); color: var(--btn-fg); box-shadow: 0 6px 14px rgba(17,18,51,0.22); font-family: var(--font-display); font-weight: 700; }
+        button:hover { box-shadow: 0 10px 18px rgba(17,18,51,0.28); }
+        .btn-update { background: linear-gradient(135deg, #28315F, #3B4685); color: #fff; box-shadow: 0 6px 14px rgba(40,49,95,0.28); }
+        .btn-copy, .btn-backup { background: var(--brand-yellow); color: #111233; box-shadow: 0 6px 14px rgba(233,193,78,0.35); }
+        .btn-copy:hover, .btn-backup:hover { box-shadow: 0 10px 18px rgba(233,193,78,0.45); }
+        .btn-admin, .btn-restore { background: transparent; color: var(--text-light); border: 1.5px dashed var(--input-border); box-shadow: none; }
+        .btn-admin:hover, .btn-restore:hover { background: var(--row-bg); color: var(--text-dark); }
+        .btn-more, .btn-add-guest { background: var(--row-bg); color: var(--text-dark); box-shadow: none; }
+        .btn-promote, .btn-add-player { background: linear-gradient(135deg, var(--btn-bg), var(--btn-bg-2)); color: var(--btn-fg); }
+        .btn-inline, .btn-inline:hover { background: none; color: inherit; box-shadow: none; font-family: inherit; font-weight: inherit; }
+        .player-link:hover { color: var(--text-dark); text-decoration-color: var(--brand-yellow); text-decoration-style: solid; }
+        .seg button.active { box-shadow: 0 1px 3px rgba(17,18,51,0.14); }
+        .seg button, .seg button:hover { background: none; font-family: var(--font-display); }
+        .seg button.active { background: var(--card-bg); }
+        .modal-close, .modal-close:hover { background: var(--row-bg); color: var(--text-dark); }
+        .theme-toggle, .theme-toggle:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        .player-rating { box-shadow: inset 0 0 0 1px rgba(17,18,51,0.10); }
+        .player-info input[type="checkbox"] { accent-color: var(--brand-navy); }
+        body.theme-dark .player-info input[type="checkbox"] { accent-color: var(--brand-yellow); }
+        .modal { border-top-color: var(--brand-yellow); }
+        .match-row { border-left-color: var(--brand-navy-2); }
+        body.theme-dark .match-row { border-left-color: var(--brand-yellow); }
+        .stat-table tr:nth-child(1) td.place { color: #B38B12; }
+        body.theme-dark .stat-table tr:nth-child(1) td.place { color: var(--brand-yellow); }
+
+        .team-header { align-items: center; }
+        .team-title { display: inline-flex; align-items: center; gap: 10px; }
+        .jersey { width: 30px; height: 30px; flex: 0 0 auto; }
+        .jersey path { stroke: rgba(17,18,51,0.35); stroke-width: 1.5; }
+        body.theme-dark .jersey path { stroke: rgba(255,255,255,0.35); }
+
+        #loading::before { content: '⚽'; display: inline-block; margin-right: 8px; animation: ball-spin 1s linear infinite; }
+        @keyframes ball-spin { to { transform: rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) { #loading::before { animation: none; } .fact button:hover { transform: none; } }
+
         #adminSection { display: none; }
         #loading { text-align: center; color: var(--text-light); padding: 10px; font-size: 14px; }
     </style>
@@ -436,14 +529,40 @@
 
 <div class="container">
     <div class="hero">
-        <button id="themeToggleBtn" class="theme-toggle" onclick="toggleTheme()">🌙</button>
-        <h1>⚽ Жеребьевка и Динамический Рейтинг</h1>
-        <div class="subtitle">Футбольная Лига</div>
+        <svg class="pitch" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect x="10" y="10" width="580" height="240" rx="2"></rect>
+            <line x1="300" y1="10" x2="300" y2="250"></line>
+            <circle cx="300" cy="130" r="62"></circle>
+            <circle class="spot" cx="300" cy="130" r="3"></circle>
+            <rect x="10" y="60" width="70" height="140"></rect>
+            <rect x="10" y="100" width="26" height="60"></rect>
+            <circle class="spot" cx="58" cy="130" r="2.5"></circle>
+            <path d="M80 104 A 34 34 0 0 1 80 156"></path>
+            <rect x="520" y="60" width="70" height="140"></rect>
+            <rect x="564" y="100" width="26" height="60"></rect>
+            <circle class="spot" cx="542" cy="130" r="2.5"></circle>
+            <path d="M520 104 A 34 34 0 0 0 520 156"></path>
+        </svg>
+        <button id="themeToggleBtn" class="theme-toggle" onclick="toggleTheme()" aria-label="Сменить тему">🌙</button>
+        <div class="hero-inner">
+            <img src="assets/bil-logo-white.png" class="hero-logo" alt="Білім-Инновация">
+            <h1>BIL <span>Football</span></h1>
+            <div class="subtitle">Жеребьёвка · Рейтинг · Статистика</div>
+        </div>
+    </div>
+
+    <div class="fact" aria-live="polite">
+        <span class="ball" aria-hidden="true">⚽</span>
+        <div>
+            <div class="fact-label">Футбольный факт дня</div>
+            <div class="fact-text" id="factText"></div>
+        </div>
+        <button onclick="nextFact()" title="Другой факт" aria-label="Показать другой факт">↻</button>
     </div>
 
     <div class="card">
         <h2>📊 Текущий рейтинг игроков</h2>
-        <div id="loading">📡 Загрузка актуальных данных из облака...</div>
+        <div id="loading">Загрузка данных из облака…</div>
         
         <div class="controls">
             <label for="numTeams">Количество команд:</label>
@@ -694,7 +813,7 @@
 
     async function savePlayersData() {
         document.getElementById('loading').style.display = 'block';
-        document.getElementById('loading').innerText = "💾 Сохранение данных в облако...";
+        document.getElementById('loading').innerText = "Сохранение данных в облако…";
         try {
             const res = await fetch(`https://api.npoint.io/${NPOINT_BIN_ID}`, {
                 method: "POST",
@@ -1140,6 +1259,46 @@
         renderTeams(bestTeams);
     }
 
+    const TEAM_COLORS = [
+        { shirt: '#3949AB', text: '#ffffff' },
+        { shirt: '#F8DF83', text: '#111233' },
+        { shirt: '#E53935', text: '#ffffff' },
+        { shirt: '#43A047', text: '#ffffff' }
+    ];
+
+    function jerseySvg(color, letter) {
+        return `<svg class="jersey" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M11 3 L6 5 L1 11 L5 15 L8 12.5 L8 29 L24 29 L24 12.5 L27 15 L31 11 L26 5 L21 3 Q16 7 11 3 Z" fill="${color.shirt}"></path>
+            <text x="16" y="23" text-anchor="middle" font-size="10" font-weight="800" font-family="Montserrat, sans-serif" fill="${color.text}">${letter}</text>
+        </svg>`;
+    }
+
+    // ---------- Футбольный факт дня ----------
+    const FOOTBALL_FACTS = [
+        'Первый чемпионат мира прошёл в 1930 году в Уругвае, и хозяева стали чемпионами.',
+        'Размер ворот по правилам: 7,32 м в ширину и 2,44 м в высоту.',
+        'Окружность футбольного мяча по правилам — от 68 до 70 см, вес — от 410 до 450 г.',
+        'Пенальти пробивают с 11 метров: в правилах это 12 ярдов, то есть около 10,97 м.',
+        'Полевой игрок за матч пробегает в среднем 10–12 км.',
+        'Сборная Бразилии — пятикратный чемпион мира: 1958, 1962, 1970, 1994 и 2002 годы.',
+        'Жёлтые и красные карточки впервые показали на чемпионате мира 1970 года.',
+        'Самый быстрый гол в истории чемпионатов мира забил Хакан Шюкюр в 2002 году — на 11-й секунде.',
+        'Мирослав Клозе — лучший бомбардир в истории чемпионатов мира: 16 голов.',
+        'Сборная Казахстана перешла из Азиатской конфедерации в УЕФА в 2002 году.',
+        'Для международных матчей длина поля — от 100 до 110 м, ширина — от 64 до 75 м.',
+        'Лионель Месси выиграл «Золотой мяч» 8 раз — больше всех в истории.'
+    ];
+    let factIndex = Math.floor(Date.now() / 86400000) % FOOTBALL_FACTS.length;
+
+    function showFact() {
+        document.getElementById('factText').textContent = FOOTBALL_FACTS[factIndex];
+    }
+
+    function nextFact() {
+        factIndex = (factIndex + 1) % FOOTBALL_FACTS.length;
+        showFact();
+    }
+
     function renderTeams(teams) {
         const container = document.getElementById('teamsContainer');
         container.innerHTML = '';
@@ -1151,7 +1310,7 @@
             let html = `
                 <div class="team-card team-color-${index % 4}">
                     <div class="team-header">
-                        <span>${team.name} <span style="color:var(--text-light); font-size:14px; font-weight:normal;">(${team.members.length} чел.)</span></span>
+                        <span class="team-title">${jerseySvg(TEAM_COLORS[index % TEAM_COLORS.length], String.fromCharCode(65 + index))}<span>${team.name} <span style="color:var(--text-light); font-size:14px; font-weight:normal;">(${team.members.length} чел.)</span></span></span>
                         <span class="team-stats"><span>⭐ Средн: ${avgRating}</span><span>⚡ Средн: ${avgSpeed}</span></span>
                     </div>
                     <ul class="team-members">
@@ -1607,6 +1766,7 @@
 
     window.onload = function() {
         applyTheme(document.body.classList.contains('theme-dark') ? 'dark' : 'light');
+        showFact();
         loadPlayersData();
     };
 </script>
