@@ -266,6 +266,21 @@
         }
         .btn-add-player { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); }
 
+        .guest-tag { font-size: 11px; font-weight: 600; color: var(--text-light); background: var(--row-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 0 6px; margin-left: 2px; }
+        .guest-block { margin-top: 14px; }
+        .guest-block h3 { font-size: 15px; margin: 0 0 4px; }
+        .guest-block p { font-size: 12px; color: var(--text-light); margin: 0 0 10px; }
+        .match-row.guest-row { grid-template-columns: 2fr 1.5fr 1fr 1fr auto; border-left-color: var(--text-light); }
+        .match-row.guest-row input[type="text"] { min-width: 0; width: 100%; }
+        .btn-small { width: auto; margin: 0; padding: 8px 12px; font-size: 13px; box-shadow: none; }
+        .btn-small:hover { transform: none; box-shadow: none; }
+        .btn-add-guest { background: var(--row-bg); color: var(--text-dark); margin-top: 6px; width: 100%; }
+        .guest-manage-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; background: var(--row-bg); border-radius: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+        .guest-manage-row .gname { font-weight: 600; }
+        .guest-manage-row .gmeta { font-size: 12px; color: var(--text-light); }
+        .guest-manage-row .gactions { display: flex; gap: 6px; }
+        .btn-promote { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); }
+        @media (max-width: 480px) { .match-row.guest-row { grid-template-columns: 1fr 1fr; } }
         .match-row {
             display: grid;
             grid-template-columns: 2fr 1.5fr 1fr 1fr;
@@ -501,6 +516,13 @@
                 Победа (+0.10), Ничья (0.00), Поражение (-0.10). Гол (+0.04), Пас (+0.02).
             </p>
             <div id="matchForm"></div>
+            <div class="guest-block">
+                <h3>🧳 Гости</h3>
+                <p>Гости видны в истории матча, но не попадают в рейтинг, жеребьёвку и таблицы.</p>
+                <div id="guestForm"></div>
+                <datalist id="guestNames"></datalist>
+                <button onclick="addGuestRow()" class="btn-small btn-add-guest">➕ Добавить гостя</button>
+            </div>
             <button onclick="submitMatchResults()" class="btn-update">🔄 Обновить рейтинг по итогам матча</button>
             <button onclick="resetRatingsToDefault()" class="btn-reset">⚠️ Сбросить рейтинг до исходного</button>
 
@@ -510,6 +532,7 @@
                 Скорость рассчитывается по весу, росту и возрасту, а затем поправляется по тому, как игрок бегает: «средне» ×0.8, «так себе» ×0.6.
             </p>
             <div id="manageList"></div>
+            <div id="guestManageList"></div>
             <div class="add-player-card">
                 <input type="text" id="newPlayerName" placeholder="Имя нового игрока">
                 <div class="manage-fields">
@@ -577,6 +600,15 @@
     ];
 
     let players = [];
+
+    // Постоянные игроки (без гостей): только они участвуют в рейтинге, жеребьёвке и таблицах
+    function regulars() {
+        return players.filter(p => !p.guest);
+    }
+
+    function guests() {
+        return players.filter(p => p.guest);
+    }
 
     const EFFORT = {
         good: { label: 'Хорошо', factor: 1 },
@@ -651,6 +683,7 @@
                 if (typeof p.height !== 'number' || isNaN(p.height)) p.height = 175;
                 if (typeof p.age !== 'number' || isNaN(p.age)) p.age = 25;
                 if (!EFFORT[p.effort]) p.effort = 'good';
+                p.guest = p.guest === true;
                 if (!Array.isArray(p.history)) p.history = [];
             });
             document.getElementById('loading').style.display = 'none';
@@ -690,7 +723,7 @@
         
         players.sort((a, b) => b.rating - a.rating);
 
-        players.forEach(player => {
+        regulars().forEach(player => {
             const div = document.createElement('div');
             div.className = 'player-item';
             
@@ -747,8 +780,9 @@
     function renderManageList() {
         const container = document.getElementById('manageList');
         container.innerHTML = '';
+        renderGuestManageList();
 
-        players.forEach(p => {
+        regulars().forEach(p => {
             const div = document.createElement('div');
             div.className = 'manage-row';
             div.innerHTML = `
@@ -875,8 +909,10 @@
     function renderMatchForm() {
         const container = document.getElementById('matchForm');
         container.innerHTML = '';
+        document.getElementById('guestForm').innerHTML = '';
+        document.getElementById('guestNames').innerHTML = guests().map(g => `<option value="${escapeHtml(g.name)}">`).join('');
 
-        players.forEach(p => {
+        regulars().forEach(p => {
             const div = document.createElement('div');
             div.className = 'match-row';
             div.innerHTML = `
@@ -898,7 +934,10 @@
         let updatedCount = 0;
         const matchId = Date.now();
 
-        players.forEach(p => {
+        const guestEntries = readGuestRows();
+        if (guestEntries === null) return;
+
+        regulars().forEach(p => {
             const result = document.getElementById(`result_${p.id}`).value;
             const goals = parseInt(document.getElementById(`goals_${p.id}`).value) || 0;
             const assists = parseInt(document.getElementById(`assists_${p.id}`).value) || 0;
@@ -925,6 +964,19 @@
             p.history.push({ m: matchId, r: result, g: goals, a: assists, d: +diff.toFixed(3), rt: +p.rating.toFixed(3) });
         });
 
+        guests().forEach(g => { g.lastDiff = 0; });
+        guestEntries.forEach(entry => {
+            let g = guests().find(x => normName(x.name) === normName(entry.name));
+            if (!g) {
+                const maxId = players.reduce((max, p) => Math.max(max, p.id), 0);
+                g = { id: maxId + 1, name: entry.name, guest: true, rating: 0, lastDiff: 0, weight: 75, height: 175, age: 25, effort: 'good', history: [] };
+                players.push(g);
+            }
+            if (!Array.isArray(g.history)) g.history = [];
+            g.history.push({ m: matchId, r: entry.result, g: entry.goals, a: entry.assists, d: 0, rt: 0 });
+            updatedCount++;
+        });
+
         if (updatedCount === 0) {
             alert("Выберите хотя бы одного сыгравшего игрока!");
             return;
@@ -932,14 +984,97 @@
 
         await savePlayersData();
         renderMatchForm();
+        renderManageList();
+    }
+
+    function normName(s) {
+        return String(s).trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    let guestRowSeq = 0;
+
+    function addGuestRow() {
+        const id = ++guestRowSeq;
+        const div = document.createElement('div');
+        div.className = 'match-row guest-row';
+        div.dataset.guestRow = id;
+        div.innerHTML = `
+            <input type="text" id="gname_${id}" placeholder="Имя гостя" list="guestNames">
+            <select id="gresult_${id}">
+                <option value="win">Победа</option>
+                <option value="draw">Ничья</option>
+                <option value="loss">Поражение</option>
+            </select>
+            <input type="number" id="ggoals_${id}" placeholder="Голы" min="0" value="0">
+            <input type="number" id="gassists_${id}" placeholder="Пасы" min="0" value="0">
+            <button onclick="this.parentElement.remove()" class="btn-remove-player" aria-label="Убрать гостя">✕</button>
+        `;
+        document.getElementById('guestForm').appendChild(div);
+        document.getElementById(`gname_${id}`).focus();
+    }
+
+    // Возвращает список гостей из формы или null, если есть ошибка
+    function readGuestRows() {
+        const rows = [...document.querySelectorAll('#guestForm [data-guest-row]')];
+        const result = [];
+        const seen = new Set();
+        for (const row of rows) {
+            const id = row.dataset.guestRow;
+            const name = document.getElementById(`gname_${id}`).value.trim().replace(/\s+/g, ' ');
+            if (!name) continue;
+            if (regulars().some(p => normName(p.name) === normName(name))) {
+                alert(`«${name}» уже есть в списке игроков. Отметьте его результат выше, а не среди гостей.`);
+                return null;
+            }
+            if (seen.has(normName(name))) {
+                alert(`Гость «${name}» указан дважды.`);
+                return null;
+            }
+            seen.add(normName(name));
+            result.push({
+                name,
+                result: document.getElementById(`gresult_${id}`).value,
+                goals: Math.max(0, parseInt(document.getElementById(`ggoals_${id}`).value) || 0),
+                assists: Math.max(0, parseInt(document.getElementById(`gassists_${id}`).value) || 0)
+            });
+        }
+        return result;
+    }
+
+    function renderGuestManageList() {
+        const el = document.getElementById('guestManageList');
+        const list = guests();
+        if (!list.length) { el.innerHTML = ''; return; }
+        el.innerHTML = `<h3 style="font-size: 15px; margin: 16px 0 8px;">🧳 Гости</h3>` + list.map(g => {
+            const games = (g.history || []).length;
+            return `<div class="guest-manage-row">
+                <div><div class="gname">${escapeHtml(g.name)}</div><div class="gmeta">${games} ${plural(games, 'матч', 'матча', 'матчей')} гостем</div></div>
+                <div class="gactions">
+                    <button onclick="promoteGuest(${g.id})" class="btn-small btn-promote">Сделать игроком</button>
+                    <button onclick="removePlayer(${g.id})" class="btn-remove-player">🗑</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function promoteGuest(id) {
+        const g = players.find(p => p.id === id);
+        if (!g) return;
+        if (!confirm(`Перевести «${g.name}» в постоянные игроки с рейтингом 5? Не забудьте потом нажать «Сохранить список игроков».`)) return;
+        g.guest = false;
+        g.rating = 5;
+        g.lastDiff = 0;
+        renderManageList();
     }
 
     async function resetRatingsToDefault() {
         if (confirm("Вы уверены, что хотите сбросить все рейтинги до исходного состояния?")) {
             // Рейтинги и состав возвращаются к исходным, а история матчей остаётся
             const historyById = new Map(players.map(p => [p.id, p.history || []]));
+            const keptGuests = guests();
             players = JSON.parse(JSON.stringify(defaultPlayers));
             players.forEach(p => { p.history = historyById.get(p.id) || []; });
+            players.push(...keptGuests);
             await savePlayersData();
             renderMatchForm();
         }
@@ -1115,6 +1250,7 @@
                 if (typeof p.height !== 'number' || isNaN(p.height)) p.height = 175;
                 if (typeof p.age !== 'number' || isNaN(p.age)) p.age = 25;
                 if (!EFFORT[p.effort]) p.effort = 'good';
+                p.guest = p.guest === true;
                 if (typeof p.lastDiff !== 'number') p.lastDiff = 0;
                 if (!Array.isArray(p.history)) p.history = [];
             });
@@ -1169,7 +1305,7 @@
 
     function renderSeasonSummary() {
         const el = document.getElementById('seasonSummary');
-        const rows = players.map(p => ({ p, s: playerStats(p, true) })).filter(r => r.s.games > 0);
+        const rows = regulars().map(p => ({ p, s: playerStats(p, true) })).filter(r => r.s.games > 0);
         if (!rows.length) {
             el.innerHTML = `<div class="empty-note">Итоги сезона появятся после первого внесённого матча.</div>`;
             return;
@@ -1190,7 +1326,7 @@
     function computePairs() {
         const map = new Map();
         collectMatches().forEach(m => {
-            const list = m.entries.slice().sort((a, b) => a.p.id - b.p.id);
+            const list = m.entries.filter(e => !e.p.guest).sort((a, b) => a.p.id - b.p.id);
             for (let i = 0; i < list.length; i++) {
                 for (let j = i + 1; j < list.length; j++) {
                     const a = list[i], b = list[j];
@@ -1254,6 +1390,7 @@
     }
 
     function playerLink(p) {
+        if (p.guest) return `<span>${escapeHtml(p.name)}</span> <span class="guest-tag">гость</span>`;
         return `<button class="btn-inline player-link" onclick="openPlayerModal(${p.id})">${escapeHtml(p.name)}</button>`;
     }
 
@@ -1279,7 +1416,7 @@
 
     function allEvenings(all) {
         const keys = new Set();
-        players.forEach(p => (all ? (p.history || []) : periodHistory(p)).forEach(e => keys.add(eveningKey(e.m))));
+        regulars().forEach(p => (all ? (p.history || []) : periodHistory(p)).forEach(e => keys.add(eveningKey(e.m))));
         return keys;
     }
 
@@ -1290,7 +1427,7 @@
             el.innerHTML = `<div class="empty-note">Посещаемость появится после первого внесённого матча.</div>`;
             return;
         }
-        const rows = players.map(p => ({ p, a: attendanceOf(p, evenings) }))
+        const rows = regulars().map(p => ({ p, a: attendanceOf(p, evenings) }))
             .sort((x, y) => y.a.attended - x.a.attended || x.p.name.localeCompare(y.p.name));
         el.innerHTML = `<table class="stat-table">
             <thead><tr><th>#</th><th>Игрок</th><th>Пришёл</th><th>Пропустил</th><th>%</th></tr></thead>
@@ -1312,7 +1449,7 @@
 
     function renderLeaderBoard() {
         const el = document.getElementById('leaderBoard');
-        const rows = players.map(p => ({ p, s: playerStats(p, true) })).filter(r => r.s.games > 0);
+        const rows = regulars().map(p => ({ p, s: playerStats(p, true) })).filter(r => r.s.games > 0);
         if (!rows.length) {
             el.innerHTML = `<div class="empty-note">Таблица появится после первого матча, внесённого администратором.</div>`;
             return;
@@ -1361,7 +1498,7 @@
             }).join('');
             return `<div class="match-card">
                 <div class="match-head"><span class="match-date">${formatDate(m.id, new Date(m.id).getFullYear() !== thisYear)}</span>
-                <span class="match-meta">${m.entries.length} игроков · ${goals} ${plural(goals, 'гол', 'гола', 'голов')}</span></div>
+                <span class="match-meta">${(() => { const g = m.entries.filter(e => e.p.guest).length, n = m.entries.length - g; return `${n} ${plural(n, 'игрок', 'игрока', 'игроков')}${g ? ` + ${g} ${plural(g, 'гость', 'гостя', 'гостей')}` : ''}`; })()} · ${goals} ${plural(goals, 'гол', 'гола', 'голов')}</span></div>
                 ${groups}
             </div>`;
         }).join('') + (matches.length > historyShown
