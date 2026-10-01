@@ -380,6 +380,27 @@
         .recent-row .ga { flex: 1; }
         .recent-row .diff { font-size: 12px; font-weight: bold; font-variant-numeric: tabular-nums; }
 
+        .period-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .period-bar h2 { margin: 0; }
+        .period-bar select { flex: 0 1 auto; }
+        .season-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+        @media (max-width: 480px) { .season-tiles { grid-template-columns: 1fr; } }
+        .season-tile { background: var(--row-bg); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+        .season-tile .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-light); }
+        .season-tile .who { font-weight: bold; font-size: 15px; margin-top: 2px; overflow-wrap: anywhere; }
+        .season-tile .val { font-size: 13px; color: var(--primary); font-weight: bold; }
+        .stat-note { font-size: 12px; color: var(--text-light); margin: 10px 0 0; text-align: center; }
+        .pair-names { display: inline-flex; flex-wrap: wrap; gap: 0 4px; align-items: baseline; }
+        .pair-names .plus { color: var(--text-light); }
+        .partner-line { font-size: 14px; background: var(--row-bg); border-radius: 10px; padding: 10px 12px; }
+
+        .backup-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .backup-row button { flex: 1 1 200px; }
+        .btn-backup { background: linear-gradient(135deg, var(--navy), var(--navy-light)); box-shadow: 0 6px 14px rgba(11,31,58,0.25); }
+        .btn-backup:hover { box-shadow: 0 10px 18px rgba(11,31,58,0.3); }
+        .btn-restore { background: #556274; box-shadow: none; }
+        .btn-restore:hover { background: #3f4a58; box-shadow: none; }
+
         #adminSection { display: none; }
         #loading { text-align: center; color: var(--text-light); padding: 10px; font-size: 14px; }
     </style>
@@ -428,6 +449,16 @@
     </div>
 
     <div class="card">
+        <div class="period-bar">
+            <h2>📆 Сезон</h2>
+            <select id="periodSelect" onchange="setPeriod(this.value)" aria-label="Период статистики">
+                <option value="all">Всё время</option>
+            </select>
+        </div>
+        <div id="seasonSummary"></div>
+    </div>
+
+    <div class="card">
         <h2>🏆 Бомбардиры и ассистенты</h2>
         <div class="seg" id="leaderTabs">
             <button data-board="goals" class="active" onclick="setLeaderBoard('goals')">⚽ Голы</button>
@@ -440,6 +471,12 @@
     <div class="card">
         <h2>📅 История матчей</h2>
         <div id="matchHistory"></div>
+    </div>
+
+    <div class="card">
+        <h2>🤝 Лучшие связки</h2>
+        <div id="pairsBoard"></div>
+        <p class="stat-note">Считаются матчи, где оба игрока получили «Победу». Процент: доля таких побед среди всех матчей, где оба играли.</p>
     </div>
 
     <div class="card">
@@ -471,6 +508,17 @@
                 <button onclick="addNewPlayer()" class="btn-add-player">➕ Добавить игрока</button>
             </div>
             <button onclick="savePlayerList()" class="btn-update">💾 Сохранить список игроков</button>
+
+            <hr class="section-divider">
+            <h2>🗄 Резервная копия</h2>
+            <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">
+                Сохраните файл со всеми игроками, рейтингами и историей матчей. Из него можно восстановить данные, если что-то сломается.
+            </p>
+            <div class="backup-row">
+                <button onclick="downloadBackup()" class="btn-backup">⬇️ Скачать копию</button>
+                <button onclick="document.getElementById('restoreFile').click()" class="btn-restore">📂 Восстановить из файла</button>
+            </div>
+            <input type="file" id="restoreFile" accept=".json,application/json" hidden onchange="restoreBackup(this)">
         </div>
     </div>
 </div>
@@ -977,14 +1025,170 @@
         status.textContent = ok ? '✅ Скопировано, можно вставить в чат' : 'Не удалось скопировать. Выделите составы вручную.';
     }
 
+    // ---------- Резервная копия ----------
+    function downloadBackup() {
+        const data = JSON.stringify(players, null, 2);
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const d = new Date();
+        const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        a.href = url;
+        a.download = `bilfootball-backup-${stamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function isValidBackup(data) {
+        return Array.isArray(data) && data.length > 0 && data.every(p =>
+            p && typeof p.id === 'number' && typeof p.name === 'string' && p.name.trim() &&
+            typeof p.rating === 'number' && !isNaN(p.rating) &&
+            (p.history === undefined || Array.isArray(p.history)));
+    }
+
+    function restoreBackup(input) {
+        const file = input.files && input.files[0];
+        input.value = '';
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async () => {
+            let data;
+            try { data = JSON.parse(reader.result); } catch (e) { data = null; }
+            if (!isValidBackup(data)) {
+                alert('Этот файл не похож на резервную копию сайта. Выберите файл bilfootball-backup-….json.');
+                return;
+            }
+            const matches = new Set();
+            data.forEach(p => (p.history || []).forEach(e => matches.add(e.m)));
+            if (!confirm(`Восстановить ${data.length} игроков и ${matches.size} матчей из файла? Текущие данные в облаке будут заменены.`)) return;
+            players = data;
+            players.forEach(p => {
+                if (typeof p.weight !== 'number' || isNaN(p.weight)) p.weight = 75;
+                if (typeof p.height !== 'number' || isNaN(p.height)) p.height = 175;
+                if (typeof p.age !== 'number' || isNaN(p.age)) p.age = 25;
+                if (typeof p.lastDiff !== 'number') p.lastDiff = 0;
+                if (!Array.isArray(p.history)) p.history = [];
+            });
+            await savePlayersData();
+            renderMatchForm();
+            renderManageList();
+        };
+        reader.readAsText(file);
+    }
+
     // ---------- Статистика ----------
     const RESULT_LABEL = { win: 'Победа', draw: 'Ничья', loss: 'Поражение' };
     const RESULT_SHORT = { win: 'В', draw: 'Н', loss: 'П' };
     let leaderBoard = 'goals';
     let historyShown = 5;
+    let period = 'all';
 
-    function playerStats(p) {
-        const h = p.history || [];
+    function monthKey(ts) {
+        const d = new Date(ts);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function monthName(key) {
+        const [y, m] = key.split('-').map(Number);
+        const name = new Date(y, m - 1, 1).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }).replace(' г.', '');
+        return name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    function inPeriod(e) {
+        return period === 'all' || monthKey(e.m) === period;
+    }
+
+    function periodHistory(p) {
+        return (p.history || []).filter(inPeriod);
+    }
+
+    function setPeriod(value) {
+        period = value;
+        historyShown = 5;
+        renderStatsSections();
+    }
+
+    function renderPeriodSelect() {
+        const sel = document.getElementById('periodSelect');
+        const months = new Set();
+        players.forEach(p => (p.history || []).forEach(e => months.add(monthKey(e.m))));
+        const keys = [...months].sort().reverse();
+        if (period !== 'all' && !months.has(period)) period = 'all';
+        sel.innerHTML = `<option value="all">Всё время</option>` + keys.map(k => `<option value="${k}">${monthName(k)}</option>`).join('');
+        sel.value = period;
+    }
+
+    function renderSeasonSummary() {
+        const el = document.getElementById('seasonSummary');
+        const rows = players.map(p => ({ p, s: playerStats(p, true) })).filter(r => r.s.games > 0);
+        if (!rows.length) {
+            el.innerHTML = `<div class="empty-note">Итоги сезона появятся после первого внесённого матча.</div>`;
+            return;
+        }
+        const top = key => rows.slice().sort((a, b) => b.s[key] - a.s[key] || a.s.games - b.s.games)[0];
+        const tile = (label, r, key, unit) => r && r.s[key] > 0
+            ? `<div class="season-tile"><div class="lbl">${label}</div><div class="who">${playerLink(r.p)}</div><div class="val">${r.s[key]} ${unit(r.s[key])}</div></div>`
+            : `<div class="season-tile"><div class="lbl">${label}</div><div class="who">—</div><div class="val">&nbsp;</div></div>`;
+        const matches = collectMatches().length;
+        el.innerHTML = `<div class="season-tiles">
+                ${tile('Лучший бомбардир', top('goals'), 'goals', n => plural(n, 'гол', 'гола', 'голов'))}
+                ${tile('Лучший ассистент', top('assists'), 'assists', n => plural(n, 'пас', 'паса', 'пасов'))}
+                ${tile('Больше всех побед', top('win'), 'win', n => plural(n, 'победа', 'победы', 'побед'))}
+            </div>
+            <p class="stat-note">${period === 'all' ? 'За всё время' : monthName(period)}: ${matches} ${plural(matches, 'матч', 'матча', 'матчей')}</p>`;
+    }
+
+    function computePairs() {
+        const map = new Map();
+        collectMatches().forEach(m => {
+            const list = m.entries.slice().sort((a, b) => a.p.id - b.p.id);
+            for (let i = 0; i < list.length; i++) {
+                for (let j = i + 1; j < list.length; j++) {
+                    const a = list[i], b = list[j];
+                    const key = `${a.p.id}-${b.p.id}`;
+                    if (!map.has(key)) map.set(key, { a: a.p, b: b.p, together: 0, wins: 0 });
+                    const pair = map.get(key);
+                    pair.together++;
+                    if (a.r === 'win' && b.r === 'win') pair.wins++;
+                }
+            }
+        });
+        return [...map.values()].filter(x => x.wins > 0)
+            .sort((x, y) => y.wins - x.wins || (y.wins / y.together) - (x.wins / x.together));
+    }
+
+    function renderPairs() {
+        const el = document.getElementById('pairsBoard');
+        const pairs = computePairs().slice(0, 10);
+        if (!pairs.length) {
+            el.innerHTML = `<div class="empty-note">Связки появятся, когда у игроков будут общие победы.</div>`;
+            return;
+        }
+        el.innerHTML = `<table class="stat-table">
+            <thead><tr><th>#</th><th>Пара</th><th>Побед вместе</th><th>%</th></tr></thead>
+            <tbody>${pairs.map((x, i) => `<tr>
+                <td class="place">${i + 1}</td>
+                <td><span class="pair-names">${playerLink(x.a)}<span class="plus">+</span>${playerLink(x.b)}</span></td>
+                <td class="main">${x.wins}</td>
+                <td>${Math.round(x.wins / x.together * 100)}%</td>
+            </tr>`).join('')}</tbody></table>`;
+    }
+
+    function bestPartner(p) {
+        // Для карточки игрока берём всё время, независимо от выбранного сезона
+        const saved = period;
+        period = 'all';
+        const pairs = computePairs().filter(x => x.a.id === p.id || x.b.id === p.id);
+        period = saved;
+        if (!pairs.length) return null;
+        const x = pairs[0];
+        return { partner: x.a.id === p.id ? x.b : x.a, wins: x.wins, together: x.together };
+    }
+
+    function playerStats(p, usePeriod) {
+        const h = usePeriod ? periodHistory(p) : (p.history || []);
         const s = { games: h.length, win: 0, draw: 0, loss: 0, goals: 0, assists: 0 };
         h.forEach(e => {
             if (s[e.r] !== undefined) s[e.r]++;
@@ -1007,8 +1211,11 @@
     }
 
     function renderStatsSections() {
+        renderPeriodSelect();
+        renderSeasonSummary();
         renderLeaderBoard();
         renderMatchHistory();
+        renderPairs();
     }
 
     function setLeaderBoard(board) {
@@ -1019,7 +1226,7 @@
 
     function renderLeaderBoard() {
         const el = document.getElementById('leaderBoard');
-        const rows = players.map(p => ({ p, s: playerStats(p) })).filter(r => r.s.games > 0);
+        const rows = players.map(p => ({ p, s: playerStats(p, true) })).filter(r => r.s.games > 0);
         if (!rows.length) {
             el.innerHTML = `<div class="empty-note">Таблица появится после первого матча, внесённого администратором.</div>`;
             return;
@@ -1040,7 +1247,7 @@
 
     function collectMatches() {
         const byId = new Map();
-        players.forEach(p => (p.history || []).forEach(e => {
+        players.forEach(p => periodHistory(p).forEach(e => {
             if (!byId.has(e.m)) byId.set(e.m, { id: e.m, entries: [] });
             byId.get(e.m).entries.push({ p, ...e });
         }));
@@ -1128,6 +1335,10 @@
                 </div>
                 <div class="wdl-legend"><span>Победы: ${s.win}</span><span>Ничьи: ${s.draw}</span><span>Поражения: ${s.loss}</span></div>
                 ${sparkline(p.history, p.rating)}
+                ${(() => {
+                    const bp = bestPartner(p);
+                    return bp ? `<h4>Лучший партнёр</h4><div class="partner-line">🤝 ${escapeHtml(bp.partner.name)}: ${bp.wins} ${plural(bp.wins, 'победа', 'победы', 'побед')} вместе из ${bp.together} ${plural(bp.together, 'общего матча', 'общих матчей', 'общих матчей')}</div>` : '';
+                })()}
                 <h4>Последние матчи</h4>
                 <div class="recent">${recent.map(e => `
                     <div class="recent-row">
