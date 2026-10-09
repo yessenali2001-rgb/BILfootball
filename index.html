@@ -1468,7 +1468,10 @@
     function renderPeriodSelect() {
         const sel = document.getElementById('periodSelect');
         const months = new Set();
-        players.forEach(p => (p.history || []).forEach(e => months.add(monthKey(e.m))));
+        players.forEach(p => {
+            (p.history || []).forEach(e => months.add(monthKey(e.m)));
+            (p.visits || []).forEach(ts => months.add(monthKey(ts)));
+        });
         const keys = [...months].sort().reverse();
         if (period !== 'all' && !months.has(period)) period = 'all';
         sel.innerHTML = `<option value="all">Всё время</option>` + keys.map(k => `<option value="${k}">${monthName(k)}</option>`).join('');
@@ -1580,15 +1583,25 @@
         return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
     }
 
+    // Вечера, когда игрок пришёл: сыгранные матчи плюс отметки «только посещение» (p.visits)
+    function visitTimes(p, all) {
+        return (p.visits || []).filter(ts => all || inPeriod({ m: ts }));
+    }
+
+    function cameEvenings(p, all) {
+        const times = (all ? (p.history || []) : periodHistory(p)).map(e => e.m).concat(visitTimes(p, all));
+        return new Set(times.map(eveningKey));
+    }
+
     function attendanceOf(p, evenings) {
-        const came = new Set(periodHistory(p).map(e => eveningKey(e.m)));
+        const came = cameEvenings(p, false);
         const attended = [...came].filter(k => evenings.has(k)).length;
         return { attended, missed: evenings.size - attended, pct: evenings.size ? Math.round(attended / evenings.size * 100) : 0 };
     }
 
     function allEvenings(all) {
         const keys = new Set();
-        regulars().forEach(p => (all ? (p.history || []) : periodHistory(p)).forEach(e => keys.add(eveningKey(e.m))));
+        regulars().forEach(p => cameEvenings(p, all).forEach(k => keys.add(k)));
         return keys;
     }
 
@@ -1732,7 +1745,7 @@
                 ${sparkline(p.history, p.rating)}
                 ${(() => {
                     const evenings = allEvenings(true);
-                    const came = new Set((p.history || []).map(e => eveningKey(e.m))).size;
+                    const came = cameEvenings(p, true).size;
                     return `<h4>Посещаемость</h4><div class="partner-line">🗓 Пришёл ${came} из ${evenings.size} ${plural(evenings.size, 'вечера', 'вечеров', 'вечеров')} (${evenings.size ? Math.round(came / evenings.size * 100) : 0}%), пропустил ${evenings.size - came}</div>`;
                 })()}
                 ${(() => {
